@@ -9,12 +9,13 @@
 - Official website: `https://www.imedtac.com/`
 - Upstream thread: follow-up to the 吳老師 / 余總 project discussion; the earlier 余總 `triage` remark refers to this lane.
 - Internal contact window: 林駿亦 and Jason, pending Prof. Wu / company confirmation
-- Status: standalone execution repo created; source captured; implementation remains gated on product/API materials and first-deliverable confirmation
+- Status: standalone execution repo created; company follow-up package analyzed; Friday `2026-05-15` research artifact is the next bounded deliverable; implementation remains gated on integration mode, target device, and clinical-source confirmation
 - Canonical execution repo: `../ai-triage-kiosk-demo/`
 - Repo operating contract: `../ai-triage-kiosk-demo/AGENTS.md`
 - Repo relationship note: `../ai-triage-kiosk-demo/docs/repo-relationships.md`
 - Repo project brief: `../ai-triage-kiosk-demo/docs/project-brief.md`
 - Core architecture note: `../ai-triage-kiosk-demo/docs/architecture-insertion-and-clinical-grounding.md`
+- Thursday vital-sign research gate: `../ai-triage-kiosk-demo/workstreams/05-thursday-vital-sign-research-gate.md`
 - Source index: `../ai-triage-kiosk-demo/docs/source-index.md`
 - Prof. Wu instruction register: `../ai-triage-kiosk-demo/docs/wu-instruction-register.md`
 - Repo organization: `../ai-triage-kiosk-demo/docs/repo-organization.md`
@@ -24,6 +25,9 @@
 - Company-sync meeting record: `data/knowledge/personal/sources/2026-05-12-huicheng-company-ai-triage-sync/meeting-record.md`
 - Company-sync demo brief: `data/knowledge/personal/sources/2026-05-12-huicheng-company-ai-triage-sync/demo-brief.md`
 - Company-sync cleaned transcript: `data/knowledge/personal/sources/2026-05-12-huicheng-company-ai-triage-sync/transcript-cleaned.md`
+- Company follow-up materials analysis: `../ai-triage-kiosk-demo/docs/2026-05-12-huicheng-materials-analysis.md`
+- LINE-group context source: `data/knowledge/personal/sources/2026-05-02-12-huicheng-zhidewan-line-thread/source.md`
+- Prof. Wu LINE demo request source: `data/knowledge/personal/sources/2026-05-12-wu-line-lianyi-asr-llm-demo/source.md`
 - Execution-repo source copies:
   - `../ai-triage-kiosk-demo/source/2026-05-11-wu-huicheng-er-triage-ekg-asr/`
   - `../ai-triage-kiosk-demo/source/2026-05-12-huicheng-company-ai-triage-sync/`
@@ -117,12 +121,132 @@ Near-term possible artifact:
 - A presentable demo that adapts Jason's existing local structured-question / urology-previsit workflow into an English triage-facing flow and connects it at demo level to 慧誠's kiosk UI / web-service flow.
 - Short-term framing from the post-meeting summary: an English AI-triage reference demo before the June US customer visit, showing symptom collection, structured summary, workflow acceleration, and kiosk integration without diagnosis or autonomous medical decision-making.
 - Demo positioning: market demo / product capability demo, not production clinical triage, autonomous diagnosis, or formal HIS / EMR integration.
+- Urology reference status: the `../urology-ai-previsit-demo/app/patient-short/` route was hardened after the company sync so it can serve as a clearer reference for short structured intake. This improves demo credibility only; it does not convert the urology repo into the 慧誠 triage implementation.
+- UX lesson to reuse in the future English kiosk demo: when a topic has multiple judgment points, the active sub-question must become the main visual object and show explicit group/sub-question progress, otherwise users may think the screen has frozen.
 
-Current blocker:
+Current blocker after the company follow-up package:
 
-- Jason needs 慧誠's product materials, data/API shape, and action-item summary before implementation can be scoped.
-- Vital-sign-to-triage logic requires authoritative criteria and clinician/company validation; engineering should not invent clinical thresholds.
-- Patent-sensitive / core ASR + LLM workflow and architecture details should remain private until disclosure is explicitly approved.
+- Product and API materials exist, but implementation still needs target
+  SKU / OS, integration mode, sample or mock payload permission, guaranteed
+  vital fields, output wording, and clinical sign-off owner.
+- Vital-sign-to-triage logic requires authoritative criteria and
+  clinician/company validation; engineering should not invent clinical
+  thresholds.
+- Patent-sensitive / core ASR + LLM workflow and architecture details should
+  remain private until disclosure is explicitly approved.
+
+## 2026-05-12 Company Follow-Up Package Analysis
+
+Johnny Fang's company-side follow-up email and two attachments were moved out
+of `~/Downloads` and into the execution repo:
+
+- `../ai-triage-kiosk-demo/source/2026-05-12-huicheng-company-ai-triage-sync/assets/2026-05-12-huicheng-ai-triage-followup-email.pdf`
+- `../ai-triage-kiosk-demo/source/2026-05-12-huicheng-company-ai-triage-sync/assets/2026-05-12-imvs-product-spec-v2.0.4.docx`
+- `../ai-triage-kiosk-demo/source/2026-05-12-huicheng-company-ai-triage-sync/assets/2026-05-12-imvs-api-v1.4-eng.pdf`
+
+Searchable text extracts are preserved under:
+
+- `../ai-triage-kiosk-demo/source/2026-05-12-huicheng-company-ai-triage-sync/extracted/`
+
+Detailed analysis:
+
+- `../ai-triage-kiosk-demo/docs/2026-05-12-huicheng-materials-analysis.md`
+
+Main update:
+
+- The company follow-up mostly confirms the existing interpretation, but adds a
+  concrete Friday `2026-05-15` research gate: 阿聖 should prepare initial
+  findings on all-specialty modular AI-triage model integration and how
+  physiological data can affect triage analysis.
+- Product spec confirms iMVS is a measurement-centered workflow:
+  identify/login -> measure -> finish/report, with voice/text guidance, normal
+  / abnormal reference display, re-measure / next actions, QR/report output,
+  and AIO / DKP / MOB device lines.
+- API doc defines optional hospital-side authentication and post-measurement
+  vital-sign upload fields, including `SPO2`, `HR`, `Temp`, `Glucose`, `NBP`,
+  `Height`, and `Weight`.
+- The current v0 architecture should consume a synthetic or API-shaped
+  post-measurement vital payload and return a triage-support summary for demo
+  display, without real patient IDs or HIS / EMR writeback.
+- Clarify before implementation: target SKU / OS, Windows-vs-Android device
+  ambiguity, link/iframe/same-app/API integration mode, guaranteed vital fields,
+  and who signs off on vital-threshold clinical meaning.
+
+Planning implication:
+
+- The blocker is no longer "waiting for product/API materials" in general.
+  The blocker is now a bounded Friday feasibility artifact plus unresolved
+  company clarifications. Do not open a full product sprint from this alone.
+
+## 2026-05-12 Internal Thursday Plan - Vital-Sign Research Gate
+
+Because the company asked to discuss initial research results on Friday
+`2026-05-15`, the internal deadline is Thursday `2026-05-14 11:30`, before the
+Rao consultation at `13:00`.
+
+Canonical workplan:
+
+- `../ai-triage-kiosk-demo/workstreams/05-thursday-vital-sign-research-gate.md`
+
+Planning interpretation:
+
+- This is now a W20 must-output, but it stays bounded to feasibility research:
+  architecture insertion, modular method map, vital-to-question impact matrix,
+  clinical-source governance, open questions, and demo wording boundary.
+- FDA should be used for intended-use / CDS / software-risk / transparency
+  boundaries; medical-society, emergency-medicine, public-health, hospital, or
+  clinician-approved sources should drive symptom/question logic.
+- The answer should show how BP, SpO2, temperature, HR, BMI/height/weight, and
+  optional glucose can influence question priority, escalation framing, and
+  clinician-review summary without claiming autonomous diagnosis or production
+  triage.
+- Capacity rule: execute most of this on Wednesday `2026-05-13`, final-pass it
+  Thursday morning, and do not let it displace the Thursday `13:00` Rao meeting
+  or the Pikachu demo capture.
+
+## 2026-05-12 Prof. Wu LINE - 聯醫 ASR + LLM Demo
+
+Prof. Wu separately asked Jason by LINE whether he is available next Tuesday
+morning at `10:00` for a meeting at 北門站中興醫院旁的院本部大樓地下室會議室 with 聯醫主管. The requested
+artifact is an `ASR + LLM` demo connected to a deep-cultivation-plan discussion;
+if Jason could not attend, Prof. Wu asked for a recorded video to play. Jason
+replied that he will attend and prepare. Prof. Wu later added that he will be at
+院本部 from `08:00` that day.
+
+Planning interpretation:
+
+- Fixed meeting: `2026-05-19 10:00`, 北門站中興醫院旁的院本部大樓地下室會議室.
+- Arrival / contact note: Prof. Wu will be at 院本部 from `08:00`.
+- Internal freeze: runnable demo and backup video ready by `2026-05-15 17:00`.
+- Demo direction: evolve the existing local demo into ASR-assisted intake plus
+  `LLM` or preferably `embedding / RAG` question routing and summary generation.
+- Fallback requirement: typed-input path plus recorded video, so the meeting is
+  not blocked by microphone, ASR, network, or live-LLM instability.
+- Boundary: this remains a synthetic / demo workflow until explicit clinical,
+  data, regulatory, and hospital-integration decisions are made.
+- Resume route: preserve the final demo and video as evidence for healthcare AI
+  product prototyping, ASR / RAG system design, hospital stakeholder demo
+  delivery, and claim-boundary discipline.
+
+## 2026-05-02 to 2026-05-12 LINE Group Context
+
+The broader 智德萬 / 慧誠智醫 LINE-group thread is preserved as a private source note:
+
+- `data/knowledge/personal/sources/2026-05-02-12-huicheng-zhidewan-line-thread/source.md`
+
+Planning interpretation from the LINE thread:
+
+- The AI-triage lane developed from Ken Yu's urgent-care kiosk / physician-intake framing, customer demand around Vital Sign Kiosk AI triage, and Prof. Wu's assignment of 林駿亦博士 + 林家聖 to participate.
+- The near-term AI-triage ask is still a reference/demo path: convert the existing ASR + LLM urology-question demo into an English version that can help customers imagine a concrete kiosk workflow before larger development investment.
+- The vital-sign classifier path is data-gated: Prof. Wu explicitly noted the need for normal and abnormal vital-sign data collected from the Vital Sign Kiosk before training a binary classifier.
+- 藥瓶 / 藥品影像辨識 is a separate but relationship-adjacent support lane. It has short-notice demo/show-room pressure from Iris / Ken Yu / Thai-team training, but should be tracked lightly here unless Jason or the core team receives a direct deliverable.
+- MOU / NDA, 彰基 AI workshop / Thailand hospital contacts, MRI / Piti education-training opportunities, and external benchmark links are cooperation context only; do not let them become W20 technical tasks unless a concrete action is assigned.
+
+Current action split:
+
+- Detailed tracking: AI triage / kiosk, ASR + LLM English reference demo, vital-sign-aware workflow, and any Jason-owned follow-up from the `2026-05-12` sync.
+- Light tracking: medication-recognition show-room deployment, MOU / NDA, Thailand workshop, product-marketing materials, competitor/market references.
+- Boundary: do not copy contract text, raw media, customer-specific details, phone numbers, or patent-sensitive ASR + LLM internals into public-facing planning notes.
 
 ## Company Context
 

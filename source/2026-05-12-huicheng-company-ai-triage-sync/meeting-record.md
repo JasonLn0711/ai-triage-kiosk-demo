@@ -24,6 +24,12 @@ Cleaned transcript: `source/2026-05-12-huicheng-company-ai-triage-sync/transcrip
 
 Polished interpretation brief: `source/2026-05-12-huicheng-company-ai-triage-sync/demo-brief.md`.
 
+Company follow-up package:
+`source/2026-05-12-huicheng-company-ai-triage-sync/assets/`.
+
+Detailed materials analysis:
+`docs/2026-05-12-huicheng-materials-analysis.md`.
+
 ## Company Product Facts From The Meeting
 
 - 慧誠 has a self-service physiological measurement kiosk currently used around outpatient workflows.
@@ -170,7 +176,7 @@ Use `demo-brief.md` as the reusable format for future notes:
 - Do not merge the urology previsit repo into this product lane.
 - Keep "triage support, not diagnosis" as the safety boundary.
 - Do not invent vital-sign clinical rules without authoritative sources and clinician/company validation.
-- Wait for 慧誠's meeting summary / action items and product materials before opening implementation scope.
+- Now that 慧誠's follow-up materials exist, keep implementation gated on target device / OS, integration mode, sample or mock payload permission, guaranteed vital fields, output wording, and clinical sign-off owner.
 - Keep patent-sensitive, core-flow, and detailed ASR + LLM architecture material private unless Prof. Wu / the project owner explicitly approves disclosure.
 
 ## Immediate Next Actions
@@ -182,9 +188,21 @@ Use `demo-brief.md` as the reusable format for future notes:
   - prepare an architecture diagram;
   - clarify the ASR + embedding-routing division;
   - study local deployment feasibility.
+- Company follow-up email adds a dated research gate:
+  - by Friday `2026-05-15`, prepare initial findings on all-specialty modular AI-triage model integration and how physiological data affects triage analysis;
+  - use FDA or medical-society guidance only as verified examples, not as invented clinical rules.
 - 慧誠:
   - provide current kiosk / UI / product information;
   - provide API / integration information;
   - provide workflow and deployment scenario details;
   - continue discussion on possible integration flow.
 - Planning: preserve this as a source-capture and scope-alignment event, not a W20 product sprint.
+
+## Company Follow-Up Package Notes
+
+- Product spec confirms the existing iMVS workflow is centered on identity/login, measurement selection, guided measurement, normal/abnormal reference display, re-measure / next actions, and final report.
+- Product architecture image places iMVS-HCC between HIS / care-facility contexts and AIO / DKP / MOB device lines.
+- API document defines optional patient authentication and vital-sign upload after all measurements complete.
+- API fields include `CHART_NO`, `SAVE_DATETIME`, `UPLOAD_DATETIME`, `STATION_NAME`, `Payload`, `SPO2`, `HR`, `Temp`, `Glucose`, `NBP`, `Height`, and `Weight`.
+- Current best v0 integration remains a synthetic or mock API-shaped payload consumed after measurement and before a triage-support summary display.
+- Clarify target device / OS before implementation: meeting notes emphasize a Windows-based all-in-one, while the product spec also lists a `21.5" Tablet` with `Android 8.1`.

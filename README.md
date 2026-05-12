@@ -27,6 +27,7 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `source/2026-05-12-huicheng-company-ai-triage-sync/` | Company sync source bundle, meeting record, cleaned transcript, and demo brief |
 | `source/upstream-wu-context/` | Earlier Prof. Wu context copied from planning, including the 2026-04-16 Wu/Tomi meeting and 2026-04-20 CDE speech source |
 | `docs/project-brief.md` | Working project brief and execution boundary |
+| `docs/2026-05-12-huicheng-materials-analysis.md` | Detailed comparison of company follow-up minutes, iMVS product spec, and iMVS API attachment implications |
 | `docs/architecture-insertion-and-clinical-grounding.md` | Core note on workflow insertion point, vital-aware dynamic triage, and clinical evidence mapping |
 | `docs/source-index.md` | Complete index of copied source bundles and upstream context |
 | `docs/wu-instruction-register.md` | Consolidated Prof. Wu instructions and company-side clarifications |
@@ -99,10 +100,14 @@ docs/repo-organization.md
 
 ## Immediate Next Actions
 
-1. Wait for 慧誠 product / UI / API materials and action-item summary.
+1. Prepare the Friday `2026-05-15` feasibility artifact requested in the
+   company follow-up: modular all-specialty triage method, vital-data impact,
+   clinical-source strategy, and demo boundary.
 2. Decide whether v0 is iframe/link integration, mocked kiosk handoff, or API
    handoff.
-3. Define the minimum English symptom flow and vital-sign fields for demo use.
-4. Produce a safe architecture diagram that can be shared without exposing
+3. Clarify target device / OS and whether synthetic API-shaped vital signs are
+   acceptable for the first demo.
+4. Define the minimum English symptom flow and vital-sign fields for demo use.
+5. Produce a safe architecture diagram that can be shared without exposing
    patent-sensitive internals.
-5. Keep planning updated with status, blockers, and capacity impact only.
+6. Keep planning updated with status, blockers, and capacity impact only.

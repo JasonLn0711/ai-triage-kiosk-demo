@@ -17,6 +17,11 @@ participants:
 meeting_record_file: meeting-record.md
 demo_brief_file: demo-brief.md
 transcript_file: transcript-cleaned.md
+company_followup_assets:
+  - assets/2026-05-12-huicheng-ai-triage-followup-email.pdf
+  - assets/2026-05-12-imvs-product-spec-v2.0.4.docx
+  - assets/2026-05-12-imvs-api-v1.4-eng.pdf
+analysis_file: ../../docs/2026-05-12-huicheng-materials-analysis.md
 ---
 
 # Source
@@ -26,6 +31,16 @@ This folder stores the structured notes from the `2026-05-12 13:00` sync with �
 The user provided a detailed transcript and a post-meeting summary in chat. These should be treated as private meeting evidence for planning and follow-up, not as public artifacts.
 
 The user also provided a polished interpretation brief on `2026-05-12`; preserve its structure, Mermaid diagrams, and writing format in `demo-brief.md` for future briefing / planning reuse.
+
+Company follow-up materials from Johnny Fang were added after the meeting:
+
+- company-side AI-generated meeting minutes and follow-up email;
+- iMVS product specification `V2.0.4`;
+- iMVS API definition `V1.4`;
+- searchable extracted text for all three files.
+
+Detailed comparison and follow-up analysis:
+`docs/2026-05-12-huicheng-materials-analysis.md`.
 
 ## Why this source is kept
 
@@ -41,6 +56,7 @@ The meeting changed the 慧誠 lane from a general post-seminar opportunity into
 - Jason showed the urology previsit demo as a bounded starting point: structured intake, dynamic question selection, patient/family assistance, nurse/clinician review, and optional ASR for free-form supplements.
 - The current urology demo remains a previsit workflow example, not an urgent-care triage implementation.
 - Post-meeting summary from 阿聖 emphasizes that the short-term deliverable is an English AI-triage reference demo, while ASR + LLM architecture, patented or patentable flow details, and core process details should remain non-public.
+- Company follow-up minutes add an explicit Friday `2026-05-15` expectation for initial research on all-specialty modular AI triage and how physiological data changes triage analysis.
 
 ## Repo Links
 
@@ -49,6 +65,9 @@ The meeting changed the 慧誠 lane from a general post-seminar opportunity into
 - Meeting record: `source/2026-05-12-huicheng-company-ai-triage-sync/meeting-record.md`
 - Demo brief: `source/2026-05-12-huicheng-company-ai-triage-sync/demo-brief.md`
 - Cleaned transcript: `source/2026-05-12-huicheng-company-ai-triage-sync/transcript-cleaned.md`
+- Company follow-up attachments: `source/2026-05-12-huicheng-company-ai-triage-sync/assets/`
+- Extracted attachment text: `source/2026-05-12-huicheng-company-ai-triage-sync/extracted/`
+- Materials analysis: `docs/2026-05-12-huicheng-materials-analysis.md`
 - Prior source bundle: `source/2026-05-11-wu-huicheng-er-triage-ekg-asr/`
 
 ## Boundary

@@ -32,3 +32,28 @@ patient login
 - Whether v0 should be iframe, link, same web app, API bridge, or mocked flow.
 - Which device SKU the June US demo should represent.
 - Whether simulated vital signs are acceptable for the demo.
+
+## Attachment Update - 2026-05-12
+
+The iMVS API `V1.4` document defines two hospital-facing APIs:
+
+- optional patient authentication before login is accepted;
+- vital-sign upload after all measurements are done.
+
+The upload payload contains `CHART_NO`, measurement/upload timestamps, station
+name, optional auth payload, and nested vital objects for SpO2, HR,
+temperature, glucose, NBP, height, and weight.
+
+Implication: v0 should consume an API-shaped vital-sign payload after
+measurement and produce a separate triage-support summary. Do not assume the
+AI layer can write into HIS / EMR, and do not assume it can run inside the
+existing upload flow until 慧誠 confirms the integration mode.
+
+Clarify before implementation:
+
+- target device / OS, because notes mention Windows while the product spec also
+  lists an Android 8.1 tablet spec;
+- whether AI starts before or after the vital-sign upload;
+- whether synthetic payloads are acceptable;
+- whether the output is displayed in iMVS web service, linked externally, or
+  embedded as a demo screen.

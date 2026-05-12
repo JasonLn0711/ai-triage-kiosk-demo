@@ -9,7 +9,9 @@ web service story before the June US customer visit.
 
 The current priority is not UI polish, prompt tuning, or model expansion.
 
-The current priority is defining the product insertion point:
+The current priority is defining the product insertion point and preparing the
+Friday `2026-05-15` feasibility discussion artifact requested in the company
+follow-up email:
 
 ```text
 vital-sign measurement complete
@@ -31,6 +33,7 @@ Supporting context:
 docs/source-index.md
 docs/wu-instruction-register.md
 workstreams/
+docs/2026-05-12-huicheng-materials-analysis.md
 ```
 
 ## What Exists
@@ -43,6 +46,11 @@ workstreams/
 - a web service UI for measurement flow and summary report;
 - middleware / gateway integration;
 - RESTful API, FHIR, HIS, and EMR integration context.
+- a product workflow of identity/login, measurement selection, guided
+  measurement, normal/abnormal reference display, re-measure / next actions,
+  final report, QR-code style output, and exit reminder;
+- an API definition for optional patient authentication and post-measurement
+  vital-sign upload.
 
 ## What They Want
 
@@ -87,9 +95,23 @@ flowchart TD
 - What wording is safe for the output: triage support, recommended care level,
   clinician review prompt, or another phrase?
 - Which architecture diagram is safe to share externally?
+- Which target device / OS represents the June demo, given the current
+  Windows-vs-Android ambiguity in meeting notes and product spec?
+- Should the AI triage layer run before the vital-sign upload, after it, or as a
+  separate report-only demo screen?
 
 ## Boundary
 
 This repo can prepare a demo, architecture notes, and implementation scaffold.
 It must not turn into clinical product claims before clinical criteria,
 validation, privacy, cybersecurity, and company approvals exist.
+
+## Immediate Friday Artifact
+
+By Friday `2026-05-15`, prepare a compact feasibility artifact covering:
+
+- product insertion diagram;
+- modular all-specialty triage method map;
+- vital-to-question impact matrix;
+- clinical-source governance plan;
+- demo scope and no-diagnosis boundary.

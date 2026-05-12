@@ -29,3 +29,16 @@
 
 Show that 慧誠's kiosk can move from measurement-only workflow toward
 AI-assisted intake and triage-support workflow.
+
+## Company Follow-Up Constraint
+
+The `2026-05-12` company email asks for Friday `2026-05-15` initial research on
+all-specialty modular AI triage and physiological-data impact. This should stay
+inside the demo boundary:
+
+- architecture and method first;
+- synthetic API-shaped vital payload allowed if 慧誠 confirms;
+- no real patient identifiers;
+- no clinical threshold claims;
+- no autonomous emergency advice;
+- no all-specialty production promise.

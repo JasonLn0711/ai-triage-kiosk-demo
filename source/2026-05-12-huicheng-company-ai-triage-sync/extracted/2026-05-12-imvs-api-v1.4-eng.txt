@@ -1,0 +1,191 @@
+iMVS API
+Definition
+
+
+
+    Imedtac
+ Date： 2026/05/12
+  Version： V1.4
+                                Release Notes
+Version      Date                           Notes                        Update staff
+ V1.0     11/09/2022                        Draft                           Alvin
+ V1.2     18/01/2023   Modify the default value of SPO2 to left-handed     Mars Yu
+ V1.3     11/07/2025                  English version                      Mars Yu
+ V1.4     12/05/2026           Updated auth and upload API                 Ben Siu
+                                                                             Table
+1.     API ............................................................................................................................................. 4
+     1.1.      Authentication (provided by the hospital: query Patient from HIS） .......................................... 4
+     1.2.      Vital sign upload .................................................................................................................. 6
+       2.2.1      SPO2 (Blood Oxygen) ........................................................................................................................7
+       2.2.2      HR (Heart Rate) ................................................................................................................................7
+       2.2.3      Temp (Body temperature) .................................................................................................................7
+       2.2.4      Glucose (Blood glucose) ....................................................................................................................7
+       2.2.5      NBP (Blood pressure) ........................................................................................................................7
+       2.2.6      Height .............................................................................................................................................7
+       2.2.7      Weight ............................................................................................................................................7
+1. API
+     1.1.      Authentication (provided by the hospital: query Patient from HIS）
+
+                  It is an optional API. When users try to login to iMVS by providing ID (via manual input, NFC or card
+                  reading), the ID will be sent to this API for authentication. If this API responsed with Result=”F”,
+Purpose
+                  iMVS will reject the user.
+                  If this API is not implemented, all users are allowed to login to iMVS.
+
+URL               Provided by hospital
+Method            POST
+Parameter         Type         Required       Description
+
+ID                String       Y              ID to authenticate
+
+Callback data fields
+Field ID                 Parameter description                                            Type of data
+Result                   "T" = success, "F" = failure                                     string
+Err                      Error message, empty on success                                  string
+ID                       Original ID submitted                                            string
+IdDisplay                Masked ID, e.g. A12****789. It will be used for display.         string
+                         (optional) extra payload. It will be sent back to hospital via
+Payload                                                                                   string
+                         Vital Sign upload API
+JSON Sample
+
+
+Request body (JSON) (from iMVS to hospital)
+{
+  "ID": "string"
+}
+
+Response body (JSON) (from hospital to iMVS)
+Success example:
+{
+  "Result": "T",
+  "Err": "",
+  "ID": " A123456789",
+  "IdDisplay": " A12****789"
+}
+
+Failure example:
+{
+  "Result": "F",
+  "Err": "AUTH_FAILED",
+  "ID": "A123456789",
+  "IdDisplay": "A12****789"
+}
+   1.2.         Vital sign upload
+
+Purpose              Upload vital sign data after all measurements are done.
+
+URL                  Provided by hospital
+Method               POST
+
+The hospital returns the data field
+
+Field ID                Parameter description                                  Type of data
+success                 Whether the setting is successful                      Boolean
+errorCode               Error Code                                             Int
+message                 Failure Messasge                                       String
+
+Json Sample
+
+      {
+          "success":true, “errorCode”：“”,”message”:””
+      }
+
+Request body (from iMVS to hospital)
+
+Field ID                Parameter description                                  Type of data
+CHART_NO                ID (same as “ID” in auth API)                          string
+                        Storage time of the data (measurement time)
+SAVE_DATETIME                                                                  string
+                        (yyyy-MM-dd HH:mm:ss)
+UPLOAD_DATETIME         Upload date and time (yyyy-MM-dd HH:mm:ss)             string
+STATION_NAME            Vital Sign Station name                                string
+Payload                 Payload from auth API                                  string
+SPO2                    Blood oxygen                                           object
+HR                      Heart rate                                             object
+Temp                    Body temperature                                       object
+Glucose                 Blood glucose                                          object
+NBP                     Blood pressure                                         object
+Height                  Body height                                            object
+Weight                  Body weight                                            object
+Measurement Parameters
+2.2.1 SPO2 (Blood Oxygen)
+Field ID                Parameter description                       Type of data
+Value                   Measurement value                           string
+Unit                    Unit (%)                                    string
+
+2.2.2 HR (Heart Rate)
+Field ID                Parameter description                       Type of data
+BP_Value                Heartbeat from blood pressure measurement   string
+Unit                    Unit (bmp)                                  string
+
+2.2.3 Temp (Body temperature)
+Field ID                Parameter description                       Type of data
+Value                   Measurement value                           string
+Unit                    Unit                                        string
+
+2.2.4 Glucose (Blood glucose)
+Field ID                Parameter description                       Type of data
+Value                   Measurement value                           string
+Unit                    Unit                                        string
+
+2.2.5 NBP (Blood pressure)
+Field ID                Parameter description                       Type of data
+SYS_Value               Systolic blood pressure value               string
+DIA_Value               Diastolic blood pressure value              string
+Unit                    Unit                                        string
+
+2.2.6 Height
+Field ID                Parameter description                       Type of data
+Value                   Measurement Value                           string
+Unit                    Unit                                        string
+
+2.2.7 Weight
+Field ID                Parameter description                       Type of data
+Value                   Measurement Value                           string
+Unit                    Unit                                        string
+JSON Sample
+
+{
+    "CHART_NO": "P103011",
+    "SAVE_DATETIME": "2019/10/30 09:40:24",
+    "UPLOAD_DATETIME": "2019/10/30 09:40:28",
+    "STATION_NAME": "SICU",
+    "NBP": {
+      "SYS_Value": "120",
+      "DIA_Value": "80",
+      "Unit": "mmHg"
+    },
+    "SPO2": {
+      "Value": "98",
+      "Unit": "%"
+    },
+    "HR": {
+      "BP_Value": "72",
+      "Unit": "bpm"
+    },
+    "Temp": {
+      "Value": "36.5",
+      "Unit": "°C"
+    },
+    "Glucose": {
+      "Value": "80",
+      "Unit": "mg/dL"
+    },
+    "Weight": {
+      "Value": "70.0",
+      "Unit": "kg"
+    },
+    "Height": {
+      "Value": "175.0",
+      "Unit": "cm"
+
+                                            8
+    }
+}
+
+
+
+
+        9
+

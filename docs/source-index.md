@@ -10,6 +10,19 @@ demo lane and its direct upstream Prof. Wu context.
 | `2026-05-11` | `source/2026-05-11-wu-huicheng-er-triage-ekg-asr/` | Prof. Wu introduced the 慧誠 / imedtac emergency-triage collaboration, role split, EKG / SpO2 / ASR / LLM questions, case-accrual dependency, and triage-not-diagnosis boundary. |
 | `2026-05-12` | `source/2026-05-12-huicheng-company-ai-triage-sync/` | Company-side sync clarified the kiosk / web service / middleware / RESTful API / FHIR / HIS / EMR context, June US customer demo pressure, English-first voice-input long-term target, and vital-aware triage differentiator. |
 
+The `2026-05-12` source folder now also contains Johnny Fang's company-side
+follow-up package:
+
+- `assets/2026-05-12-huicheng-ai-triage-followup-email.pdf`
+- `assets/2026-05-12-imvs-product-spec-v2.0.4.docx`
+- `assets/2026-05-12-imvs-api-v1.4-eng.pdf`
+- `extracted/` searchable text outputs
+
+Derived analysis:
+
+- `docs/2026-05-12-huicheng-materials-analysis.md`
+- `workstreams/05-thursday-vital-sign-research-gate.md`
+
 ## Upstream Prof. Wu Context
 
 | Date | Source | Relationship to this repo |

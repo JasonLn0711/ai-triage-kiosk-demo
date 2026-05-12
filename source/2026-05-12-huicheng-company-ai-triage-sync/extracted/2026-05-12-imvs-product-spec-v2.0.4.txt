@@ -1,0 +1,262 @@
+﻿
+1.	Product overview	1
+1.1 Product features	1
+1.2 Product usage situation	2
+2.	product architecture	3
+3.	Software quantity and specifications	4
+3.1 Software Quantity Table	4
+3.2 Software Specifications	5
+4.	Hardware quantity and specifications	9
+4.1 Hardware Quantity Table	9
+4.2 Hardware Recommended Specifications	9
+
+version
+Update date
+Update content
+V2.0.4
+2025/08/13
+Convert the image to an English version
+V2.0.3
+2025/04/02
+Apply UD to provide new styles
+V2.0.2
+2024/08/01
+Corrected the file errors and added content tweaks
+V2.0.1
+2024/05/27
+First file on board
+
+
+
+
+    1. Product Overview
+This product is committed to creating a smart health service platform with "self-health management" as the core, responding to the current trend of the three highs and obesity problems becoming increasingly younger, and helping people establish the concept and habit of self-health care. The system integrates individual, community and medical resources, combines the Internet and mobile devices, and realizes regional health care and member health community services.。
+
+The platform also supports cloud-based physiological measurement data analysis and smartphone apps, allowing users to view, record and track their health data at any time, effectively improving health awareness and self-care capabilities. To enhance the user convenience, the system also supports IC card and barcode scanning login function, making the operation more intuitive and smooth, further expanding the public's willingness to use and health participation。
+
+1.1 Product features
+(1)	Doctor-patient interaction
+(2)	Preventive medicine
+(3)	Precision medicine
+(4)	Cloud services
+(5)	Raise public health awareness
+(6)	Improving the convenience of healthcare.
+1.2 Product usage situation
+In past community health screening activities, people often had to copy down the data themselves after measuring their blood pressure or weight, which was not only prone to errors and omissions, but also not conducive to subsequent tracking. Through the smart biometric measurement station, users only need to log in through IC card or health insurance card to complete multiple measurements such as blood pressure, forehead temperature, weight, height, etc. at one time, and automatically upload the data to the cloud platform or personal health record in real time, greatly improving convenience and data accuracy.
+
+Traditional measurement stations often require staff to assist users, especially when elderly individuals need more time and guidance. The smart biometric measurement station is equipped with voice prompts and a clear, user-friendly interface, making it easy to operate. Even seniors can complete the measurement process independently. This not only reduces the need for caregiver assistance and waiting time but also allows the elderly to monitor their health comfortably and stress-free
+
+In the past, conducting comprehensive health measurements for employees or students at schools or workplaces often required visiting different locations to use various devices like blood pressure monitors and weighing scales. This complicated process reduced users’ willingness to participate. The smart biometric measurement station integrates multiple diagnostic tools into a single device, enabling all measurements to be completed in one place. It is fast, space-saving, and effectively enhances public health awareness and participation.
+    2. Product Architecture
+
+    3. Software quantity and specifications
+3.1 Software Quantity Table
+Item
+Hardware
+quantity
+unit
+Main function description
+1
+iMVS
+center end
+1
+set
+    1. Support multiple login methods: insert health insurance card & enter ID number
+    2. Supports the measurement and integration of multiple physiological data such as height, weight, blood pressure, pulse, body temperature, blood oxygen and blood sugar
+    3. Display the measurement data and generate a QR Code for users to scan
+
+3.2 Software Specifications
+3.2.1 Function description
+    1. Support multiple identity verification login methods, such as inserting a health insurance card or entering an ID number, allowing users to operate more flexibly and safely.
+
+    2. Supports the measurement and integration of multiple physiological data such as height, weight, blood pressure, pulse, body temperature, blood oxygen and blood sugar.
+
+    3. The system has a voice guide function to help users complete the measurement process smoothly; after the measurement is completed, the system will automatically upgrade and generate a health data report, and provide a QR Code for users to scan and download or view related information.
+
+3.2.2 Functional module description
+    1. iMVS main program
+Item
+Main Function
+Main Function Description
+1
+Login screen
+Supports multiple identity verification login methods, such as inserting a health insurance card or entering an ID number.
+
+
+Sub Function
+Sub-Function Description
+        1.1 Measurement Item Menu
+Equipped with multiple measurement items such as body temperature/blood pressure/blood oxygen/height/weight/blood sugar, etc.
+
+        1.2 Measuring Body Temperature
+Follow the system voice and text instructions to use the forehead thermometer on the front of the device to measure
+
+        1.3 Measurement results_forehead temperature
+Displays the temperature between normal and abnormal ranges, and allows you to re-measure or proceed to the next physiological measurement.
+
+
+        1.4 Measuring blood pressure
+Follow the system voice and text instructions to use the blood pressure monitor on the front of the device to measure data.
+
+        1.5 Measurement results_blood pressure
+Displays blood pressure between normal and abnormal ranges, and allows you to re-measure or proceed to the next physiological measurement
+
+
+        1.6 Blood oxygen measurement
+Follow the system voice and text instructions to use the blood oxygen device on the front of the device to measure data
+
+        1.7 Measurement Results_Blood Oxygen
+Displays blood oxygen levels between normal and abnormal ranges, and allows users to re-measure or proceed to the next physiological measurement.
+
+        1.8 Measuring height and weight
+Follow the system voice and text instructions and use the height measurement device in front of the device to measure data.
+
+        1.9 Measurement results_Height and Weight
+BMI showing normal and abnormal ranges can be remeasured or the next physiological measurement can be performed
+
+        1.10 Measuring blood sugar
+Follow the system voice and text instructions to use the blood glucose meter on the front of the device to measure data.
+
+        1.11 Measurement Results_Blood Sugar
+Blood sugar levels that are displayed in the normal and abnormal ranges can be re-measured or the next physiological measurement can be performed
+
+        1.12 Measurement Report
+Display all measured data and provide QRCode for users to scan
+
+        1.13 Leaving the page
+When the measurement is finished, the system will display the exit page and kindly remind the user to pay attention to their belongings.
+
+
+
+    4. Hardware quantity and specifications
+4.1 Hardware Quantity Table
+model
+iMVS-AIO (Full seat)
+iMVS-DKP (desktop)
+iMVS-MOB
+icon
+
+
+
+sphygmomanometer
+A & D TM2657
+A & D TM2657
+---
+Forehead thermometer
+Rosmax hc 700 BT
+Rosmax hc 700 BT
+Rosmax hc 700 BT
+Height
+Ultrasonic sensor 
+(Nagata brand)
+---
+---
+Scale
+Ultrasonic sensor 
+(Nagata brand)
+---
+---
+SpO2
+(Optional) Rossmax SB-210
+(Optional) Rossmax SB-210
+(Optional) Rossmax SB-210
+Blood glucose meter
+---
+(Optional) Rossmax HT-100B
+(Optional) Rossmax HT-100B
+OS
+windows
+
+
+4.2 Hardware Recommended Specifications
+Product name
+Specification
+illustrate
+21.5" Tablet
+CPU
+Intel® Celeron® J3455 (2M Cache, up to 2.30 GHz)
+
+Memory
+4GB DDR3L
+
+OS
+Android 8.1
+
+Touch panel
+Capacitive touch panel
+
+Resolution
+Resolution 1920 x 1080
+
+Wired Internet
+10/100 Ethernet
+
+Wireless device
+supportWiFi / Bluetooth transmission
+Sphygmomanometer
+A & D TM2657
+Display range
+blood pressure 0 – 299 mmHg；pulse 40 – 180/ minute
+
+Accuracy
+Blood pressure ± 3mmHg
+; pulse ± 5%
+
+Transmission interface
+USB
+Forehead thermometer
+Rosmax hc 700 BT
+Display Range
+34.4℃ - 42.2℃ (94℉ - 108℉)
+
+Accuracy
+±0.2℃ (±0.36℉)，36.0℃ (96.8℉) - 39.0℃ (102.2℉)
+±0.3℃ (±0.54℉)，<36.0℃ (96.8℉) &  >39.0℃ (102.2℉)
+
+wireless device
+Bluetooth interface transmission
+
+weighing machine Nagata brand
+Weight measuring range
+100G - 200Kg
+
+Weight measurement accuracy
+
+smallest unit of measurement 100g
+Maximum error value ±100g
+
+Transmission interface
+RS-232 
+Height machine
+Nagata brand
+Height measurement range
+10-300cm
+
+Ranging accuracy
+Detection precision 1mm
+Maximum error: ±5mm
+
+Measurement mode
+Ultrasonic Mode
+
+Transmission interface
+USB介
+Card reader
+Device support
+Support IC card and NFC reading
+
+Transmission interface
+USB interface Transfer
+Barcode Scanner
+Device support
+Supports 1D and 2D barcode reading
+
+Transmission interface
+USB 
+Overall device size
+Size
+(D) 118.5cm x (W)55.8cm x (H) 146.2cm
+
+
+
+

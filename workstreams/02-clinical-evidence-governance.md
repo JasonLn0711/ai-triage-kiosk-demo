@@ -28,3 +28,18 @@ clinician-approved workflows.
 
 Create a first demo-only question provenance table after the symptom categories
 and vital fields are selected.
+
+## Friday Research Gate - 2026-05-15
+
+Company follow-up asks for initial research on how physiological data affects
+all-specialty AI triage. Treat this as a feasibility / source-governance
+artifact, not as final clinical logic.
+
+Minimum Friday output:
+
+- candidate clinical-source families by symptom/vital area;
+- vital-to-question impact matrix for BP, SpO2, temperature, HR, BMI/weight,
+  and glucose when available;
+- clear distinction between FDA as software-risk / validation boundary and
+  medical-society or clinician protocols as likely question-logic sources;
+- explicit list of items that require clinician/company sign-off.
