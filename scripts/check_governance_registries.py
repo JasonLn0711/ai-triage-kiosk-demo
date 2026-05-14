@@ -5,11 +5,13 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
+SOURCE_ID_PREFIXES = ("FDA", "ENA", "AHA", "CDC", "ADA", "AUA", "HHS", "NIST", "LOCAL", "WU")
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -82,6 +84,31 @@ def main() -> int:
                     f"fixture {row['fixture_path']} references missing source {source_id}"
                 )
 
+    id_pattern = re.compile(r"`([A-Z][A-Z0-9]+(?:-[A-Z0-9]+)+)`")
+    markdown_roots = [
+        ROOT / "README.md",
+        DATA / "README.md",
+        ROOT / "docs",
+        ROOT / "workstreams",
+        ROOT / "handoff",
+    ]
+    markdown_files: list[Path] = []
+    for root in markdown_roots:
+        if root.is_file():
+            markdown_files.append(root)
+        elif root.exists():
+            markdown_files.extend(root.rglob("*.md"))
+
+    for path in markdown_files:
+        text = path.read_text(encoding="utf-8")
+        for match in id_pattern.finditer(text):
+            identifier = match.group(1)
+            if not identifier.startswith(SOURCE_ID_PREFIXES):
+                continue
+            if identifier not in source_ids:
+                rel = path.relative_to(ROOT)
+                errors.append(f"{rel} references missing source {identifier}")
+
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
@@ -93,4 +120,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -329,8 +329,8 @@ Official sources checked for this draft:
   https://diabetes.org/living-with-diabetes/hypoglycemia-low-blood-glucose/symptoms-treatment
 - American Diabetes Association, Hyperglycemia:
   https://diabetes.org/living-with-diabetes/treatment-care/hyperglycemia
-- AUA, Recurrent Uncomplicated Urinary Tract Infections in Women guideline PDF:
-  https://www.auanet.org/documents/Guidelines/PDF/rUTI-guideline.pdf
+- AUA, Recurrent Uncomplicated Urinary Tract Infections in Women guideline:
+  https://www.auanet.org/guidelines-and-quality/guidelines/recurrent-uti
 
 ## Bottom Line
 
