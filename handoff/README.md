@@ -19,6 +19,8 @@ Current main meeting packet:
 - `handoff/2026-05-15-complete-meeting-packet.md`
 - `handoff/2026-05-15-complete-meeting-packet-zh-TW.md` for Taiwan Traditional
   Chinese meeting use
+- `handoff/2026-05-15-huicheng-anticipated-q-and-a-zh-TW.md` for anticipated
+  Huicheng questions and Taiwan Traditional Chinese answer wording
 
 Current detailed discussion artifacts:
 
