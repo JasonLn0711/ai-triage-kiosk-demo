@@ -13,6 +13,8 @@ demo lane and its direct upstream Prof. Wu context.
 | `2026-05-13` | `source/2026-05-13-johnny-line-friday-huicheng-sync/` | Johnny Fang scheduled `AI triage 可行性討論` for Friday `2026-05-15 13:00-14:00` on Google Meet `cjk-iwzq-cmz` for physiological-data integration and all-specialty technical evaluation; invite 多寶 through a confirmed contact route. |
 | `2026-05-13` | `source/2026-05-13-duobao-line-huicheng-vital-sign-triage/` | 多寶 provided clinical calibration: vital signs are strongest for emergency triage / internal-medicine-style review, unstable vitals can raise urgency, urology has more limited vital-sign impact, and a Thursday afternoon follow-up discussion is tentatively useful. |
 | `2026-05-14` | `source/2026-05-14-wu-line-gpt-vital-sign-questionnaire-triage/` | Prof. Wu forwarded a GPT-generated DOCX proposing a vital-sign + questionnaire product design centered on family medicine / general internal medicine, a 10-question intake, rule-engine red flags, and draft adult numeric thresholds; treat as context-only until source-backed and clinically reviewed. |
+| `2026-05-15` | `source/2026-05-15-huicheng-second-sync-and-duobao-followup/` | Second 慧誠智醫 sync plus 多寶 follow-up. This converted the Friday feasibility discussion into a June demo plan: US-style urgent care, `3-5` synthetic vital-sign-aligned cases, guided intake plus optional ASR, networked/external compute acceptable for demo, and clinician-review summary only. |
+| `2026-05-15 15:25` | `source/2026-05-15-huicheng-second-sync-and-duobao-followup/company-provided-meeting-minutes.md` | Johnny Fang's company-side meeting minutes. Confirms urgent-care / June-demo / `3-5` cases / `8-10` questions / touch plus partial voice input, and creates confirmation needs around `AI 資料訓練 study`, output wording, case categories, external compute, and adding 許醫師 to the email loop. |
 
 The `2026-05-12` source folder now also contains Johnny Fang's company-side
 follow-up package:
@@ -31,6 +33,10 @@ Derived analysis:
 - `source/2026-05-12-wu-google-meet-ai-triage-510k/user-provided-summary.md`
 - `source/2026-05-12-wu-google-meet-ai-triage-510k/user-provided-extended-analysis.md`
 - `source/2026-05-14-wu-line-gpt-vital-sign-questionnaire-triage/extracted/2026-05-14-wu-gpt-vital-sign-questionnaire-triage-product-design.txt`
+- `source/2026-05-15-huicheng-second-sync-and-duobao-followup/meeting-record.md`
+- `source/2026-05-15-huicheng-second-sync-and-duobao-followup/company-provided-meeting-minutes.md`
+- `workstreams/08-june-demo-case-and-integration-plan.md`
+- `handoff/2026-05-15-june-demo-case-pack-v0.md`
 
 ## Upstream Prof. Wu Context
 

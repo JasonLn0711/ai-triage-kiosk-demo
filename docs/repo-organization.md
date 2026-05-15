@@ -15,6 +15,7 @@ ai-triage-kiosk-demo/
   source/
     2026-05-11-wu-huicheng-er-triage-ekg-asr/
     2026-05-12-huicheng-company-ai-triage-sync/
+    2026-05-15-huicheng-second-sync-and-duobao-followup/
     upstream-wu-context/
       2026-04-16-wu-yute-tomi-meeting/
       2026-04-20-cde-prof-wu-clinical-medical-device-it-cybersecurity-speech/
