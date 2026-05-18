@@ -131,6 +131,13 @@ Before showing the demo, read:
 docs/demo-script-for-presenter.md
 docs/demo-acceptance-criteria.md
 docs/runtime-to-governance-map.md
+docs/vercel-frontend-runtime.md
+```
+
+Current Vercel production runtime:
+
+```text
+https://ai-triage-kiosk-demo-3f64jx3kx-jasonln0711s-projects.vercel.app/app/triage-kiosk/
 ```
 
 ## Core Architecture Note
