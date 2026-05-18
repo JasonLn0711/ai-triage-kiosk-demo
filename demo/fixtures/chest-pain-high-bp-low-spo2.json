@@ -3,6 +3,14 @@
   "status": "synthetic_demo_only",
   "not_real_patient_data": true,
   "intended_use_boundary": "Demo-only vital-aware intake and clinician-review summary; not diagnosis, treatment advice, final triage level, emergency order, or HIS/EMR integration.",
+  "synthetic_patient_profile": {
+    "demo_id": "DEMO-001",
+    "age": 58,
+    "sex": "male",
+    "language": "English",
+    "arrival_mode": "walk-in kiosk",
+    "context": "synthetic urgent-care visitor"
+  },
   "imvs_payload": {
     "CHART_NO": "DEMO-001",
     "SAVE_DATETIME": "2026-05-15 09:20:00",

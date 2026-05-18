@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Triage Kiosk Demo</title>
+    <link rel="stylesheet" href="../shared/styles.css">
+  </head>
+  <body>
+    <header class="topbar" aria-label="AI Triage Kiosk Demo">
+      <a class="brand" href="./" aria-label="AI Triage Kiosk Demo home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>
+          <strong>AI Triage Kiosk Demo</strong>
+          <small>English synthetic workflow-support demo</small>
+        </span>
+      </a>
+      <nav class="nav-actions" aria-label="Demo actions">
+        <span class="version-pill" id="versionBadge">v0.1.0</span>
+        <button class="ghost-button" id="loadChest" type="button">Chest case</button>
+        <button class="ghost-button" id="loadFever" type="button">Fever case</button>
+        <button class="ghost-button" id="resetDemo" type="button">Reset</button>
+        <a class="secondary-button link-button" href="../../demo/fixtures/">Fixtures</a>
+      </nav>
+    </header>
+
+    <main class="app-shell">
+      <section class="workspace" aria-label="AI triage kiosk workspace">
+        <aside class="panel" aria-labelledby="case-title">
+          <section class="panel-section">
+            <p class="eyebrow">Synthetic case</p>
+            <h2 id="case-title">Choose a demo case</h2>
+            <p class="panel-copy">The kiosk starts from a fake iMVS-shaped vital payload and governed choice-only questions.</p>
+            <div class="case-list" id="caseList"></div>
+          </section>
+          <section class="panel-section">
+            <p class="eyebrow">Patient profile</p>
+            <div class="profile-grid" id="profileGrid"></div>
+          </section>
+          <section class="panel-section">
+            <p class="eyebrow">Vital payload</p>
+            <div class="vital-grid" id="vitalGrid"></div>
+          </section>
+          <section class="panel-section">
+            <p class="eyebrow">Source families</p>
+            <div class="fact-list" id="sourceFamilies"></div>
+          </section>
+        </aside>
+
+        <section class="panel question-panel" aria-labelledby="question-title">
+          <section class="panel-section">
+            <div class="question-head">
+              <div>
+                <p class="eyebrow">Next governed question</p>
+                <h1 id="question-title" class="question-title">Loading</h1>
+                <p class="panel-copy" id="questionValue"></p>
+              </div>
+              <span class="status-pill" id="turnLabel">Turn 0</span>
+            </div>
+            <div class="question-meta">
+              <span class="status-pill">Demo only</span>
+              <span class="status-pill">Staff review required</span>
+              <span class="status-pill">No diagnosis</span>
+            </div>
+          </section>
+          <section class="panel-section">
+            <div id="choiceMount" class="choice-list"></div>
+            <div class="actions-row">
+              <button class="primary-button" id="continueButton" type="button">Save answer</button>
+              <button class="secondary-button" id="skipButton" type="button">Skip for demo</button>
+              <button class="secondary-button" id="summaryButton" type="button">Build staff summary</button>
+            </div>
+          </section>
+          <section class="panel-section safety-strip">
+            <strong>Boundary:</strong>
+            <span id="boundaryText">Demo-only workflow support.</span>
+          </section>
+        </section>
+
+        <aside class="panel" aria-labelledby="summary-title">
+          <section class="panel-section">
+            <p class="eyebrow">Ranking rationale</p>
+            <h2 id="summary-title">Why this question?</h2>
+            <div class="rationale-list" id="rationaleMount"></div>
+          </section>
+          <section class="panel-section">
+            <p class="eyebrow">Answered fields</p>
+            <div class="fact-list" id="answeredFields"></div>
+          </section>
+          <section class="panel-section">
+            <p class="eyebrow">Staff-review summary</p>
+            <div class="summary-list" id="summaryMount"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+
+    <script src="../../core/triage_engine/index.js"></script>
+    <script src="./triage-kiosk.js"></script>
+  </body>
+</html>
