@@ -57,6 +57,23 @@ They also create three items to confirm before implementation:
   allergy, while our clinical follow-up favored fever/respiratory,
   abdominal-pain/fever, tachycardia/chest tightness, and low SpO2.
 
+## 多寶 Case Draft Update
+
+多寶 sent the first case draft after the meeting:
+
+- `source/2026-05-15-huicheng-second-sync-and-duobao-followup/duobao-demo-case-draft.md`
+
+The draft contains four diagnosis-labeled clinical scenarios:
+
+- acute cholecystitis: fever + RUQ abdominal pain, draft level `3`;
+- AfRVR: palpitation + chest tightness with HR `150`, draft level `2`;
+- pneumonia: dyspnea + fever + SpO2 `92%`, draft level `2`;
+- URI: fever + cough + runny nose, draft level `5`.
+
+Use these labels for internal design only. The demo should show how measured
+vitals and short answers become a clinician-review summary, not system diagnosis
+or final triage-level output.
+
 ## Implementation Shape
 
 ```mermaid
@@ -81,6 +98,26 @@ flowchart LR
 | API bridge sketch | Jason + 慧誠 tech | JSON fields and call sequence for vital payload and summary return. |
 | UI integration path | 慧誠 + Jason | Decide same-app, iframe/link, external backend, or demo-only screen handoff. |
 | Demo compute path | Jason + 慧誠 | Confirm networked external compute is acceptable for June. |
+| Literature matrix | Jason | Question-first evidence table for AI-triage, ASR, vital-sign routing, human review, and intended-use boundaries. |
+
+## Literature Matrix Rule
+
+Use `docs/literature-matrix-workflow.md` before adding more literature,
+guidelines, or comparator products to the demo rationale.
+
+The matrix must answer shared questions:
+
+- whether AI triage reduces clinician workload;
+- whether ASR fits a kiosk / urgent-care intake setting;
+- whether BP, SpO2, temperature, HR, BMI, or glucose change routing or only
+  decorate the input;
+- where hallucination / unsupported-generation controls live;
+- where human review is mandatory;
+- what evidence level supports each claim;
+- what intended use or product claim is actually safe.
+
+Do not treat a paper summary as progress unless it changes the case pack,
+source registry, output boundary, or next evidence gap.
 
 ## First 48-Hour Path
 
@@ -101,13 +138,16 @@ flowchart LR
    disease / allergy.
 6. Jason and 多寶 review whether the first case feels medically plausible but
    still safely non-diagnostic.
+7. Jason starts the literature matrix only after the first case and technical
+   ask are clear, so reading stays tied to demo decisions rather than becoming a
+   separate broad review.
 
 ## What To Build First
 
 Start with one case only:
 
 ```text
-Fever + cough / shortness of breath
+Fever + dyspnea + low SpO2
 ```
 
 Why:
@@ -122,6 +162,7 @@ Then add:
 ```text
 Abdominal pain + fever
 Chest tightness / palpitations + very fast HR
+Low-acuity URI contrast case
 ```
 
 The tachycardia case should use conservative handoff language because it may

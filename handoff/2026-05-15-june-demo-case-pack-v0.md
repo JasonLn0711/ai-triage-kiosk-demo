@@ -23,6 +23,10 @@ question count within `8-10`, use touch options plus partial voice input, and
 consider case families such as trauma, chronic disease, and allergy. Those case
 families should be confirmed against the vital-sign story before implementation.
 
+多寶's first case draft is preserved at
+`source/2026-05-15-huicheng-second-sync-and-duobao-followup/duobao-demo-case-draft.md`.
+Use it as a clinical design anchor, not as customer-facing diagnosis output.
+
 ## Case Table
 
 | Case | Demo purpose | Vital signs to use | Kiosk-level questions | Stop rule |
@@ -34,28 +38,38 @@ families should be confirmed against the vital-sign story before implementation.
 | High BP / chronic-disease context | Match realistic kiosk self-measurement story. | BP, BMI/weight, HR | Headache/chest pain, dizziness, chronic disease, medication, allergy. | Present chronic-risk context and reported symptoms only. Do not recommend medication changes. |
 | Allergy / mild trauma candidate | Matches company example categories, but vital-sign linkage must be designed carefully. | Temp, HR, BP, SpO2 if respiratory allergy | Exposure/allergen or injury mechanism, breathing symptoms, swelling, pain score, allergy history. | Use only if it demonstrates vital-aware intake. Do not diagnose anaphylaxis, fracture, or wound severity. |
 
+## 多寶 Draft Cases
+
+| Internal scenario label | Patient | Vital signs | Chief complaint | Draft level | Demo-safe use |
+| --- | --- | --- | --- | --- | --- |
+| Acute cholecystitis | `40 y/o M` | `T/P/R 38.5/98/16`, `SpO2 99%`, `BP 123/81` | Fever with RUQ abdominal pain for 1 day | `3` | Build the abdominal pain + fever flow. Output RUQ pain, fever, pain/context answers, and clinician-review signal; do not diagnose cholecystitis. |
+| AfRVR | `76 y/o F` | `T/P/R 36.5/150/16`, `SpO2 98%`, `BP 102/68` | Palpitation and chest tightness for half day | `2` | Build the tachycardia / chest-tightness review flow. Output HR, symptoms, history, and staff-review signal; do not name arrhythmia as system conclusion. |
+| Pneumonia | `80 y/o M` | `T/P/R 38.5/102/23`, `SpO2 92%`, `BP 123/81` | Dyspnea for 2 days | `2` | Build the fever + dyspnea + low-SpO2 flow. Output respiratory complaint, fever, SpO2, comorbidities, and review signal; do not diagnose pneumonia. |
+| URI | `26 y/o F` | `T/P/R 37.5/98/21`, `SpO2 98%`, `BP 124/76` | Fever for 2 days, cough and runny nose | `5` | Build the low-acuity contrast case. Output URI-like symptoms in patient language and routine review summary; do not say safe to go home. |
+
 ## First Case To Implement
 
 Start with:
 
 ```text
-Fever + cough / shortness of breath
+Fever + dyspnea + low SpO2
 ```
 
 Minimum payload:
 
 ```json
 {
-  "case_id": "demo-fever-respiratory-001",
+  "case_id": "demo-fever-dyspnea-low-spo2-001",
   "status": "synthetic_demo_only",
-  "age": 42,
-  "sex": "female",
-  "chief_complaint": "I have fever and cough",
+  "age": 80,
+  "sex": "male",
+  "chief_complaint": "I feel short of breath",
   "vitals": {
-    "temperature_c": 38.7,
-    "spo2_percent": 93,
-    "heart_rate_bpm": 108,
-    "blood_pressure": "128/78"
+    "temperature_c": 38.5,
+    "spo2_percent": 92,
+    "heart_rate_bpm": 102,
+    "respiratory_rate_per_min": 23,
+    "blood_pressure": "123/81"
   }
 }
 ```
@@ -63,11 +77,11 @@ Minimum payload:
 Question sequence:
 
 1. What brings you in today?
-2. How long have you had fever or chills?
-3. Are you coughing?
-4. Are you short of breath?
+2. How long have you felt short of breath?
+3. Do you have fever or chills?
+4. Are you coughing?
 5. Do you have chest pain or pressure?
-6. Do you have any chronic diseases?
+6. Do you have any chronic diseases, such as diabetes or high blood pressure?
 7. Are you allergic to any medicine?
 8. Is there anything short you want staff to know?
 
@@ -75,8 +89,8 @@ Clinician-review summary shape:
 
 ```text
 Synthetic demo case.
-Patient reports fever and cough.
-Measured vitals include elevated temperature and lower SpO2 than expected.
+Patient reports shortness of breath.
+Measured vitals include fever, elevated respiratory rate, and lower SpO2 than expected.
 Patient reports / denies shortness of breath and chest pain according to answers.
 Staff should review the respiratory complaint and measured vitals.
 This demo does not diagnose, recommend treatment, or assign final triage level.
