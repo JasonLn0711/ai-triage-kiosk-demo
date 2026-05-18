@@ -35,6 +35,13 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 
 | Path | Purpose |
 | --- | --- |
+| `app/triage-kiosk/` | English static AI triage kiosk demo adapted from the urology previsit demo pattern |
+| `core/triage_engine/` | Pure JavaScript governed-question ranking and staff-summary logic |
+| `scripts/checks/smoke-demo.js` | Runtime smoke check for the English demo |
+| `tests/unit/triage-engine.test.js` | Focused tests for question ranking and demo-only safety boundaries |
+| `docs/runtime-to-governance-map.md` | Map from runtime questions to registry/source-family coverage |
+| `docs/demo-acceptance-criteria.md` | Functional, governance, data, and presentation gates for v0 |
+| `docs/demo-script-for-presenter.md` | Safe presenter script and forbidden demo claims |
 | `source/2026-05-11-wu-huicheng-er-triage-ekg-asr/` | Prof. Wu kickoff source bundle copied from planning |
 | `source/2026-05-12-huicheng-company-ai-triage-sync/` | Company sync source bundle, meeting record, cleaned transcript, and demo brief |
 | `source/2026-05-12-wu-google-meet-ai-triage-510k/` | Prof. Wu 22:20 Google Meet transcript and analysis that reframed the Friday artifact around FDA 510(k), intended use, and conservative demo scope |
@@ -69,12 +76,43 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-  A[Patient describes symptoms in English] --> B[ASR or typed input]
-  B --> C[Symptom understanding]
-  D[Vital signs<br/>BP/SpO2/Temp/BMI] --> C
-  C --> E[Dynamic follow-up]
-  E --> F[Triage support result]
-  F --> G[Clinician / kiosk summary / future HIS or EMR handoff]
+  A[Vital signs<br/>BP/SpO2/Temp/BMI] --> B[Governed choice-only questions]
+  B --> C[Triage-support summary]
+  C --> D[Clinician / kiosk summary / future HIS or EMR handoff]
+```
+
+## Demo Mainline
+
+Start the local static demo server:
+
+```bash
+npm start
+```
+
+Open the English kiosk demo:
+
+```text
+http://localhost:4183/app/triage-kiosk/
+```
+
+Run the verification checks:
+
+```bash
+npm run demo:ready
+```
+
+The runtime demo is intentionally narrow: synthetic vital payload -> governed
+English choice-only follow-up questions -> staff-review summary. Single-choice
+answers advance immediately after click; multi-choice answers show visible
+selection order before saving. It does not diagnose, recommend treatment,
+assign a final triage level, order emergency care, or write to HIS / EMR / FHIR.
+
+Before showing the demo, read:
+
+```text
+docs/demo-script-for-presenter.md
+docs/demo-acceptance-criteria.md
+docs/runtime-to-governance-map.md
 ```
 
 ## Core Architecture Note
@@ -122,6 +160,6 @@ docs/repo-organization.md
 3. Ask 慧誠 for the smallest technical packet needed to wire the demo:
    kiosk UI insertion point, vital payload field names, demo room network,
    output display format, and software-team contact.
-4. Keep the runtime pragmatic for June: networked / external compute is allowed
-   for demo if local CPU-only ASR / LLM behavior is too slow or hot.
+4. Keep ASR / free-text capture outside this clickable demo until the
+   workflow, privacy, and clinical-review boundary are explicitly cleared.
 5. Keep planning updated with status, blockers, and capacity impact only.
