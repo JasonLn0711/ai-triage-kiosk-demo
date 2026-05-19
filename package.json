@@ -1,6 +1,6 @@
 {
   "name": "ai-triage-kiosk-demo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "English synthetic-data AI triage kiosk demo for workflow-support review.",
   "scripts": {
@@ -8,7 +8,12 @@
     "start": "python3 -m http.server 4183",
     "smoke": "node scripts/checks/smoke-demo.js",
     "test": "node --test",
-    "demo:ready": "npm test && npm run smoke && npm run build && git diff --check"
+    "version:check": "python3 scripts/check_version_control.py",
+    "version:bump": "python3 scripts/bump_version.py",
+    "version:bump:patch": "python3 scripts/bump_version.py --part patch",
+    "version:bump:minor": "python3 scripts/bump_version.py --part minor",
+    "version:bump:major": "python3 scripts/bump_version.py --part major",
+    "demo:ready": "npm run version:check && npm test && npm run smoke && npm run build && git diff --check"
   },
   "keywords": [
     "ai-triage",

@@ -1,0 +1,47 @@
+{
+  "project_version": "0.2.0",
+  "version_scheme": "semver",
+  "status": "draft_demo_only",
+  "updated_at": "2026-05-19",
+  "api_contract": {
+    "api_version": "2026-05-22-demo-v0.2-draft",
+    "schema_version": "imvs-nycu-triage-demo-schema-v0.2-draft",
+    "flow_version": "respiratory-early-handoff-flow-v0.2-draft",
+    "workflow_mode": "parallel_measurement_intake"
+  },
+  "runtime_controls": {
+    "package_json": "package.json",
+    "engine_version_label": "core/triage_engine/index.js",
+    "html_badge_fallback": "app/triage-kiosk/index.html"
+  },
+  "flow_versions": {
+    "FLOW-CHEST-PAIN-VITALS": "v0.1",
+    "FLOW-FEVER-URINARY": "v0.1"
+  },
+  "controlled_items": [
+    {
+      "item": "project_version",
+      "control": "SemVer runtime and packet version shared by package.json, UI badge, engine VERSION, and release notes."
+    },
+    {
+      "item": "api_version",
+      "control": "Demo API contract version used by all handoff/api-examples JSON files."
+    },
+    {
+      "item": "schema_version",
+      "control": "Payload/schema version used by all API examples and integration handoffs."
+    },
+    {
+      "item": "flow_version",
+      "control": "Question-flow contract version for the first respiratory early-handoff flow."
+    },
+    {
+      "item": "flow_registry.csv version",
+      "control": "Per-flow clinical/governance version; v1.0 requires reviewer approval."
+    },
+    {
+      "item": "safety wording",
+      "control": "Runtime smoke checks block expert-forbidden high-risk phrases in runtime, fixtures, and API examples."
+    }
+  ]
+}
