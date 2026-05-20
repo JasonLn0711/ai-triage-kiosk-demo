@@ -17,6 +17,40 @@ Status: internal language guardrail for Friday / June discussion
 - no real patient data in v0
 - no HIS/EMR writeback in v0
 
+## Writing Posture
+
+All articles, handoff notes, briefs, and company-facing material should use a
+confident and affirmative voice. The project should be framed as a concrete
+product-capability demo with a clear architecture and next decision, not as a
+defensive explanation of what it cannot do.
+
+Write like this:
+
+```text
+This demo shows a synthetic-data vital-aware intake loop: iMVS sends measured
+vital context, NYCU returns structured follow-up questions, and the workflow
+produces a staff-review summary for human review.
+```
+
+Do not write like this:
+
+```text
+This small prototype may not be useful yet; we are not claiming anything and
+are trying to see whether something is possible.
+```
+
+Boundary language should be short and controlled. Put the positive product
+claim first, then state the boundary:
+
+```text
+The output is a staff-review summary for demo workflow review. It is not
+diagnosis, treatment advice, final triage level, or production HIS/EMR content.
+```
+
+Avoid burying the main point under apologies, long disclaimers, or repeated
+hedging. Use "synthetic-data capability demo" or "pre-sync API v0.2 draft"
+instead of language that minimizes the work.
+
 ## Cautious Phrases
 
 Use only with context:

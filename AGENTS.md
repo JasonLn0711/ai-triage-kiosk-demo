@@ -67,6 +67,29 @@ Do not turn this repo into:
 - If implementation begins, add a clear `app/`, `prototype/`, or `demo/`
   structure before adding code.
 
+## Article And Handoff Writing Method
+
+- Write articles, handoff notes, briefs, and company-facing material in a
+  confident, affirmative, product-minded voice.
+- Do not use defensive article structure or apologetic framing. Avoid writing
+  as if the project is asking for permission to exist.
+- Lead with the project's positive thesis, architecture, capability, and next
+  decision. Then state boundaries cleanly as design controls, not as excuses.
+- Prefer direct claims that are true within the demo boundary, such as:
+  "This demo shows a synthetic-data vital-aware intake loop for staff-review
+  summary generation."
+- Avoid weak hedging such as "maybe", "only a prototype", "we are not sure",
+  "hopefully", or long lists of disclaimers before the main point.
+- Safety boundaries still apply. Confident writing must not become diagnosis,
+  treatment advice, final triage / acuity claims, FDA / 510(k) readiness claims,
+  production HIS / EMR / FHIR writeback claims, or real patient-data claims.
+- Good pattern:
+  `Product capability -> workflow value -> API / evidence control -> explicit
+  human-review boundary -> concrete next decision.`
+- Bad pattern:
+  `Disclaimers -> apologies -> uncertainty -> vague technical possibility ->
+  buried ask.`
+
 ## Git Rules
 
 - This repo is local-first unless the user explicitly asks to publish it.
