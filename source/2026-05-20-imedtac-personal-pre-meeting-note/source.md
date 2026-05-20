@@ -7,8 +7,8 @@ type: personal-meeting-note-source
 status: recorded
 source_file: /home/jnclaw/Downloads/AI-Triage_imedtac_Pre-Meeting_Pre-Read_2026-05-21.md
 repo_copy: ./AI-Triage_imedtac_Pre-Meeting_Pre-Read_2026-05-21.md
-sha256: 5b09ee83eb1232a326cd5898dfba4a728b9525278593a5c489cf0b521c9a4f11
-line_count: 1556
+sha256: c00cecbccd8a8576398d420ddb57fcc5241e2d723dc9ff26b404275b9b52d5c3
+line_count: 1608
 ---
 
 # AI Triage imedtac Pre-Meeting Personal Note With Checklist
@@ -31,8 +31,8 @@ section `17. 高信心回答口徑：fallback、異常資料、AI 邊界與正�
 - Repo source copy:
   `source/2026-05-20-imedtac-personal-pre-meeting-note/AI-Triage_imedtac_Pre-Meeting_Pre-Read_2026-05-21.md`
 - SHA-256:
-  `5b09ee83eb1232a326cd5898dfba4a728b9525278593a5c489cf0b521c9a4f11`
-- Line count: `1556`
+  `c00cecbccd8a8576398d420ddb57fcc5241e2d723dc9ff26b404275b9b52d5c3`
+- Line count: `1608`
 
 ## Added Checklist Scope
 
@@ -71,6 +71,9 @@ The added personal checklist covers:
   handoff, safe summary wording, audit logs, prompt injection, ASR scope,
   HIS/EMR writeback, execution mode labels, kill switches, versioning, and
   success criteria.
+- the classified Q&A packet as part of the user's own meeting packet for the
+  `2026-05-21` sync, with a distinction between external share materials and
+  personal control-room materials.
 
 ## Handling Rule
 

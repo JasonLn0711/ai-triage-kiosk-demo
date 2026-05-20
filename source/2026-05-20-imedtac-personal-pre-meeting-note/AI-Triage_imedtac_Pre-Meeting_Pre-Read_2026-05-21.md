@@ -398,7 +398,7 @@ Jason 敬上
 
 ## 12. 建議附檔或分享資料
 
-建議最低限度提供：
+### A. 對外寄送 / 分享的最低限度
 
 - 本會前閱讀文件；
 - `2026-05-21-imvs-nycu-api-design-v0.2-draft.md`；
@@ -406,6 +406,58 @@ Jason 敬上
 - `2026-05-21-decision-defaults-and-owner-matrix.md`。
 
 若只寄一份文件，建議先寄本會前閱讀文件，並保留 API examples 供會後補充。
+
+### B. 自己手上開會時必帶的會議資料包
+
+這一組是 Jason / NYCU 團隊自己開會控場用，不是預設要全部寄給 imedtac 的正式附件。它的用途是：對方追問時可以立刻回答、查欄位、收斂 owner / date，並避免會議漂移成 broad brainstorming。
+
+必帶清單：
+
+- `AI-Triage_imedtac_Pre-Meeting_Pre-Read_2026-05-21.md`
+  - 用途：自己的完整會前 meeting packet；
+  - 重點：scope、API contract、UI integration、clinical boundary、owner / due date、fallback、Q&A 回答口徑。
+- `handoff/2026-05-21-imedtac-meeting-q-and-a.md`
+  - 用途：分類 Q&A 與 detailed speaking answers；
+  - 重點：產品定位、REST API / JSON / FastAPI、`session_key`、vitals missing / quality flag、CORS/auth/logs、local scripted fallback、clinical wording、ASR / HIS deferral、versioning、closeout questions。
+- `handoff/2026-05-21-huicheng-engineering-sync-prep.md`
+  - 用途：會議流程與議程控場；
+  - 重點：meeting frame、roles、agenda、what Jason should prepare、questions for Johnny / engineering / 多寶。
+- `handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md`
+  - 用途：API contract 主文件；
+  - 重點：endpoint list、request / response fields、`session_key`、vitals endpoint、summary schema、error behavior。
+- `handoff/api-examples/`
+  - 用途：工程團隊問「實際 JSON 長怎樣」時直接打開；
+  - 重點：start session、submit answer、update vitals、next question、summary、error examples。
+- `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
+  - 用途：會議結尾收斂 decision / owner / due date；
+  - 重點：field dictionary、UI insertion、two-phase feasibility、session ownership、local fallback、clinical wording、confirmed API v0.2。
+- `docs/2026-05-19-two-phase-question-flow-design.md`
+  - 用途：解釋為什麼 Phase 1 可在量測中先問 non-vital-dependent questions；
+  - 重點：不要浪費量測等待時間，但若影響姿勢 / signal quality 就退回 post-measurement-only flow。
+- `docs/2026-05-19-api-session-design-plain-explanation.md`
+  - 用途：自己或對方需要白話解釋 API session 時使用；
+  - 重點：`session_key` 是 workflow 流水號，不是病人身分資料。
+- `handoff/2026-05-20-nycu-response-to-imedtac-ai-triage-demo-api-v02.md`
+  - 用途：外部 pre-read / NYCU 回覆的 active copy；
+  - 重點：會前正式說法、API v0.2 建議、respiratory case、staff_review_summary、error fallback。
+
+會議中使用順序建議：
+
+```text
+1. 先用本 meeting packet 的核心說法開場。
+2. 對方問 API -> 開 API v0.2 draft + api-examples。
+3. 對方問「如果壞掉怎麼辦」-> 開 Q&A 的 fallback / degraded mode。
+4. 對方問 clinical wording -> 開 Q&A 的 clinical boundary / summary wording。
+5. 會議快結束 -> 開 decision defaults / owner matrix 收斂 owner、due date、fallback。
+```
+
+不要主動外寄的內容：
+
+- personal note 裡的完整個人補充段落；
+- classified Q&A 的全部 detailed speaking answers；
+- patent-sensitive implementation details；
+- backend model / prompt / retrieval / scoring / threshold internals；
+- token、private endpoint、Teams access details、raw source screenshots。
 
 ## 13. 會中補充確認清單（個人筆記）
 
