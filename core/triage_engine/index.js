@@ -57,6 +57,7 @@
         "SpO2 value is visibly low in the synthetic payload.",
         "Heart rate is elevated in the synthetic payload."
       ],
+      questionLimit: 7,
       sourceFamilies: ["AHA public education", "ENA ESI reference family", "local protocol placeholder"],
       allowedOutput: "Staff-review summary and source-family display only.",
       forbiddenOutput: "No final acuity assignment, condition identification, automatic emergency order, treatment advice, or HIS/EMR writeback."
@@ -86,9 +87,52 @@
         "Temperature is elevated in the synthetic payload.",
         "Heart rate is elevated in the synthetic payload."
       ],
+      questionLimit: 7,
       sourceFamilies: ["CDC fever warning reference family", "urology guideline reference family", "local protocol placeholder"],
       allowedOutput: "Staff-review summary and source-family display only.",
       forbiddenOutput: "No antibiotic recommendation, condition identification, final acuity assignment, emergency order, or HIS/EMR writeback."
+    },
+    {
+      id: "respiratory-low-spo2-early-handoff",
+      label: "Shortness of breath with fever and lower SpO2",
+      shortLabel: "Respiratory handoff",
+      fixturePath: "demo/fixtures/respiratory-low-spo2-early-handoff.json",
+      opening: "I have felt short of breath for two days.",
+      defaultMeasurementState: MEASUREMENT_STATES.IN_PROGRESS,
+      allowedQuestionIds: [
+        "chief-concern",
+        "breathing-duration",
+        "severity",
+        "respiratory-symptoms",
+        "chest-pain-pressure",
+        "lung-history-context",
+        "medication-allergy"
+      ],
+      questionLimit: 7,
+      profile: {
+        demoId: "DEMO-RESP-001",
+        age: "80",
+        sex: "Male",
+        language: "English",
+        arrivalMode: "Walk-in kiosk",
+        context: "Synthetic urgent-care visitor"
+      },
+      vitals: {
+        bloodPressure: "123/81 mmHg",
+        spo2: "92%",
+        heartRate: "102 bpm",
+        respiratoryRate: "23/min",
+        temperature: "38.5 C",
+        bmiContext: "Not provided"
+      },
+      vitalCues: [
+        "SpO2 value is lower than expected in the synthetic payload.",
+        "Temperature is elevated in the synthetic payload.",
+        "Respiratory-rate value is shown as a synthetic review cue."
+      ],
+      sourceFamilies: ["CDC respiratory warning reference family", "AHA chest-warning reference family", "local protocol placeholder", "Duobao design draft context"],
+      allowedOutput: "Staff-review summary and source-family display only.",
+      forbiddenOutput: "No diagnosis, final acuity assignment, condition identification, disposition recommendation, treatment advice, or HIS/EMR/FHIR writeback."
     }
   ];
 
@@ -101,6 +145,15 @@
       type: "single",
       value: "Starts with the patient's own concern before symptom-specific follow-up.",
       options: ["Chest pressure or chest pain", "Shortness of breath", "Fever or chills", "Painful urination", "Dizziness or weakness", "Other concern"]
+    },
+    {
+      id: "breathing-duration",
+      field: "breathingDuration",
+      phase: QUESTION_PHASES.PRE_VITAL_INTAKE,
+      text: "How long have you felt short of breath?",
+      type: "single",
+      value: "Adds duration context for staff review before assigning any clinical meaning.",
+      options: ["Started today", "1 to 2 days", "3 to 7 days", "More than 1 week", "Not sure"]
     },
     {
       id: "onset",
@@ -128,6 +181,24 @@
       type: "single",
       value: "Makes a patient-reported breathing concern visible to staff.",
       options: ["No", "A little", "Yes", "I cannot speak full sentences", "Not sure"]
+    },
+    {
+      id: "respiratory-symptoms",
+      field: "respiratorySymptoms",
+      phase: QUESTION_PHASES.PRE_VITAL_INTAKE,
+      text: "Which symptoms are present?",
+      type: "multi",
+      value: "Collects respiratory and fever context without naming a condition.",
+      options: ["Cough", "Fever or chills", "Chest discomfort", "None of these", "Not sure"]
+    },
+    {
+      id: "chest-pain-pressure",
+      field: "chestPainPressure",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "Are you having chest pain or pressure right now?",
+      type: "single",
+      value: "Confirms active chest symptoms for staff review after vitals are ready.",
+      options: ["No", "Yes, chest pressure", "Yes, chest pain", "Not sure"]
     },
     {
       id: "chest-details",
@@ -166,6 +237,15 @@
       options: ["Pain or burning while urinating", "Urinating more often", "Urgent need to urinate", "Blood in urine", "Unable to urinate", "None of these"]
     },
     {
+      id: "lung-history-context",
+      field: "lungHistoryContext",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "Do you have chronic lung disease, use home oxygen, or use breathing medicines?",
+      type: "multi",
+      value: "Adds baseline respiratory context to the staff-review summary.",
+      options: ["Chronic lung disease", "Home oxygen", "Breathing medicines or inhaler", "None of these", "Not sure"]
+    },
+    {
       id: "pregnancy-context",
       field: "pregnancyContext",
       phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
@@ -201,7 +281,7 @@
     return {
       caseId: selectedCase.id,
       turn: 0,
-      measurementState: options.measurementState || MEASUREMENT_STATES.COMPLETE,
+      measurementState: options.measurementState || selectedCase.defaultMeasurementState || MEASUREMENT_STATES.COMPLETE,
       answers: {},
       answeredQuestionIds: [],
       transcript: selectedCase.opening
@@ -238,6 +318,24 @@
     };
   }
 
+  function caseQuestionLimit(selectedCase) {
+    const limit = Number(selectedCase.questionLimit);
+    return Number.isFinite(limit) && limit > 0 ? limit : QUESTION_BANK.length;
+  }
+
+  function caseAllowsQuestion(selectedCase, question) {
+    return !selectedCase.allowedQuestionIds || selectedCase.allowedQuestionIds.includes(question.id);
+  }
+
+  function caseQuestionBank(selectedCase) {
+    return QUESTION_BANK.filter((question) => caseAllowsQuestion(selectedCase, question));
+  }
+
+  function answeredQuestionCountForCase(state, selectedCase) {
+    if (!selectedCase.allowedQuestionIds) return state.answeredQuestionIds.length;
+    return state.answeredQuestionIds.filter((questionId) => selectedCase.allowedQuestionIds.includes(questionId)).length;
+  }
+
   function inferConcernKeywords(state) {
     const selectedCase = findCase(state.caseId);
     const combined = normalizeText(`${selectedCase.opening} ${state.transcript} ${Object.values(state.answers).map(answerText).join(" ")}`);
@@ -251,6 +349,13 @@
   }
 
   function questionScore(question, state) {
+    const selectedCase = findCase(state.caseId);
+    if (!caseAllowsQuestion(selectedCase, question)) {
+      return null;
+    }
+    if (answeredQuestionCountForCase(state, selectedCase) >= caseQuestionLimit(selectedCase)) {
+      return null;
+    }
     if (state.answeredQuestionIds.includes(question.id) || fieldAnswered(state, question.field)) {
       return null;
     }
@@ -259,7 +364,6 @@
     }
 
     const concern = inferConcernKeywords(state);
-    const selectedCase = findCase(state.caseId);
     let score = 40;
     const reasons = [];
 
@@ -273,7 +377,7 @@
     }
 
     if (question.id === "chief-concern") {
-      score += state.turn === 0 ? 30 : 0;
+      score += state.turn === 0 ? 50 : 0;
       reasons.push("first kiosk anchor");
     }
 
@@ -282,9 +386,24 @@
       reasons.push("core review field");
     }
 
-    if (question.id === "breathing" && (concern.breathing || selectedCase.vitals.spo2.includes("91"))) {
+    if (question.id === "breathing-duration" && (concern.breathing || selectedCase.id.includes("respiratory"))) {
+      score += selectedCase.id.includes("respiratory") ? 34 : 20;
+      reasons.push("respiratory duration context");
+    }
+
+    if (question.id === "respiratory-symptoms" && (concern.breathing || concern.fever || selectedCase.id.includes("respiratory"))) {
+      score += selectedCase.id.includes("respiratory") ? 30 : 18;
+      reasons.push("respiratory symptom context");
+    }
+
+    if (question.id === "breathing" && (concern.breathing || /9[0-2]%/.test(selectedCase.vitals.spo2))) {
       score += 32;
       reasons.push("visible breathing or SpO2 context");
+    }
+
+    if (question.id === "chest-pain-pressure" && (concern.chest || selectedCase.id.includes("respiratory"))) {
+      score += 30;
+      reasons.push("cardiopulmonary follow-up context");
     }
 
     if (question.id === "chest-details" && concern.chest) {
@@ -305,6 +424,11 @@
     if (question.id === "urinary-details" && concern.urinary) {
       score += 34;
       reasons.push("matches urinary symptom context");
+    }
+
+    if (question.id === "lung-history-context" && (concern.breathing || selectedCase.id.includes("respiratory"))) {
+      score += 24;
+      reasons.push("baseline respiratory context");
     }
 
     if (question.id === "pregnancy-context" && (concern.urinary || concern.fever)) {
@@ -330,7 +454,8 @@
   }
 
   function rankQuestions(state) {
-    return QUESTION_BANK
+    const selectedCase = findCase(state.caseId);
+    return caseQuestionBank(selectedCase)
       .map((question) => questionScore(question, state))
       .filter(Boolean)
       .sort((left, right) => right.score - left.score || left.question.id.localeCompare(right.question.id));
@@ -363,7 +488,7 @@
       label: FIELD_LABELS[field] || field,
       value
     }));
-    const missing = QUESTION_BANK
+    const missing = caseQuestionBank(selectedCase)
       .filter((question) => !fieldAnswered(state, question.field))
       .map((question) => ({ field: question.field, label: question.text }));
     const reviewCues = [...selectedCase.vitalCues];
@@ -373,6 +498,15 @@
     }
     if (Array.isArray(state.answers.chestDetails) && state.answers.chestDetails.some((item) => item.includes("Spreads"))) {
       reviewCues.push("Patient selected chest discomfort spreading to another area.");
+    }
+    if (String(state.answers.chestPainPressure || "").includes("Yes")) {
+      reviewCues.push("Patient selected active chest pain or pressure.");
+    }
+    if (Array.isArray(state.answers.respiratorySymptoms) && !state.answers.respiratorySymptoms.includes("None of these")) {
+      reviewCues.push("Patient selected one or more respiratory or fever descriptors.");
+    }
+    if (Array.isArray(state.answers.lungHistoryContext) && !state.answers.lungHistoryContext.includes("None of these")) {
+      reviewCues.push("Patient selected baseline respiratory context for staff confirmation.");
     }
     if (Array.isArray(state.answers.neuroSymptoms) && !state.answers.neuroSymptoms.includes("None of these")) {
       reviewCues.push("Patient selected one or more neurologic symptom descriptors.");

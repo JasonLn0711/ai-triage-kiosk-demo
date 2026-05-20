@@ -11,10 +11,10 @@ hospital chart numbers, live endpoint URLs, credentials, or real ASR audio.
 | --- | --- |
 | `chest-pain-high-bp-low-spo2.json` | Chest pain with high BP / low SpO2 context. |
 | `fever-urinary.json` | Fever with urinary or respiratory symptom context. |
+| `respiratory-low-spo2-early-handoff.json` | Duobao-aligned respiratory handoff case with two-phase question flow and lower SpO2 context. |
 
 ## Boundary
 
 The fixtures support a demo-only clinician-review summary. They do not support
 diagnosis, treatment advice, final triage level, emergency orders, or HIS/EMR
 writeback.
-

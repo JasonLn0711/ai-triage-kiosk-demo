@@ -403,9 +403,24 @@ runtime work. It records the design reasoning, the `<8` question budget per
 case, the two-phase split, safe staff-summary language, and the exact questions
 to send back to 多寶 for clinical review.
 
-## What To Build First
+Implementation status on `2026-05-20`:
 
-Start with one case only:
+- Case 1 is now runnable in the kiosk as
+  `respiratory-low-spo2-early-handoff`.
+- The runtime starts this case in measurement-in-progress mode, asks only
+  pre-vital questions, and exposes a `Vitals ready` transition before post-vital
+  follow-up.
+- The case is restricted to `7` visible patient-facing questions, matching the
+  current 慧誠 / iMVS question-budget decision.
+- The visible runtime question ids now map back through
+  `data/api_question_mapping.csv`, `data/question_registry.csv`, and
+  `FLOW-RESPIRATORY-EARLY-HANDOFF`.
+- `npm run demo:ready` and `python3 scripts/check_governance_registries.py`
+  are the current gates before meeting use.
+
+## What To Build Next
+
+Completed first runnable case:
 
 ```text
 Fever + dyspnea + low SpO2
@@ -426,8 +441,11 @@ Chest tightness / palpitations + very fast HR
 Low-acuity URI contrast case
 ```
 
-The tachycardia case should use conservative handoff language because it may
-become an urgent staff-review case rather than a normal kiosk-only flow.
+Next priority should be abdominal pain + fever if 多寶 wants broader symptom
+coverage for the meeting, or chest tightness / palpitations if 慧誠 wants the
+vital-aware dynamic-ranking story to be more dramatic. The tachycardia case
+should use conservative handoff language because it may become an urgent
+staff-review case rather than a normal kiosk-only flow.
 
 ## Output Template
 

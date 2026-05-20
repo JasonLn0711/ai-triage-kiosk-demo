@@ -23,15 +23,19 @@
   "question_ids": [
     "RESP-001",
     "RESP-002",
+    "RESP-004",
+    "RESP-005",
     "CP-001",
     "RESP-003",
+    "MED-001",
     "REV-001"
   ],
   "source_ids": [
     "LOCAL-PROTOCOL-TBD",
     "CDC-FLU-WARN",
     "AHA-HEART-ATTACK",
-    "AHA-HBP-911-2025"
+    "AHA-HBP-911-2025",
+    "DUOBAO-DEMO-DESIGN-20260520"
   ],
   "allowed_output": "staff-review summary only",
   "forbidden_output": [

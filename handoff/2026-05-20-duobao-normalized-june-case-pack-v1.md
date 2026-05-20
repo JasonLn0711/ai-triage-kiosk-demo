@@ -338,23 +338,36 @@ Ask 多寶 to review only the following high-value items first:
 
 ## Engineering Translation Plan
 
-Implement in this order:
+Implementation status as of `2026-05-20`: Case 1 has been translated into the
+clickable kiosk runtime as `respiratory-low-spo2-early-handoff`. The runtime
+uses a two-phase flow, starts with measurement in progress, exposes a `Vitals
+ready` transition, and caps the visible patient-facing sequence at `7`
+questions.
+
+Completed items:
 
 1. Convert Case 1 into one checked fixture:
    `demo/fixtures/respiratory-low-spo2-early-handoff.json`.
 2. Ensure the runtime question sequence stays under `max_questions=7`.
 3. Add / update registry rows only for visible questions used in Case 1.
-4. Add a staff-summary example that uses `review_basis`, `review_action`, and
-   `not_claimed`.
-5. Run:
+4. Wire the Case 1 runtime questions to
+   `data/api_question_mapping.csv`, `data/question_registry.csv`, and
+   `FLOW-RESPIRATORY-EARLY-HANDOFF`.
+5. Keep the existing staff-summary API example in
+   `handoff/api-examples/2026-05-21-summary-response-demo-respiratory.json`
+   aligned with `review_basis`, `review_action`, and `not_claimed`.
+6. Run the current gates:
 
 ```bash
 python3 scripts/check_governance_registries.py
 npm run demo:ready
 ```
 
-6. After 多寶 approves Case 1 wording, add abdominal-pain and tachycardia
-   fixtures.
+Next after 多寶 / 慧誠 review:
+
+1. Ask 多寶 to approve or edit the seven visible questions.
+2. Add abdominal-pain and tachycardia fixtures only after Case 1 wording is
+   accepted.
 
 ## What Not To Do Yet
 

@@ -11,6 +11,7 @@ source:
   - ../source/2026-05-19-johnny-direct-line-thursday-engineering-sync/source.md
   - ../source/2026-05-19-johnny-ai-triage-product-spec/source.md
   - ../source/2026-05-19-expert-review-scope-api-boundary/source.md
+  - ../source/2026-05-20-duobao-demo-cases-question-design/source.md
 ---
 
 # 慧誠 Thursday Engineering Sync Prep
@@ -58,6 +59,12 @@ support it. Phase 1 asks non-vital-dependent questions while the patient is
 being measured; Phase 2 begins after iMVS sends measured vital values and asks
 vital-aware follow-up questions. This can save patient time without weakening
 the staff-review boundary.
+
+Runtime update on `2026-05-20`: the kiosk now includes the Duobao-aligned
+respiratory early-handoff case as a runnable third demo case. It starts in
+measurement-in-progress mode, uses a visible `Vitals ready` transition, and
+keeps the visible patient-facing flow at `7` questions maximum. Use this as the
+meeting demo path instead of discussing the case only from static docs.
 
 ## Roles
 
@@ -118,6 +125,7 @@ Prepared artifact:
 - `handoff/api-examples/`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `docs/2026-05-19-two-phase-question-flow-design.md`
+- `app/triage-kiosk/index.html` for the runnable two-phase respiratory demo.
 
 ### 1. One-page API design document
 

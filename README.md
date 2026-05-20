@@ -149,6 +149,10 @@ multi-choice answers show visible selection order before saving. It does not
 diagnose, recommend treatment, assign a final triage level, order emergency
 care, or write to HIS / EMR / FHIR.
 
+Current runnable case set: chest pressure, fever / urinary symptoms, and the
+Duobao-aligned respiratory early-handoff flow with a two-phase vitals-ready
+transition and a hard maximum of `7` visible patient-facing questions.
+
 Before showing the demo, read:
 
 ```text

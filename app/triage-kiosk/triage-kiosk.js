@@ -17,6 +17,7 @@ const elements = {
   choiceMount: document.querySelector("#choiceMount"),
   continueButton: document.querySelector("#continueButton"),
   skipButton: document.querySelector("#skipButton"),
+  vitalsReadyButton: document.querySelector("#vitalsReadyButton"),
   summaryButton: document.querySelector("#summaryButton"),
   boundaryText: document.querySelector("#boundaryText"),
   rationaleMount: document.querySelector("#rationaleMount"),
@@ -25,6 +26,7 @@ const elements = {
   toast: document.querySelector("#toast"),
   loadChest: document.querySelector("#loadChest"),
   loadFever: document.querySelector("#loadFever"),
+  loadRespiratory: document.querySelector("#loadRespiratory"),
   resetDemo: document.querySelector("#resetDemo")
 };
 
@@ -79,6 +81,13 @@ function resetDemo() {
   showToast("Demo reset.");
 }
 
+function markVitalsReadyForDemo() {
+  state = Engine.markVitalsReady(state);
+  saveState();
+  render();
+  showToast("Synthetic vital payload marked ready.");
+}
+
 function renderCases() {
   const currentCase = Engine.findCase(state.caseId);
   elements.caseList.innerHTML = Engine.CASES.map((demoCase) => `
@@ -113,9 +122,10 @@ function renderVitals() {
     ["Blood pressure", demoCase.vitals.bloodPressure],
     ["SpO2", demoCase.vitals.spo2],
     ["Heart rate", demoCase.vitals.heartRate],
+    ["Respiratory rate", demoCase.vitals.respiratoryRate],
     ["Temperature", demoCase.vitals.temperature],
     ["BMI context", demoCase.vitals.bmiContext]
-  ];
+  ].filter((entry) => entry[1]);
   elements.vitalGrid.innerHTML = entries.map(([label, value]) => {
     const isCue = demoCase.vitalCues.some((cue) => cue.toLowerCase().includes(label.toLowerCase().split(" ")[0]));
     return `
@@ -138,6 +148,7 @@ function renderQuestion() {
   elements.versionBadge.textContent = Engine.VERSION.versionLabel;
   elements.boundaryText.textContent = Engine.VERSION.boundary;
   elements.turnLabel.textContent = `Turn ${state.turn}`;
+  elements.vitalsReadyButton.hidden = Engine.measurementComplete(state);
 
   if (!selectedQuestion) {
     elements.questionTitle.textContent = "Staff-review summary is ready.";
@@ -265,12 +276,14 @@ function render() {
 
 elements.continueButton.addEventListener("click", saveAnswer);
 elements.skipButton.addEventListener("click", skipQuestion);
+elements.vitalsReadyButton.addEventListener("click", markVitalsReadyForDemo);
 elements.summaryButton.addEventListener("click", () => {
   renderSummary();
   showToast("Staff-review summary refreshed.");
 });
 elements.loadChest.addEventListener("click", () => setCase("chest-pain-high-bp-low-spo2"));
 elements.loadFever.addEventListener("click", () => setCase("fever-urinary"));
+elements.loadRespiratory.addEventListener("click", () => setCase("respiratory-low-spo2-early-handoff"));
 elements.resetDemo.addEventListener("click", resetDemo);
 
 render();

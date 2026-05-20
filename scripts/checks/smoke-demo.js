@@ -12,7 +12,8 @@ const REQUIRED_FILES = [
   "app/shared/styles.css",
   "core/triage_engine/index.js",
   "demo/fixtures/chest-pain-high-bp-low-spo2.json",
-  "demo/fixtures/fever-urinary.json"
+  "demo/fixtures/fever-urinary.json",
+  "demo/fixtures/respiratory-low-spo2-early-handoff.json"
 ];
 
 function read(relativePath) {
@@ -37,9 +38,12 @@ assert(html.includes("AI Triage Kiosk Demo"), "Demo HTML should expose the Engli
 assert(html.includes("../../core/triage_engine/index.js"), "Demo HTML should load the triage engine.");
 assert(script.includes("AiTriageKioskEngine"), "Demo script should bind to the triage engine.");
 assert(script.includes("Selected #"), "Multi-choice selections should show visible selection order.");
-assert(engine.CASES.length >= 2, "At least two synthetic cases are required.");
+assert(script.includes("markVitalsReady"), "Demo script should expose the two-phase vitals-ready transition.");
+assert(engine.CASES.length >= 3, "At least three synthetic cases are required.");
 assert(engine.QUESTION_BANK.length >= 8, "The governed question bank is too small for the demo.");
 assert(engine.CASES.every((demoCase) => demoCase.profile && demoCase.profile.age && demoCase.profile.sex), "Every case should include synthetic patient profile metadata.");
+assert(engine.CASES.some((demoCase) => demoCase.id === "respiratory-low-spo2-early-handoff"), "Respiratory handoff case should be wired into the runtime.");
+assert(engine.CASES.every((demoCase) => !demoCase.questionLimit || demoCase.questionLimit <= 7), "June demo cases should keep visible questions under 8.");
 assert(!html.includes("<textarea"), "Demo runtime should stay choice-only and not expose free-text input.");
 assert(engine.QUESTION_BANK.every((question) => question.type !== "text"), "Question bank should not include free-text questions.");
 assert(engine.VERSION.boundary.includes("not diagnosis"), "Safety boundary must reject diagnosis claims.");
