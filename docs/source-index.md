@@ -60,6 +60,7 @@ Derived analysis:
 - `source/2026-05-20-duobao-demo-cases-question-design/source.md`
 - `docs/2026-05-20-duobao-demo-design-consistency-review.md`
 - `decisions/2026-05-20-june-demo-question-budget.md`
+- `handoff/2026-05-20-duobao-normalized-june-case-pack-v1.md`
 - `docs/2026-05-19-expert-review-action-plan.md`
 - `docs/2026-05-19-two-phase-question-flow-design.md`
 - `docs/2026-05-19-api-session-design-plain-explanation.md`

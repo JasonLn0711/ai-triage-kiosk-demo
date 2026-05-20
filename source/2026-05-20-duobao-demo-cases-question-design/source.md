@@ -75,3 +75,4 @@ the regulatory boundary is updated.
 
 - `../../docs/2026-05-20-duobao-demo-design-consistency-review.md`
 - `../../decisions/2026-05-20-june-demo-question-budget.md`
+- `../../handoff/2026-05-20-duobao-normalized-june-case-pack-v1.md`

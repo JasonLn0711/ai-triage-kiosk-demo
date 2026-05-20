@@ -37,6 +37,13 @@ files as a broader clinical-design inventory. Do not directly import their
 real-name question, triage level, suggested acuity, disposition, department, or
 immediate-action wording into runtime.
 
+The normalized follow-up case pack is:
+
+- `handoff/2026-05-20-duobao-normalized-june-case-pack-v1.md`
+
+Use that file as the active June case-design bridge before implementing new
+fixtures or expanding the runtime question bank.
+
 ## Case Table
 
 | Case | Demo purpose | Vital signs to use | Kiosk-level questions | Stop rule |

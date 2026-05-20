@@ -374,6 +374,7 @@ Source and review:
 
 - `source/2026-05-20-duobao-demo-cases-question-design/source.md`
 - `docs/2026-05-20-duobao-demo-design-consistency-review.md`
+- `handoff/2026-05-20-duobao-normalized-june-case-pack-v1.md`
 
 多寶's new files should become the clinical-design inventory for future case
 expansion. They add a broad symptom map, four structured demo cases, vital
@@ -396,6 +397,11 @@ Use the content through the existing demo boundary:
 - keep the first implementation path narrow: one respiratory early-handoff
   flow, then add abdominal-pain and tachycardia flows after v0.2 passes
   demo-ready checks.
+
+The normalized case pack is the current bridge from 多寶's clinical draft to
+runtime work. It records the design reasoning, the `<8` question budget per
+case, the two-phase split, safe staff-summary language, and the exact questions
+to send back to 多寶 for clinical review.
 
 ## What To Build First
 
