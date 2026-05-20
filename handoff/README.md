@@ -1,6 +1,6 @@
 # Handoff
 
-This folder is for future handoff drafts to Prof. Wu, 慧誠, or internal
+This folder is for future handoff drafts to Prof. Wu, 慧誠智醫 / imedtac, or internal
 collaborators.
 
 ## Current Safe Handoff Summary
@@ -8,10 +8,10 @@ collaborators.
 The current useful answer is:
 
 > The first task is not to build a generic chatbot. The first task is to find
-> the insertion point in 慧誠's existing vital-sign measurement workflow and show
+> the insertion point in imedtac's existing vital-sign measurement workflow and show
 > that measured vital signs can drive dynamic triage-support questioning and a
 > clinician-readable summary. The product-scope layer should start from a
-> `510(k)` / comparable-product scan if 慧誠 can provide the nearest US partner
+> `510(k)` / comparable-product scan if imedtac can provide the nearest US partner
 > product, customer reference, competitor, or FDA number.
 
 Current main meeting packet:
@@ -20,13 +20,17 @@ Current main meeting packet:
 - `handoff/2026-05-15-complete-meeting-packet-zh-TW.md` for Taiwan Traditional
   Chinese meeting use
 - `handoff/2026-05-15-huicheng-anticipated-q-and-a-zh-TW.md` for anticipated
-  Huicheng questions and Taiwan Traditional Chinese answer wording
+  imedtac questions and Taiwan Traditional Chinese answer wording
 
 Current detailed discussion artifacts:
 
+- `handoff/2026-05-20-nycu-response-to-imedtac-ai-triage-demo-api-v02.md`
+  - Active copy of the user's manually edited file recorded under
+    `source/2026-05-20-nycu-response-to-imedtac-user-edited/`
 - `handoff/2026-05-20-huicheng-pre-meeting-api-v02-pre-read.md`
 - `docs/writing-method-policy.md`
 - `handoff/2026-05-21-huicheng-engineering-sync-prep.md`
+- `handoff/2026-05-21-imedtac-meeting-q-and-a.md`
 - `handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
@@ -68,7 +72,7 @@ supplemental notes only if they come up in discussion.
 
 ## Required Before External Handoff
 
-- Confirm product / API materials from 慧誠.
+- Confirm product / API materials from imedtac.
 - Confirm whether `handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md` is enough
   for the engineering team or whether they need OpenAPI, a mock endpoint, or a
   sequence diagram.
@@ -78,7 +82,7 @@ supplemental notes only if they come up in discussion.
   `handoff_reason_codes`, session expiry / state fields, retry / idempotency
   fields, measurement-quality fields, stable error behavior, and no fake
   summary on failure.
-- Confirm whether 慧誠 can support the two-phase question flow: Phase 1
+- Confirm whether imedtac can support the two-phase question flow: Phase 1
   pre-vital intake during measurement, vitals-ready update, then Phase 2
   vital-aware follow-up. If this disrupts measurement quality, use the
   post-measurement fallback.

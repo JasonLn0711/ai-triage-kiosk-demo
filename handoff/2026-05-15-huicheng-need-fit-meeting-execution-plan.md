@@ -1,4 +1,4 @@
-# Huicheng Need-Fit Meeting Execution Plan
+# imedtac Need-Fit Meeting Execution Plan
 
 Date: 2026-05-15 Friday meeting prep
 Meeting: `AI triage 可行性討論`, `13:00-14:00 Asia/Taipei`

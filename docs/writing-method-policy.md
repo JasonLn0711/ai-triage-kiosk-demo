@@ -67,6 +67,10 @@ For 慧誠智醫-facing material, including the `2026-05-20` API v0.2 pre-read:
 - state API/session decisions directly;
 - ask for owner/date closeout explicitly;
 - use `demo` rather than over-translating it as a weaker generic phrase;
+- use the official English company name: first formal mention
+  `慧誠智醫（imedtac Co., Ltd.）`, later English shorthand `imedtac`;
+- do not use `Huicheng` as the English company name except in historical file
+  paths, copied source titles, or quoted source material;
 - place scope controls after the positive recommendation;
 - never make the document sound defensive.
 

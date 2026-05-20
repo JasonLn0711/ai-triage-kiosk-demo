@@ -12,14 +12,14 @@
   <img src="https://img.shields.io/badge/registry-check%20script-success" alt="Registry check script"/>
 </p>
 
-This repo is the standalone execution home for the 慧誠智醫 / imedtac AI
+This repo is the standalone execution home for the 慧誠智醫（imedtac Co., Ltd.）AI
 triage kiosk demo lane.
 
 ## First Principle
 
 - Scarce resource: demo execution bandwidth before the June US customer visit.
 - First deliverable: an English AI triage market demo that can be embedded in or
-  linked from 慧誠's existing Kiosk / web service flow.
+  linked from imedtac's existing Kiosk / web service flow.
 - Product boundary: market demo / product capability demo, not production
   clinical triage, autonomous diagnosis, or a formal HIS / EMR integration.
 - Planning home: `../planning-everything-track/data/projects/2026-05-huicheng-er-triage-ekg-asr.md`.
