@@ -34,8 +34,17 @@ this bundle local-only unless the project owner explicitly approves sharing.
 - Standalone Downloads PDF later provided by the user:
   `/home/jnclaw/Downloads/iMVS AI Triage 智慧檢傷分流系統_20260515.pdf`.
   It was verified as byte-identical to the archived product-spec PDF
-  (`SHA-256 a716f667a29eecd1c1aa2409a7be343f82189e26357d23452c88d482cc53c6b3`)
-  and then cleared from Downloads to avoid a second unmanaged copy.
+  (`SHA-256 a716f667a29eecd1c1aa2409a7be343f82189e26357d23452c88d482cc53c6b3`).
+- Standalone Downloads DOCX later provided by the user:
+  `/home/jnclaw/Downloads/iMVS AI Triage 智慧檢傷分流系統_20260515.docx`.
+  It was archived as the editable-format copy of the same `V 1.0` product spec;
+  its extracted paragraphs were verified as covered by the existing source text
+  exports.
+- Standalone Downloads Gmail PDF later provided by the user:
+  `/home/jnclaw/Downloads/Gmail - AI Triage Product Spec.pdf`.
+  It was archived as a separate `2026-05-20` Gmail thread export because it
+  preserves the same Johnny email plus browser-thread evidence of a later
+  forwarded / second-message view.
 
 ## Archived Files
 
@@ -43,7 +52,9 @@ this bundle local-only unless the project owner explicitly approves sharing.
 | --- | --- | --- |
 | `assets/2026-05-19-johnny-ai-triage-product-spec-email.eml` | Original downloaded email source. | `aaa249383961dc8d0c13923a32a956d333e1995aa2baec2f2f842d4269ce90c2` |
 | `assets/2026-05-19-johnny-ai-triage-product-spec-gmail-export.pdf` | Browser/Gmail PDF export of the email. | `4a6ff34ef0ca0bb7fc6a860761e949daf6a07ddc1462f3c5f2adfa0a9ab6f95f` |
+| `assets/2026-05-20-johnny-ai-triage-product-spec-gmail-thread-export.pdf` | Later browser/Gmail PDF export of the same email thread; preserves the second-message / forwarded-thread view from Downloads. | `656b7a6c6c9e9ba05320a7f66b33a3c0cca751ec7ae732dbc4bbac26d73d178e` |
 | `assets/2026-05-15-imvs-ai-triage-product-spec-v1.0.pdf` | Google Doc product spec exported as PDF; byte-identical to the later standalone Downloads PDF named `iMVS AI Triage 智慧檢傷分流系統_20260515.pdf`. | `a716f667a29eecd1c1aa2409a7be343f82189e26357d23452c88d482cc53c6b3` |
+| `assets/2026-05-15-imvs-ai-triage-product-spec-v1.0.docx` | Editable-format DOCX copy of the same `V 1.0` product spec later provided from Downloads. | `97c9f1b6c30d24c50d774144184545cb2cfae5a173e7acb23481a39fb7679da5` |
 | `extracted/2026-05-19-johnny-ai-triage-product-spec-email.txt` | Parsed email headers and body. | `2390283887362e025949890c8a98f378df343107674ca755c6acacc4cbcb8c40` |
 | `extracted/2026-05-19-johnny-ai-triage-product-spec-gmail-export.txt` | Searchable text extracted from the Gmail PDF export. | `07b945e483c6b09f16dbcebfedcf7e00632a134feaf679105476c104dbadbd4a` |
 | `extracted/2026-05-15-imvs-ai-triage-product-spec-v1.0.txt` | Google Doc plain-text export. | `d375b357f254ed4f8084d0762a924aa54a49d10bb3622a93d2789fc2ddce7206` |
@@ -81,6 +92,10 @@ into a SOAP-style summary for medical staff.
 The standalone PDF in Downloads did not introduce a second version. It confirms
 that the archived Google Doc export is the same official product-spec document
 referenced in Johnny's email.
+
+The standalone DOCX in Downloads also did not introduce a second product-spec
+version. It is preserved as the editable-format copy so future audits can verify
+format-level details without depending only on PDF / text extraction.
 
 Important user-story groups:
 
