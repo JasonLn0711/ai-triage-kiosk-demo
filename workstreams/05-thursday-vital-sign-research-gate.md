@@ -72,6 +72,8 @@ Company / product sources:
   `source/2026-05-12-imedtac-company-ai-triage-sync/assets/2026-05-12-imvs-product-spec-v2.0.4.docx`
 - iMVS API v1.4:
   `source/2026-05-12-imedtac-company-ai-triage-sync/assets/2026-05-12-imvs-api-v1.4-eng.pdf`
+- Canonical hardware / vital-unit extraction:
+  `docs/2026-05-12-imvs-hardware-and-vital-units-baseline.md`
 - iMVS product page:
   `https://www.imedtac.com/service/%e6%99%ba%e6%85%a7%e7%94%9f%e7%90%86%e9%87%8f%e6%b8%ac%e7%ab%99/`
 - Company demo video:
@@ -98,6 +100,10 @@ Interpretation:
   clinical authority source.
 - iMVS documents are enough to shape an API-like synthetic payload and workflow
   insertion point, but not enough to justify triage thresholds.
+- The iMVS API `V1.4` already provides a vital-unit baseline: blood pressure
+  `mmHg`, SpO2 `%`, heart rate `bpm`, temperature `deg C`, glucose `mg/dL`,
+  weight `kg`, and height `cm`. The remaining engineering question is current
+  field-dictionary confirmation, not whether any prior unit evidence exists.
 
 ## Required Thursday Package
 
@@ -139,6 +145,11 @@ Produce one concise artifact with these sections:
 ## Vital-To-Question Impact Matrix V0
 
 This table is a research planning artifact. It is not production triage logic.
+
+Baseline units from the 5/12 iMVS API are preserved in
+`docs/2026-05-12-imvs-hardware-and-vital-units-baseline.md`. Question-routing
+below still needs clinical-source mapping and reviewer sign-off; the unit
+baseline only controls engineering normalization and display consistency.
 
 | Vital data | What it can change in v0 | Example source family | Thursday status |
 | --- | --- | --- | --- |

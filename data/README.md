@@ -30,6 +30,10 @@ fixture files are synthetic-demo-only.
 - Use synthetic data only unless a separate data-use decision is made.
 - Do not treat these rows as approved clinical logic until a named reviewer
   signs off.
+- Treat `IMEDTAC-IMVS-API-20260512` and
+  `IMEDTAC-IMVS-PRODUCT-SPEC-20260512` as company-provided engineering and
+  hardware baselines for adapter design. They define field/unit and hardware
+  context; they do not define clinical thresholds or approved triage logic.
 - Do not add diagnosis, treatment advice, final ESI level, autonomous emergency
   orders, or HIS/EMR writeback behavior to these registries.
 - Version any change to question text, source IDs, thresholds, or output wording.

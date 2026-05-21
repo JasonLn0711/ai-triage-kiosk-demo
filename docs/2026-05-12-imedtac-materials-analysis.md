@@ -20,6 +20,10 @@ Searchable text:
 - `extracted/2026-05-12-imvs-product-spec-v2.0.4.txt`
 - `extracted/2026-05-12-imvs-api-v1.4-eng.txt`
 
+Canonical design extraction:
+
+- `docs/2026-05-12-imvs-hardware-and-vital-units-baseline.md`
+
 External references named in the email:
 
 - Product page: `https://www.imedtac.com/service/%e6%99%ba%e6%85%a7%e7%94%9f%e7%90%86%e9%87%8f%e6%b8%ac%e7%ab%99/`
@@ -139,6 +143,11 @@ Important product facts:
   A&D TM2657 blood pressure, Rossmax HC700 BT forehead thermometer, Nagata
   height/weight sensors, optional Rossmax SB-210 SpO2, and optional Rossmax
   HT-100B glucose.
+- The company-provided hardware baseline includes concrete measurement
+  specifications: A&D TM2657 blood pressure range `0-299 mmHg`, pulse
+  `40-180/min`, blood pressure accuracy `+/- 3 mmHg`, pulse accuracy `+/- 5%`,
+  Rossmax HC700 BT temperature range `34.4 C - 42.2 C`, Nagata weight range
+  `100 g - 200 kg`, and Nagata height range `10-300 cm`.
 
 Product implications for the demo:
 
@@ -188,6 +197,21 @@ Vital-sign upload:
   `STATION_NAME`, `Payload`, `SPO2`, `HR`, `Temp`, `Glucose`, `NBP`, `Height`,
   and `Weight`.
 - Vital values are structured as nested objects with string values and units.
+- The V1.4 sample already provides vital units: `NBP.Unit = mmHg`,
+  `SPO2.Unit = %`, `HR.Unit = bpm`, `Temp.Unit = deg C`, `Glucose.Unit = mg/dL`,
+  `Weight.Unit = kg`, and `Height.Unit = cm`.
+
+Baseline adapter mapping:
+
+| Company API object | Company value field(s) | Company unit sample | NYCU normalized field(s) |
+| --- | --- | --- | --- |
+| `NBP` | `SYS_Value`, `DIA_Value` | `mmHg` | `blood_pressure_systolic_mm_hg`, `blood_pressure_diastolic_mm_hg` |
+| `SPO2` | `Value` | `%` | `spo2_percent` |
+| `HR` | `BP_Value` | `bpm` | `heart_rate_bpm` |
+| `Temp` | `Value` | `deg C` / source sample `°C` | `temperature_c` |
+| `Glucose` | `Value` | `mg/dL` | `glucose_mg_dl` |
+| `Weight` | `Value` | `kg` | `weight_kg` |
+| `Height` | `Value` | `cm` | `height_cm` |
 
 API implications:
 
@@ -198,6 +222,11 @@ API implications:
   questioning, return a triage-support summary for display.
 - If integration happens later, the safer early path is read-only / report-only;
   no HIS / EMR writeback should be claimed.
+- The 5/12 API and product-spec files mean the June adapter is not starting
+  from a blank field dictionary. The open 5/21 engineering task is to confirm
+  whether the current iMVS GitHub / Vital Upload format still uses this V1.4
+  field shape, which fields are guaranteed for the target SKU, and how missing,
+  failed, or poor-quality measurements are represented.
 
 API ambiguities to clarify:
 
@@ -207,6 +236,12 @@ API ambiguities to clarify:
 - The HR field is named `BP_Value`, apparently because heart rate comes from
   the blood-pressure measurement.
 - The HR unit has a typo-like `bmp`; likely `bpm`.
+- Respiratory rate is not present in the 5/12 V1.4 API field list. Any
+  respiratory-rate demo value must be confirmed as a measured field, manual
+  entry, or synthetic case value before it is presented as iMVS-provided.
+- BMI appears in the product/report workflow, but not as a confirmed V1.4 upload
+  field; derive it only when height and weight are present and the display
+  scope is approved.
 - The JSON sample includes curly quote characters in the response example.
 - All measurement values are strings, so validation / parsing belongs in the
   adapter layer.

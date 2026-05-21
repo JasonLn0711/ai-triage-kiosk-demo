@@ -8,7 +8,7 @@ demo lane and its direct upstream Prof. Wu context.
 | Date | Source | Why it matters |
 | --- | --- | --- |
 | `2026-05-11` | `source/2026-05-11-wu-imedtac-er-triage-ekg-asr/` | Prof. Wu introduced the 慧誠 / imedtac emergency-triage collaboration, role split, EKG / SpO2 / ASR / LLM questions, case-accrual dependency, and triage-not-diagnosis boundary. |
-| `2026-05-12` | `source/2026-05-12-imedtac-company-ai-triage-sync/` | Company-side sync clarified the kiosk / web service / middleware / RESTful API / FHIR / HIS / EMR context, June US customer demo pressure, English-first voice-input long-term target, and vital-aware triage differentiator. |
+| `2026-05-12` | `source/2026-05-12-imedtac-company-ai-triage-sync/` | Company-side sync clarified the kiosk / web service / middleware / RESTful API / FHIR / HIS / EMR context, June US customer demo pressure, English-first voice-input long-term target, and vital-aware triage differentiator. The follow-up package also provides the iMVS Product Spec `V2.0.4` and iMVS API `V1.4` baseline for hardware modules, Vital Upload fields, and units. |
 | `2026-05-12 22:20` | `source/2026-05-12-wu-google-meet-ai-triage-510k/` | Prof. Wu reframed the next step after the company sync: first find comparable FDA `510(k)` summaries and `indication for use` boundaries before promising vital-sign-integrated AI triage. |
 | `2026-05-13` | `source/2026-05-13-johnny-line-friday-imedtac-sync/` | Johnny Fang scheduled `AI triage 可行性討論` for Friday `2026-05-15 13:00-14:00` on Google Meet `cjk-iwzq-cmz` for physiological-data integration and all-specialty technical evaluation; invite 多寶 through a confirmed contact route. |
 | `2026-05-13` | `source/2026-05-13-duobao-line-imedtac-vital-sign-triage/` | 多寶 provided clinical calibration: vital signs are strongest for emergency triage / internal-medicine-style review, unstable vitals can raise urgency, urology has more limited vital-sign impact, and a Thursday afternoon follow-up discussion is tentatively useful. |
@@ -46,6 +46,7 @@ follow-up package:
 Derived analysis:
 
 - `docs/2026-05-12-imedtac-materials-analysis.md`
+- `docs/2026-05-12-imvs-hardware-and-vital-units-baseline.md`
 - `source/2026-05-12-imedtac-company-ai-triage-sync/meeting-record.md` is the complete structured afternoon meeting record for the 慧誠智醫 x NYCU AI-Triage cooperation discussion. It now uses the user-specified structure and captures system background, company expectations, Jason's urology demo, all-specialty modularity, symptom wording provenance, vital-sign decision mapping, June demo pressure, follow-up action items, and the workflow-integration interpretation.
 - `workstreams/05-thursday-vital-sign-research-gate.md`
 - `source/2026-05-12-wu-google-meet-ai-triage-510k/meeting-record.md`
@@ -94,6 +95,7 @@ Derived analysis:
 - `docs/2026-05-20-duobao-demo-design-consistency-review.md`
 - `decisions/2026-05-20-june-demo-question-budget.md`
 - `handoff/2026-05-20-duobao-normalized-june-case-pack-v1.md`
+- `handoff/2026-05-21-duobao-style-tachycardia-live-demo-question-set.md`
 - `docs/2026-05-19-expert-review-action-plan.md`
 - `docs/2026-05-19-two-phase-question-flow-design.md`
 - `docs/2026-05-19-api-session-design-plain-explanation.md`

@@ -59,6 +59,7 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `source/upstream-wu-context/` | Earlier Prof. Wu context copied from planning, including the 2026-04-16 Wu/Tomi meeting and 2026-04-20 CDE speech source |
 | `docs/project-brief.md` | Working project brief and execution boundary |
 | `docs/2026-05-12-imedtac-materials-analysis.md` | Detailed comparison of company follow-up minutes, iMVS product spec, and iMVS API attachment implications |
+| `docs/2026-05-12-imvs-hardware-and-vital-units-baseline.md` | Canonical extraction of company-provided iMVS hardware specs, measurement modules, Vital Upload API fields, and vital-sign units |
 | `docs/architecture-insertion-and-clinical-grounding.md` | Core note on workflow insertion point, vital-aware dynamic triage, and clinical evidence mapping |
 | `docs/literature-matrix-workflow.md` | Question-first literature matrix workflow for AI-triage papers, guidelines, source families, and reviewer-style synthesis |
 | `docs/2026-05-19-ai-triage-product-spec-api-analysis.md` | Product-spec interpretation and proposed iMVS / NYCU session API contract for the June demo |
@@ -83,6 +84,11 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `decisions/` | Dated repo/product decisions |
 
 ## Current System Frame
+
+The hardware and vital-unit baseline for this frame is now recorded in
+`docs/2026-05-12-imvs-hardware-and-vital-units-baseline.md`. It captures the
+company-provided iMVS Product Spec `V2.0.4` and iMVS API `V1.4` details,
+including `NBP/SPO2/HR/Temp/Glucose/Height/Weight` fields and units.
 
 ```mermaid
 flowchart TD
