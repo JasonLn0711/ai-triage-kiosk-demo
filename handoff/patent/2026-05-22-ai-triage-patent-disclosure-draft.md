@@ -11,6 +11,10 @@ Source basis:
 
 - `source/2026-05-13-duobao-line-imedtac-vital-sign-triage/source.md`
 - `source/2026-05-15-imedtac-second-sync-and-duobao-followup/meeting-record.md`
+- `source/2026-05-21-wu-line-ai-triage-patent-protection/line-thread.md`
+- `source/2026-05-21-wu-line-ai-triage-patent-protection/thinking-and-schedule.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/meeting-record.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/thinking-and-schedule.md`
 - `docs/architecture-insertion-and-clinical-grounding.md`
 - `handoff/2026-05-15-june-demo-case-pack-v0.md`
 - `handoff/reviewer-packet/claim-language-control.md`
@@ -20,6 +24,51 @@ Disclosure boundary:
 - This is a patent-disclosure drafting packet, not a legal filing.
 - This is not a clinical protocol, regulatory submission, FDA/TFDA claim, or production clinical-triage claim.
 - Hidden implementation details such as exact scoring formulas, model weights, prompt chains, embedding configuration, threshold constants, source-ranking weights, and data curation logic should remain trade secret unless Tomi / counsel asks for controlled disclosure.
+
+## 2026-05-21 Prof. Wu Protection Signal
+
+Prof. Wu's post-meeting LINE instruction changes the handling priority of this
+draft:
+
+```text
+我們和慧誠合作要有自己專利先保護自己
+```
+
+Working interpretation:
+
+- This draft is now a cooperation-protection gate, not only a technical
+  write-up.
+- Jason should discuss the AI-Triage patent direction with Prof. Wu and Tomi
+  before teaching imedtac the full reusable method.
+- API-level integration details can still move forward for the June demo.
+- Patent-sensitive details should stay internal until Prof. Wu / Tomi decide
+  what becomes a patent claim and what stays trade secret.
+- The follow-up phone call at `2026-05-21 12:05` further clarifies that lab API
+  mode is both a demo path and a know-how boundary, and that meeting records
+  should attribute which ideas came from Jason / 多寶 / NYCU versus imedtac.
+
+Pre-handoff disclosure rule:
+
+```text
+Share the API contract and safe demo boundary.
+Do not share the full reusable routing / source-governance / claim structure
+until the internal patent-protection path is clear.
+```
+
+### Product-Cooperation Questions To Carry Into Tomi Review
+
+The current MOU is too general for product co-development. Before deeper
+implementation transfer, prepare questions around:
+
+- development responsibility: which part is imedtac's device / UI / gateway,
+  and which part is NYCU's AI workflow / source-governed question logic;
+- overlap: how joint discussion ideas are recorded and attributed;
+- revenue / license logic: whether imedtac licenses the workflow, pays per
+  product / site / module, or uses another arrangement;
+- trade-secret split: what belongs in patent claims versus internal know-how;
+- meeting-record evidence: what documents show Jason / 多寶 / NYCU idea origin;
+- timing: whether a filing / internal invention disclosure is needed before the
+  next detailed imedtac technical handoff.
 
 ## 專利提案名稱
 

@@ -19,6 +19,21 @@ the 慧誠 AI triage kiosk demo lane.
 | `2026-05-12 22:20` | For June, keep the demo simple: English demo on the all-in-one device first; do not integrate live vital-sign signals unless the workflow and data interface are clear. | Keep vital-sign integration as future scope or mocked/synthetic placeholder. |
 | `2026-05-12 22:20` | Ask 苗先生 for the US partner/customer product or `510(k)` reference. Ask 多寶 / 冠廷 when clinical or signal interpretation is unclear. | Add concrete collaborator route before Friday. |
 | `2026-05-14 23:42` | Prof. Wu forwarded a GPT-generated DOCX titled `量測生命徵象＋問診與分流的產品設計.docx`. | Preserve as Prof. Wu context for product framing, especially the family medicine / general internal medicine direction, 10-question intake, rule-engine boundary, and draft threshold list; do not treat the GPT answer as validated clinical logic. |
+| `2026-05-21 09:59` | The imedtac engineering sync resolved the June integration path as post-measurement-only: iMVS completes vital measurement, uploads the vital payload, receives `session_key` plus the first question, loops answers, then displays a staff-review summary. | Treat this as the current June engineering default. Keep the two-phase during-measurement design as a future optimized path, not the first customer-demo integration requirement. |
+| `2026-05-21 09:59` | Ben / imedtac engineering accepted the merged start-session + vital-upload flow for June and asked NYCU to explain request fields such as `idempotency_key`. | Update API v0.2 around imedtac's actual Vital Upload API field dictionary and add plain field semantics before implementation. |
+| `2026-05-21 09:59` | Johnny clarified the product-positioning risk: if the system outputs only facts, it is intake; if it outputs judgment, medical responsibility appears. | Use `vital-aware intake support` / `staff_review_summary` externally and avoid final triage level, diagnosis, treatment, or nurse-replacement claims. |
+| `2026-05-21 09:59` | Voice input is out of the June demo critical path because the demo machine has no microphone and ASR adds latency, error, and privacy work. | Keep touch / choice-based interaction as the June path. Treat ASR as future capability after API and workflow are stable. |
+| `2026-05-21 09:59` | Johnny emphasized live-demo performability: SpO2 is hard to control, heart rate and staged temperature are easier, and a healthy vs unhealthy contrast can make the AI capability legible. | Prepare both a respiratory synthetic lane and a tachycardia live-performance lane; choose after iMVS machine review and 多寶 wording review. |
+| `2026-05-21 10:57` | 多寶 and Jason's internal post-meeting sync sharpened the clinical boundary: collecting facts and generating a staff-readable summary is acceptable demo territory, but five-level triage or recommended triage-level output is risky. | Keep June output as `staff_review_summary`; do not output formal triage level, recommended level, diagnosis, treatment, disposition, department, or order language. |
+| `2026-05-21 10:57` | The most defensible AI surface is vital-aware question selection and concise summary generation, not open-ended question variation or arbitrary phrasing. | Split baseline `fixed question` from vital-aware `AI question`; keep the candidate question bank controlled and source/reviewer mapped. |
+| `2026-05-21 10:57` | iMVS likely needs generic question templates; hand-coding every question screen would make a scalable AI question loop impractical. | Ask engineering to confirm `single_choice`, `multi_choice`, numeric/scale templates, variable option counts, max options, no-scroll limits, and payload shape. |
+| `2026-05-21 10:57` | Jason and 多寶 concluded they should see or operate the actual iMVS machine instead of designing from imagined flow. | Schedule next-week iMVS machine review, preferably replacing the next weekly discussion with an on-site review plus demo/UI discussion. |
+| `2026-05-21 11:53` | Prof. Wu said NYCU should have its own patent protection before deeper cooperation with 慧誠; even with friendly company relationships, public/private boundaries must be clear because imedtac may learn the method and later not acknowledge it. | Treat the AI-Triage patent disclosure as a cooperation-protection gate. Discuss with Prof. Wu and Tomi, separate API/demo sharing from patent-sensitive invention logic, and clarify cooperation/IP boundaries before teaching the full reusable method. |
+| `2026-05-21 12:05` | Prof. Wu confirmed lab API mode is acceptable for demo and helps avoid giving imedtac all know-how. | Use Remote REST API Mode as both demo architecture and IP-control boundary; share API contract, not internal routing/scoring/source-governance details. |
+| `2026-05-21 12:05` | Prof. Wu instructed Jason to mark idea origin in meeting records, including whether ideas came from Jason, 多寶, NYCU, or imedtac. | Add idea-attribution discipline to future imedtac meeting notes and review high-value existing notes where feasible. |
+| `2026-05-21 12:05` | Prof. Wu said MOU is general and product development should eventually have a product co-development agreement covering development responsibility, overlap, profit split, and license/payment logic. | Prepare contract/IP questions for Prof. Wu / Tomi and avoid treating MOU as enough to protect reusable invention logic. |
+| `2026-05-21 12:05` | Prof. Wu linked commissioned projects, product cash flow, BU/new-company possibility, and postdoc salary/personnel-cost runway. | Evaluate AI-Triage and adjacent projects as future funded product/service lanes; protect IP because it affects Jason's postdoc runway and leverage. |
+| `2026-05-21 12:05` | Prof. Wu said deep-cultivation proposal work is for early June and can be drafted study-plan style: background pain point, methods, expected effects/KPI, and budget; AI-Triage can be one subproject and CRM can be a later-year extension. | Do not let deep-cultivation writing displace the 5/22 patent packets; park a June proposal frame with year-1 to year-3 structure. |
 
 ## Company-Side Clarifications From 2026-05-12
 
@@ -64,3 +79,17 @@ medical workflow first
 Do not reduce the project to a chatbot, a prompt, or an ML model.
 Do not start with "AI determines triage level"; start with comparable
 product-scope evidence and safe intake / review language.
+
+Post-`2026-05-21` engineering-sync execution reading:
+
+```text
+iMVS measurement first
+-> measured vital payload to NYCU
+-> structured question loop
+-> staff_review_summary
+-> human review
+```
+
+This is the June customer-demo integration path. The two-phase measurement-time
+question flow stays available as an optimized future design after the first
+post-measurement loop is stable.

@@ -9,38 +9,56 @@ web service story before the June US customer visit.
 
 The current priority is not UI polish, prompt tuning, or model expansion.
 
-The current priority is defining the product insertion point and preparing the
-Friday `2026-05-15` feasibility discussion artifact requested in the company
-follow-up email:
+The current priority is the post-`2026-05-21` engineering integration path:
 
 ```text
-vital-sign measurement complete
--> vital-aware AI triage starts
--> dynamic questioning
--> structured triage-support summary
--> nurse / physician review
+iMVS vital-sign measurement complete
+-> measured vital payload starts NYCU session
+-> structured question loop
+-> staff_review_summary
+-> staff / clinician / demo-customer preview
 ```
 
 Detailed architecture note:
 
 ```text
 docs/architecture-insertion-and-clinical-grounding.md
+source/2026-05-21-imedtac-engineering-sync/meeting-record.md
+source/2026-05-21-duobao-post-imedtac-internal-sync/meeting-record.md
+source/2026-05-21-wu-line-ai-triage-patent-protection/thinking-and-schedule.md
+source/2026-05-21-wu-ai-triage-ip-and-career-call/meeting-record.md
+handoff/2026-05-21-imedtac-engineering-sync-closeout.md
 ```
 
-After the `2026-05-12 22:20` Google Meet with Prof. Wu, the first section of
-the Friday artifact must be a FDA `510(k)` / comparable-product scope scan:
+After the `2026-05-21` imedtac engineering sync, the June default is
+`post_measurement_only`. The earlier two-phase during-measurement question flow
+remains a future optimized path after the first customer-demo loop is stable.
+
+The next engineering gate is:
 
 ```text
-comparable product
--> 510(k) summary
--> indication for use
--> comparator / function list
--> safe demo wording
+imedtac field dictionary
+-> post-sync API v0.2 update
+-> generic iMVS question-template confirmation
+-> safe question / summary wording
+-> first case-lane decision
+-> actual iMVS machine review with 多寶 / 許醫師
+-> remote API plus local scripted fallback rehearsal
 ```
 
-The short-term demo should be framed as an English reference demo on the target
-device. Live vital-sign integration remains future scope until the intended
-use, device output format, sample data, and clinical workflow are clear.
+The short-term demo should be framed as an English vital-aware intake support
+demo on the target device. It shows a staff-review workflow, not autonomous
+clinical triage.
+
+Parallel protection gate: Prof. Wu's `2026-05-21 11:53` LINE instruction means
+the AI-Triage patent disclosure is now a cooperation-protection task. Share the
+API contract needed for the June demo, but keep reusable invention logic,
+routing/scoring details, source-governance method, and patent claim structure
+inside the Prof. Wu / Tomi review path until cleared.
+
+The `2026-05-21 12:05` phone call adds the operational rule: lab API mode can
+serve the demo while preserving know-how, and meeting records should attribute
+which ideas came from Jason / 多寶 / NYCU versus imedtac.
 
 Supporting context:
 
@@ -90,32 +108,36 @@ Long term:
 ```mermaid
 flowchart TD
   A[Kiosk measurement flow] --> B[Vital signs payload]
-  C[English symptom input<br/>ASR or typed] --> D[Symptom intake engine]
-  B --> D
-  D --> E[Dynamic follow-up questions]
-  E --> F[Structured triage-support summary]
-  F --> G[Kiosk web service demo screen]
+  A[Kiosk measurement flow complete] --> B[Measured vital payload]
+  B --> C[NYCU session API]
+  C --> D[Structured choice questions]
+  D --> E[Answer loop with session_key]
+  E --> F[staff_review_summary]
+  F --> G[Staff / doctor / customer preview]
   F --> H[Future clinician / HIS / EMR handoff]
 ```
 
 ## Required Decisions Before Implementation
 
-- Is v0 integration a link, iframe, same web app, API handoff, or mocked flow?
-- What exact vital-sign payload can the kiosk expose?
-- Can the demo use simulated vital signs?
+- What exact imedtac Vital Upload API field dictionary should NYCU adapt to?
+- Where exactly is the post-measurement AI question loop inserted in iMVS?
+- Can iMVS render reusable typed question templates from NYCU JSON, or does
+  each question screen need to be hand-coded?
+- Which local fallback mode can imedtac host or launch during the customer demo?
+- Which first case lane is more useful for the customer: respiratory synthetic,
+  tachycardia live-performance, or healthy/unhealthy contrast?
+- What option count and label length fit the imedtac question UI without
+  dragging or scrolling?
 - What is the nearest comparable product, competitor, or FDA `510(k)` reference
   for product-scope comparison?
 - What minimum symptom flow should be shown?
-- Is ASR required for v0, or can typed input stand in for voice?
+- ASR is out for June; what future checkpoint should reopen voice?
 - Which vital signs affect question routing, and how is each effect justified?
 - What clinical source supports each question and escalation path?
-- What wording is safe for the output: triage support, recommended care level,
-  clinician review prompt, or another phrase?
+- What exact staff-review wording is safe for the output?
 - Which architecture diagram is safe to share externally?
 - Which target device / OS represents the June demo, given the current
   Windows-vs-Android ambiguity in meeting notes and product spec?
-- Should the AI triage layer run before the vital-sign upload, after it, or as a
-  separate report-only demo screen?
 
 ## Boundary
 
@@ -123,17 +145,20 @@ This repo can prepare a demo, architecture notes, and implementation scaffold.
 It must not turn into clinical product claims before clinical criteria,
 validation, privacy, cybersecurity, and company approvals exist.
 
-## Immediate Friday Artifact
+## Immediate Post-Sync Artifact
 
-By Friday `2026-05-15`, keep the main artifact focused on 慧誠's action-item
-questions:
+By Friday `2026-05-22`, keep the main artifact focused on the 5/21 sync
+closeout:
 
-- modular all-specialty triage method map;
-- product insertion diagram;
-- vital-to-question impact matrix;
-- clinical-source governance plan;
+- post-measurement API v0.2 update;
+- imedtac field dictionary request;
+- generic question-template request for `single_choice`, `multi_choice`,
+  numeric / scale, variable option counts, and no-scroll display limits;
+- `idempotency_key` / retry explanation;
+- Remote REST API Mode and Local Scripted Demo Mode runbook;
+- first case-lane choice and safe staff-summary wording;
 - demo scope and no-diagnosis boundary.
-
-Keep the `510(k)` comparator / product-scope table, detailed intended-use
-options, go/no-go packet, data lifecycle, and prototype details as supplemental
-notes unless 慧誠 asks about them.
+- patent-protection brief for Prof. Wu / Tomi: invention center, what imedtac
+  already knows, what can be shared now, and what should remain protected.
+- idea-attribution pass for high-value meeting notes before the next deep
+  imedtac handoff.

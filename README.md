@@ -50,6 +50,10 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `source/2026-05-19-expert-review-scope-api-boundary/` | Expert reply confirming the June scope cut and required API/runtime/wording/privacy-security deltas before v0.2 |
 | `source/2026-05-19-duobao-two-phase-vital-questioning/` | 多寶 two-phase workflow insight: ask non-vital-dependent questions during measurement, then vital-aware follow-up after values arrive |
 | `source/2026-05-20-duobao-demo-cases-question-design/` | 多寶 structured demo cases and question-design draft; use as clinical/product design input, not direct runtime wording |
+| `source/2026-05-21-imedtac-engineering-sync/` | Post-sync engineering source bundle: corrected transcript, user-provided meeting record, and repo-level meeting record confirming June `post_measurement_only` flow, Endpoint 1/3 merge, no voice, local fallback, and live-case performability decisions |
+| `source/2026-05-21-duobao-post-imedtac-internal-sync/` | Internal Jason / 多寶 post-meeting sync: full corrected transcript and notes confirming no formal triage-level output, AI placement in vital-aware question selection / summary, UI template requirements, and need for an actual iMVS machine review |
+| `source/2026-05-21-wu-line-ai-triage-patent-protection/` | Prof. Wu LINE instruction to discuss patents with Tomi and protect NYCU's patent/IP position before teaching imedtac the full reusable method |
+| `source/2026-05-21-wu-ai-triage-ip-and-career-call/` | Prof. Wu phone call confirming lab API as know-how boundary, idea-attribution requirements, product co-development contract questions, postdoc/personnel-cost runway, and June deep-cultivation proposal framing |
 | `source/upstream-wu-context/` | Earlier Prof. Wu context copied from planning, including the 2026-04-16 Wu/Tomi meeting and 2026-04-20 CDE speech source |
 | `docs/project-brief.md` | Working project brief and execution boundary |
 | `docs/2026-05-12-imedtac-materials-analysis.md` | Detailed comparison of company follow-up minutes, iMVS product spec, and iMVS API attachment implications |
@@ -85,18 +89,21 @@ flowchart TD
   C --> G[病人端 Kiosk 操作流程]
 ```
 
-## Target Demo Frame
+## Post-Sync June Demo Frame
 
 ```mermaid
 flowchart LR
-  A[Measurement starts] --> B[Phase 1<br/>pre-vital intake questions]
-  A --> C[Vital signs<br/>BP/SpO2/Temp/BMI]
-  B --> D{Vitals ready?}
-  C --> D
-  D --> E[Phase 2<br/>vital-aware follow-up]
-  E --> F[Staff-review summary]
-  F --> G[Clinician / staff review]
+  A[iMVS vital-sign measurement complete] --> B[iMVS uploads measured vital payload]
+  B --> C[NYCU returns session_key + first question]
+  C --> D[iMVS renders single-choice / multi-choice questions]
+  D --> E[Answer loop with session_key]
+  E --> F[staff_review_summary]
+  F --> G[Staff / clinician / demo-customer preview]
 ```
+
+The earlier two-phase design remains a future optimized path. After the
+`2026-05-21` imedtac engineering sync, the June integration default is
+post-measurement-only to minimize iMVS UI changes before the customer demo.
 
 ## Demo Mainline
 
@@ -151,8 +158,10 @@ diagnose, recommend treatment, assign a final triage level, order emergency
 care, or write to HIS / EMR / FHIR.
 
 Current runnable case set: chest pressure, fever / urinary symptoms, and the
-Duobao-aligned respiratory early-handoff flow with a two-phase vitals-ready
-transition and a hard maximum of `7` visible patient-facing questions.
+Duobao-aligned respiratory early-handoff flow. The respiratory runtime still
+contains the pre-sync two-phase `Vitals ready` transition; the post-sync June
+integration docs now identify `post_measurement_only` as the current imedtac
+default.
 
 Before showing the demo, read:
 
@@ -207,28 +216,36 @@ docs/repo-organization.md
 
 ## Immediate Next Actions
 
-1. Use the expert-review packet to produce API v0.2 after the Thursday sync:
-   `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`.
-2. Review and discuss the `2026-05-21` API v0.2 draft and examples:
-   `handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md`.
-3. In the Thursday meeting, close owner/date decisions for 慧誠 payload/UI/env,
-   Johnny product success criteria, 多寶 clinical wording, Jason API v0.2, and a
-   privacy/security owner.
-4. Turn the `2026-05-15` second-sync decision into a June demo case pack:
-   `3-5` synthetic urgent-care intake cases with vital signs, short question
-   paths, and clinician-review summaries.
-5. Implement the first respiratory case as an early-handoff two-phase path:
-   pre-vital intake during measurement -> vitals-ready payload -> vital-aware
-   follow-up -> staff-facing summary.
-6. Ask 慧誠 for the smallest technical packet needed to wire the demo:
+1. Update API v0.2 after the `2026-05-21` sync:
+   `post_measurement_only` as June default, Endpoint 1/3 merged for June,
+   `idempotency_key` explained, and two-phase kept as future optimized mode.
+2. Use the closeout handoff as the next action sheet:
+   `handoff/2026-05-21-imedtac-engineering-sync-closeout.md`.
+3. Ask 慧誠 for the smallest technical packet needed to wire the demo:
    kiosk UI insertion point, vital payload field names / example payload,
    session-key expectation, demo room network, output display format, and
    software-team contact.
-7. Keep the runtime pragmatic for June: networked / external compute is allowed
+4. Ask Ben / engineering whether imedtac can render generic question templates:
+   `single_choice`, `multi_choice`, numeric / scale input, variable option
+   counts, and no-scroll limits.
+5. Schedule an actual iMVS machine review with 多寶 / 許醫師 next week.
+6. Prepare the AI-Triage patent-protection brief for Prof. Wu / Tomi before
+   sharing deeper reusable method details with imedtac.
+7. Add idea-attribution labels to high-value meeting records before the next
+   deep imedtac technical handoff.
+8. Decide whether the first customer-visible case is respiratory synthetic,
+   tachycardia live-performance, or a healthy/unhealthy contrast script.
+9. Prepare Remote REST API Mode plus clearly labeled Local Scripted Demo Mode.
+10. Adapt the runnable respiratory flow or API examples to the post-sync
+   post-measurement default before the next imedtac rehearsal.
+11. Turn the `2026-05-15` second-sync decision into a June demo case pack:
+   `3-5` synthetic urgent-care intake cases with vital signs, short question
+   paths, and clinician-review summaries.
+12. Keep the runtime pragmatic for June: networked / external compute is allowed
    for demo if local CPU-only ASR / LLM behavior is too slow or hot.
-8. Keep ASR / free-text capture outside this clickable demo until the
+13. Keep ASR / free-text capture outside this clickable demo until the
    workflow, privacy, and clinical-review boundary are explicitly cleared.
-9. Use `docs/literature-matrix-workflow.md` for the next AI-triage paper /
+14. Use `docs/literature-matrix-workflow.md` for the next AI-triage paper /
    guideline sprint so literature work produces source-backed decisions and
    gaps, not isolated summaries.
-10. Keep planning updated with status, blockers, and capacity impact only.
+15. Keep planning updated with status, blockers, and capacity impact only.

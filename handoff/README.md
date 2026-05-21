@@ -7,12 +7,10 @@ collaborators.
 
 The current useful answer is:
 
-> The first task is not to build a generic chatbot. The first task is to find
-> the insertion point in imedtac's existing vital-sign measurement workflow and show
-> that measured vital signs can drive dynamic triage-support questioning and a
-> clinician-readable summary. The product-scope layer should start from a
-> `510(k)` / comparable-product scan if imedtac can provide the nearest US partner
-> product, customer reference, competitor, or FDA number.
+> The June demo should show a post-measurement iMVS vital payload entering a
+> NYCU structured question loop and returning a staff-review summary. The demo
+> proves vital-aware intake workflow integration, not diagnosis, final clinical
+> triage, treatment advice, or production HIS / EMR writeback.
 
 Current main meeting packet:
 
@@ -31,6 +29,7 @@ Current detailed discussion artifacts:
 - `docs/writing-method-policy.md`
 - `handoff/2026-05-21-imedtac-engineering-sync-prep.md`
 - `handoff/2026-05-21-imedtac-meeting-q-and-a.md`
+- `handoff/2026-05-21-imedtac-engineering-sync-closeout.md`
 - `handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
@@ -59,6 +58,40 @@ Current v0.2 freeze-gate additions:
 - error examples fall back to standard staff workflow and do not include
   generated summaries.
 
+Post-sync `2026-05-21` update:
+
+- June default is now `post_measurement_only`: complete iMVS measurement first,
+  send measured vital payload to NYCU, then run the structured question loop.
+- Endpoint 1 and Endpoint 3 should be merged for the June integration pass.
+- The two-phase vitals-ready workflow remains a future optimized path, not the
+  first customer-demo default.
+- Voice input is out of the June critical path.
+- Prepare Remote REST API Mode plus clearly labeled Local Scripted Demo Mode.
+
+Post-Duobao internal sync update:
+
+- Do not output a formal five-level triage result in June. Put AI in
+  vital-aware question selection and staff-review summary generation.
+- Confirm reusable iMVS question templates before promising a scalable dynamic
+  question loop: `single_choice`, `multi_choice`, numeric / scale, variable
+  option counts, label limits, and no-scroll behavior.
+- Schedule an actual iMVS machine review with 多寶 / 許醫師 before freezing the
+  customer-visible flow.
+
+Post-Wu patent-protection update:
+
+- Prof. Wu asked Jason to discuss AI-Triage patents with Tomi and warned that
+  NYCU should protect its own patent / IP position before teaching imedtac the
+  full reusable method.
+- Prof. Wu's follow-up phone call confirms lab API mode can protect know-how,
+  MOU is too general for product co-development, and future meeting notes
+  should attribute idea origin.
+- Use `handoff/patent/2026-05-22-ai-triage-patent-disclosure-draft.md` as the
+  active protection packet.
+- Share API-contract details needed for the June demo; keep reusable routing,
+  scoring, source-governance, prompt / embedding, and claim-structure details
+  internal until Prof. Wu / Tomi clear the cooperation boundary.
+
 ## Friday Mainline Rule
 
 The Friday main brief should answer only the company follow-up questions:
@@ -82,10 +115,9 @@ supplemental notes only if they come up in discussion.
   `handoff_reason_codes`, session expiry / state fields, retry / idempotency
   fields, measurement-quality fields, stable error behavior, and no fake
   summary on failure.
-- Confirm whether imedtac can support the two-phase question flow: Phase 1
-  pre-vital intake during measurement, vitals-ready update, then Phase 2
-  vital-aware follow-up. If this disrupts measurement quality, use the
-  post-measurement fallback.
+- Use the post-sync June flow unless a later explicit decision changes it:
+  complete measurement, upload vital payload, run the question loop, then show
+  staff-review summary. Keep the two-phase workflow as a future optimized path.
 - Confirm the nearest comparable product / `510(k)` reference, or explicitly
   mark it unavailable before Friday.
 - Confirm whether v0 uses mocked vital signs or real kiosk data.

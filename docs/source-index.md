@@ -15,6 +15,11 @@ demo lane and its direct upstream Prof. Wu context.
 | `2026-05-14` | `source/2026-05-14-wu-line-gpt-vital-sign-questionnaire-triage/` | Prof. Wu forwarded a GPT-generated DOCX proposing a vital-sign + questionnaire product design centered on family medicine / general internal medicine, a 10-question intake, rule-engine red flags, and draft adult numeric thresholds; treat as context-only until source-backed and clinically reviewed. |
 | `2026-05-15` | `source/2026-05-15-imedtac-second-sync-and-duobao-followup/` | Second 慧誠智醫 sync plus 多寶 follow-up. This converted the Friday feasibility discussion into a June demo plan: US-style urgent care, `3-5` synthetic vital-sign-aligned cases, guided intake plus optional ASR, networked/external compute acceptable for demo, and clinician-review summary only. |
 | `2026-05-15 15:25` | `source/2026-05-15-imedtac-second-sync-and-duobao-followup/company-provided-meeting-minutes.md` | Johnny Fang's company-side meeting minutes. Confirms urgent-care / June-demo / `3-5` cases / `8-10` questions / touch plus partial voice input, and creates confirmation needs around `AI 資料訓練 study`, output wording, case categories, external compute, and adding 許醫師 to the email loop. |
+| `2026-05-21 09:50` | `source/2026-05-15-imedtac-second-sync-and-duobao-followup/pre-sync-thread-snapshot-2026-05-21.md` | Gmail thread snapshot exported before the 5/21 engineering sync. Extends the original 5/15 Johnny minutes with the 5/20 NYCU API v0.2 pre-read reply and Johnny's 5/21 reply adding Ben Siu from imedtac engineering, confirming the meeting should close API field dictionary, UI insertion point, `session_key`, Phase 1 feasibility, first respiratory case wording, and delivery timing. |
+| `2026-05-21 09:59` | `source/2026-05-21-imedtac-engineering-sync/` | 慧誠智醫 / NYCU engineering sync source bundle. Preserves the corrected GPT transcript and user-provided meeting record, and records the post-sync decision that June should use a conservative post-measurement iMVS vital payload -> NYCU question loop -> staff-review summary flow, with Endpoint 1/3 merged for June, voice out of scope, local scripted fallback required, and case design split between respiratory synthetic and tachycardia live-performance lanes. |
+| `2026-05-21 10:57` | `source/2026-05-21-duobao-post-imedtac-internal-sync/` | Jason / 多寶 internal post-imedtac sync. Preserves the GPT corrected transcript, Gemini reference, and a cleaned full transcript. Clarifies that formal triage-level output is the risky boundary, AI should be placed in vital-aware question selection and staff-summary generation, iMVS needs reusable question templates rather than hand-coded screens, and next week should include an actual iMVS machine review instead of more imagined workflow design. |
+| `2026-05-21 11:53` | `source/2026-05-21-wu-line-ai-triage-patent-protection/` | Prof. Wu LINE exchange after Jason sent the 5/21 meeting note. Prof. Wu asked to find time with Tomi to discuss patents and warned that NYCU should protect its own patent / IP position before teaching imedtac the full method; cooperation can last only if boundaries are clarified first. |
+| `2026-05-21 12:05` | `source/2026-05-21-wu-ai-triage-ip-and-career-call/` | Prof. Wu network phone call after the LINE patent-protection exchange. Confirms lab API as both demo path and know-how protection boundary, meeting-note idea attribution requirement, MOU insufficiency for product co-development, need for contract / license / revenue discussion, imedtac engineering-capability assessment, postdoc/personnel-cost runway thinking, and June deep-cultivation proposal structure. |
 | `2026-05-15 16:42` | `source/2026-05-15-imedtac-second-sync-and-duobao-followup/duobao-demo-case-draft.md` | 多寶's first clinical case draft and LINE handoff. Provides four diagnosis-shaped design anchors: acute cholecystitis, AfRVR, pneumonia, and URI, to be converted into demo-safe clinician-review summaries rather than diagnosis outputs. |
 | `2026-05-19 16:52` | `source/2026-05-19-johnny-ai-triage-product-spec/` | Johnny Fang's email plus the linked `iMVS AI Triage 智慧檢傷分流系統_20260515` product spec. Later Downloads copies are archived here too: the standalone PDF was verified as byte-identical to the archived product-spec PDF, the DOCX is preserved as the editable-format copy, and the `2026-05-20` Gmail PDF preserves the later thread / forwarded-message view. Confirms mid-June customer-demo priority, HIS summary writeback as out-of-scope for this demo, voice input as conditional, and the immediate API contract need: iMVS vital payload -> NYCU typed question/session response -> iMVS answer/session loop -> next question or demo staff-summary output. |
 | `2026-05-19 16:56-18:06` | `source/2026-05-19-johnny-line-thursday-engineering-sync/` | Johnny's LINE group follow-up after sending the product spec. User clarified the LINE times are afternoon / PM. Johnny says engineers need an API design document, asks when it can be provided, and asks to discuss progress on Thursday with the engineering design team. Jason added 許桓瑜（多寶） to the group. Johnny later confirmed Thursday `2026-05-21 10:00` on Microsoft Teams and provided meeting access details, preserved local-only in the source. |
@@ -46,6 +51,26 @@ Derived analysis:
 - `source/2026-05-14-wu-line-gpt-vital-sign-questionnaire-triage/extracted/2026-05-14-wu-gpt-vital-sign-questionnaire-triage-product-design.txt`
 - `source/2026-05-15-imedtac-second-sync-and-duobao-followup/meeting-record.md`
 - `source/2026-05-15-imedtac-second-sync-and-duobao-followup/company-provided-meeting-minutes.md`
+- `source/2026-05-15-imedtac-second-sync-and-duobao-followup/pre-sync-thread-snapshot-2026-05-21.md`
+- `source/2026-05-21-imedtac-engineering-sync/source.md`
+- `source/2026-05-21-imedtac-engineering-sync/meeting-record.md`
+- `source/2026-05-21-imedtac-engineering-sync/transcript-corrected-gpt.txt`
+- `source/2026-05-21-imedtac-engineering-sync/user-provided-meeting-record.md`
+- `source/2026-05-21-duobao-post-imedtac-internal-sync/source.md`
+- `source/2026-05-21-duobao-post-imedtac-internal-sync/meeting-record.md`
+- `source/2026-05-21-duobao-post-imedtac-internal-sync/transcript-corrected.md`
+- `source/2026-05-21-duobao-post-imedtac-internal-sync/transcript-corrected-gpt-source.txt`
+- `source/2026-05-21-duobao-post-imedtac-internal-sync/transcript-gemini-reference.txt`
+- `source/2026-05-21-wu-line-ai-triage-patent-protection/source.md`
+- `source/2026-05-21-wu-line-ai-triage-patent-protection/line-thread.md`
+- `source/2026-05-21-wu-line-ai-triage-patent-protection/thinking-and-schedule.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/source.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/meeting-record.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/thinking-and-schedule.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/transcript-corrected.md`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/transcript-corrected-gpt-source.txt`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/transcript-gemini-reference.txt`
+- `source/2026-05-21-wu-ai-triage-ip-and-career-call/transcript-aura-final-reference.txt`
 - `source/2026-05-15-imedtac-second-sync-and-duobao-followup/duobao-demo-case-draft.md`
 - `workstreams/08-june-demo-case-and-integration-plan.md`
 - `handoff/2026-05-15-june-demo-case-pack-v0.md`
@@ -69,6 +94,7 @@ Derived analysis:
 - `docs/version-control-policy.md`
 - `data/version_manifest.json`
 - `handoff/2026-05-21-imedtac-engineering-sync-prep.md`
+- `handoff/2026-05-21-imedtac-engineering-sync-closeout.md`
 - `handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
