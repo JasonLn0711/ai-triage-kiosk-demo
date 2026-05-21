@@ -11,6 +11,10 @@ source:
   - ./2026-05-21-imedtac-engineering-sync-prep.md
   - ./2026-05-21-decision-defaults-and-owner-matrix.md
   - ./2026-05-21-imvs-nycu-api-design-v0.2-draft.md
+  - ../source/2026-05-15-imedtac-second-sync-and-duobao-followup/company-provided-meeting-minutes.md
+  - ../source/2026-05-19-johnny-ai-triage-product-spec/source.md
+  - ../source/2026-05-19-johnny-line-thursday-engineering-sync/source.md
+  - ../source/2026-05-19-johnny-direct-line-thursday-engineering-sync/source.md
   - ../source/2026-05-20-imedtac-personal-pre-meeting-note/AI-Triage_imedtac_Pre-Meeting_Pre-Read_2026-05-21.md
 ---
 
@@ -47,6 +51,32 @@ No production HIS / EMR / FHIR writeback.
 Human review remains the final decision point.
 ```
 
+## imedtac Pre-Meeting Question Index
+
+Use this table to avoid missing explicit questions from 慧誠智醫's meeting
+materials. `Explicit` means 慧誠 asked or assigned it directly in the 5/15
+minutes, 5/19 product-spec email, or 5/19 LINE sync request. `Spec-derived`
+means the product spec states an acceptance expectation that NYCU must answer
+through design.
+
+| Source prompt from imedtac | Status | Current NYCU answer | Why this answer | Where answered |
+| --- | --- | --- | --- | --- |
+| `3-5` demo patient / injury cases and `AI 資料訓練 study`. | Explicit, 5/15 minutes | Start with one full respiratory loop, then expand to `3-5` synthetic cases; interpret `AI 資料訓練 study` as synthetic demo case / feasibility study, not real patient-data model training. | Keeps June scope feasible and avoids real patient-data governance, clinical validation, and model-training claims before approval. | Q3, Q35 |
+| Touch-option interaction plus partial voice input; question count `8-10`. | Explicit, 5/15 minutes | Use touch / structured choices as the main flow; keep voice optional; current product-spec-aligned cap is `<8`, implemented as `max_questions=7`, while earlier `8-10` is treated as historical upper-bound context. | Touch choices are faster, safer, and easier to audit; the later product spec says fewer than eight questions; voice adds noise/privacy/error risk. | Q28, Q36 |
+| Combine data and answers into a patient chief-complaint summary for doctors. | Explicit, 5/15 minutes | Output `staff_review_summary` / clinician-review summary, not diagnosis, final triage level, treatment advice, or production HIS writeback. | This preserves the useful doctor-facing summary while avoiding overclaiming clinical decision support. | Q21-Q24, Q41 |
+| Provide technical architecture design. | Explicit, 5/15 minutes | Provide RESTful JSON API contract, endpoints, JSON examples, session behavior, fallback behavior, versioning, and deployment questions. | imedtac engineering needs a contract they can wire into UI/API work; framework details are secondary. | Q5-Q7, Q31-Q34 |
+| Should iMVS upload vital sign data format to NYCU be discussed? | Explicit, 5/19 email | Yes. Freeze actual field names, units, required/optional semantics, missing/failure status, quality flags, timestamp, and demo device identifier. | Dynamic question routing depends on reliable vital payload meaning; missing/failed data must not become hidden medical inference. | Q11-Q13 |
+| What question format should NYCU return: type, options, expected question count / AC07, session key? | Explicit, 5/19 email | Return typed `question` objects with `single_choice`, `multi_choice`, or `scale`, stable options, progress, registry/source refs where available, and `session_key`. | The iMVS UI needs deterministic rendering and state continuity; question count and progress are product-spec acceptance criteria. | Q5-Q8, Q34, Q39 |
+| How should iMVS upload user answer plus session key, and how does NYCU return next question or diagnosis/output format? | Explicit, 5/19 email | iMVS posts answer + `session_key`; NYCU returns next question or `staff_review_summary`. Do not name output `diagnosis`; use `summary`, `review_basis`, `review_action`, and `staff_handoff_note`. | The loop matches imedtac's requested API shape while preserving the no-diagnosis / human-review boundary. | Q7-Q10, Q23, Q39 |
+| When can NYCU provide the API design document? | Explicit, 5/19 LINE | Use the 5/20 pre-read and this Q&A as the meeting answer; offer Markdown API spec + JSON examples first, then OpenAPI / Postman / mock endpoint if imedtac engineering requests them. | It gives engineering a usable near-term contract without waiting for all future production details. | Q5, Q42 |
+| Can progress be discussed on Thursday with imedtac engineering design team? | Explicit, 5/19 LINE | Yes. Treat 5/21 as engineering handoff / contract-freeze meeting, not broad brainstorming. | The meeting should close payload, session, UI insertion, environment, and ownership decisions. | Q4, Q5, Q43, closeout |
+| Product spec triage standards and presentation logic were AI-discussed drafts and adjustable. | Explicit, 5/19 direct LINE | Treat spec clinical logic as negotiable input. Freeze API mechanics now; route clinical standards, stop rules, and wording to 多寶 / clinical review. | Prevents AI-drafted standards from becoming unreviewed clinical protocol. | Q21-Q25, Q44 |
+| Grey-text HIS summary return path is not part of the June demo. | Explicit, 5/19 email | Do not implement production HIS / EMR / FHIR writeback in June; use demo staff-summary page and future-state placeholders only. | Production medical-record writeback creates governance, cybersecurity, access-control, and liability work outside June scope. | Q29 |
+| Voice input depends on NYCU/Jason progress and needs discussion before demo inclusion. | Explicit, 5/19 email | Defer voice from the June critical path unless separately approved; if shown, use transcript confirmation and failover and never let raw ASR directly control medical logic. | Voice adds recognition, noise, privacy, microphone, and fallback risk; typed choices are enough to prove the main workflow. | Q28 |
+| US06-US11: OPQRST dynamic questioning, progress, single choice, multi choice, scale. | Spec-derived, 5/19 product spec | Include deterministic dynamic question flow, progress display, `single_choice`, `multi_choice`, and `scale`; use `<8` visible questions. | These are explicit acceptance expectations and low-risk for June. | Q25, Q34, Q36, Q39 |
+| US14: demo doctor sees AI result page. | Spec-derived, 5/19 product spec | Provide a staff/doctor review page or response with `staff_review_summary`, `summary_visibility=staff_only`, handoff reason codes, and no diagnosis. | Satisfies demo doctor view while preserving safety and human review. | Q23-Q24, Q41 |
+| US15-US16: SOAP / evidence mapping / HIS-side decision support. | Spec-derived, future side | For June, show reviewer-only source placeholders and safe summary fields; defer production SOAP/HIS and full evidence mapping until clinical source governance is complete. | Evidence mapping matters, but unverified clinical references or production HIS writeback would overstate readiness. | Q23, Q29, Q41 |
+
 ## A. Scope And Product Positioning
 
 ### Q1. 六月 demo 到底要展示什麼？
@@ -56,6 +86,13 @@ Human review remains the final decision point.
 六月 demo 展示一個最小可運作的 vital-aware intake loop：iMVS 提供合成或
 iMVS-shaped vital payload，NYCU 回傳結構化動態問題，最後產生
 `staff_review_summary` 給工作人員或臨床人員覆核。
+
+**Imedtac pre-meeting prompt:** 慧誠 5/15 minutes 明確要求六月美國客戶
+demo、`3-5` cases、綜合數據與回答後產出主訴摘要給醫生；5/19 email
+進一步要求 iMVS/NYCU API loop。
+
+**Why this answer:** 這是最小可整合閉環，能回答慧誠的 demo 需求，又不把
+demo 說成正式 clinical triage product。
 
 **What to avoid:**
 
@@ -86,6 +123,12 @@ AI-assisted staff-review intake workflow
 1. 先完成 `fever + dyspnea + lower SpO2 context` 的完整 API / UI / summary loop。
 2. 再擴充 additional fixtures。
 3. 不為了案例數犧牲 primary integration path。
+
+**Imedtac pre-meeting prompt:** 這是慧誠 5/15 meeting minutes 明確分配給
+NYCU 的 action item：研究 `3-5` 個 demo 傷患案例。
+
+**Why this answer:** `3-5` cases 是展示範圍，但第一個 full loop 是工程風險
+控制；先打通一個 iMVS payload -> question -> summary，再擴案例才可靠。
 
 ### Q4. 六月 demo 成功的定義是什麼？
 
@@ -120,6 +163,12 @@ API spec 至少要定義：
 - timeout / retry / idempotency;
 - deployment method.
 
+**Imedtac pre-meeting prompt:** 5/19 LINE 明確說工程師會需要 API 設計文件，
+並請 NYCU 回覆什麼時候可以提供；5/19 email 也列出 API 溝通需求。
+
+**Why this answer:** API spec 是雙方工程對接的實際契約；沒有它，UI、payload、
+session、錯誤處理都會各自假設。
+
 ### Q6. REST API、JSON、FastAPI 要怎麼說？
 
 **Answer:**
@@ -150,6 +199,12 @@ GET  /api/triage-demo/sessions/{session_key}/summary
 If the team wants fewer calls, the answer / vitals endpoint can directly return
 `status="summary"` with `staff_review_summary`.
 
+**Imedtac pre-meeting prompt:** 5/19 email 明確問 NYCU 回傳問題格式，以及
+iMVS 上傳回答 + `session_key` 後，NYCU 如何回下一題或輸出格式。
+
+**Why this answer:** 這組 endpoint 把慧誠要求的三段 loop 拆成可測、可 debug、
+可 fallback 的最小 contract。
+
 ### Q8. `session_key` 誰產生？
 
 **Answer:**
@@ -157,6 +212,12 @@ If the team wants fewer calls, the answer / vitals endpoint can directly return
 NYCU 建議由 NYCU API 產生 `session_key`，iMVS 後續 echo 回來。原因是
 dynamic question state、Phase 1 / Phase 2 state、answer history、retry /
 idempotency handling 都在 NYCU demo engine 端。
+
+**Imedtac pre-meeting prompt:** 5/19 email 明確把 `session key` 列入 NYCU
+回傳問題格式與後續 answer loop 的討論項。
+
+**Why this answer:** 讓 question engine 和 session state 在同一端，能降低
+兩邊 state 不同步、retry 跳題、summary 重複產生的風險。
 
 Fallback if not accepted:
 
@@ -194,6 +255,12 @@ Demo 建議 `15-30` 分鐘。過期後回 `session_expired` 或 `invalid_session
 - per-vital `quality_flag`;
 - `missing_reason`;
 - timestamp and device identifier semantics.
+
+**Imedtac pre-meeting prompt:** 5/19 email 明確問 `iMVS 上傳 vital sign data
+到陽交大的格式是否需要討論?`
+
+**Why this answer:** vital payload 是 demo 的核心差異化資料；欄位、單位、
+缺值與品質語意不清楚時，NYCU 不能安全地做 vital-aware routing。
 
 ### Q12. Vitals 欄位建議 flat 還是 nested？
 
@@ -248,6 +315,12 @@ Core phrase:
 - backend API only;
 - laptop-adjacent demo;
 - static/local scripted mock.
+
+**Imedtac pre-meeting prompt:** 5/15 meeting record 與 minutes 都指向下一步
+技術端對接；慧誠需提供流程 / spec 規劃與 UI/技術設計修改。
+
+**Why this answer:** NYCU 可以提供 API and question engine，但 AI step 放在
+iMVS 哪個 UI 位置只能由慧誠 engineering / UI team 決定。
 
 ### Q15. Two-phase flow 是什麼？
 
@@ -477,6 +550,12 @@ fallback UX risk. June should first prove:
 kiosk vital payload -> dynamic question flow -> staff_review_summary
 ```
 
+**Imedtac pre-meeting prompt:** 5/15 minutes 提到「部分語音輸入」；5/19 email
+明確說語音輸入要視 NYCU/Jason 進度討論是否在本次 demo 呈現。
+
+**Why this answer:** 語音是下一階段能力，不應阻塞六月主線；先證明 structured
+touch + vital-aware loop，demo 風險最低。
+
 ### Q29. 為什麼六月不做 HIS / EMR writeback？
 
 **Answer:**
@@ -491,6 +570,12 @@ Core phrase:
 ```text
 六月先證明 workflow value，不碰 production medical record responsibility。
 ```
+
+**Imedtac pre-meeting prompt:** 5/19 email 明確說灰字如 AI 摘要串回 HIS 流程
+暫時不會實作。
+
+**Why this answer:** 這是慧誠已經給出的 scope cut；NYCU 應順著切掉 production
+HIS/EMR/FHIR writeback，避免 demo 變成院內系統上線專案。
 
 ### Q30. 正式版是不是可以全部 local 跑？
 
@@ -846,7 +931,229 @@ Use this when the meeting needs one compact, confident answer:
 這樣設計的目的，是穩定展示 workflow value，同時把正式產品之後才需要處理的 session recovery、audit log、deployment、security、ASR、HIS/EMR integration 保留下來做下一階段決策。
 ```
 
-## K. Must-Ask Closeout Questions
+## K. Additional imedtac-Prompted Q&A
+
+These questions are added because 慧誠智醫 raised them explicitly or indirectly
+in the meeting materials, and the earlier categorized Q&A did not fully capture
+the answer.
+
+### Q35. 慧誠說的 `AI 資料訓練 study`，NYCU 要怎麼回答？
+
+**Answer:**
+
+建議回答：
+
+```text
+六月 demo 階段，我們先把 AI 資料訓練 study 定義為 synthetic demo case / question-flow feasibility study，不使用真實病患資料做模型訓練。
+
+NYCU 會整理 3-5 個合成案例、生命徵象、問題流程、答案格式和 staff_review_summary wording，用來驗證 workflow 與 API contract。
+
+如果未來要進入真實資料訓練，會需要另外確認 IRB / data governance / de-identification / hospital approval / model validation，不放在六月 demo critical path。
+```
+
+**Imedtac pre-meeting prompt:** 慧誠 5/15 minutes 明確把「研究 `3-5` 個 Demo
+用的傷患案例，並進行 `AI 資料訓練 study`」列為陽交大 action item。
+
+**Why this answer:** 這個詞可能被理解成真實病患資料訓練。六月 demo 目前沒有
+真實資料授權、IRB、資料治理或臨床驗證，因此要收斂為 synthetic-data / feasibility
+study。
+
+### Q36. 慧誠 earlier minutes 說 `8-10` 題，但產品規格說小於 `8` 題，我們怎麼回答？
+
+**Answer:**
+
+建議回答：
+
+```text
+我們看到 5/15 minutes 曾寫 8-10 題，但 5/19 iMVS AI Triage product spec 在 OPQRST dynamic questioning acceptance criteria 裡寫總題數預計小於 8 題。
+
+因此六月 API v0.2 建議以產品規格為準：visible patient-facing questions <8，hard cap 用 max_questions=7。實際第一個 respiratory flow 會盡量控制在 5-7 題。
+```
+
+**Imedtac pre-meeting prompt:** 5/15 minutes 提到 `8-10` 題；5/19 product spec
+US06/AC06 提到總題數小於 `8`。
+
+**Why this answer:** 以較新的產品規格作為 demo contract，可降低病人端負擔，也
+讓 AC07 progress 更容易被 UI 呈現。
+
+### Q37. 是否要把許醫師加入 email loop？
+
+**Answer:**
+
+建議回答：
+
+```text
+建議加入。若後續要確認 demo case、stop rule、red-flag wording、staff_review_summary wording，許醫師 / 多寶應該在 email loop 中，以免 clinical wording 只由工程端或 NYCU 自行決定。
+```
+
+**Imedtac pre-meeting prompt:** Johnny 5/15 minutes email 明確寫「如需要的話請
+Jason 將許醫師也加到 Email Loop 中」。
+
+**Why this answer:** demo 可用 synthetic cases，但 clinical wording 和 stop rule
+仍需要臨床 reviewer；把許醫師加入 loop 可降低事後誤解。
+
+### Q38. API design document 什麼時候、用什麼形式提供？
+
+**Answer:**
+
+建議回答：
+
+```text
+NYCU 先提供 Markdown API design + JSON examples 作為 v0.2 discussion draft。若 imedtac engineering 需要，我們可以再補 OpenAPI / Swagger、Postman collection、mock endpoint 或 sequence diagram。
+
+5/21 sync 先確認欄位、session behavior、UI insertion point、demo environment 和 owner/date；確認後再整理 confirmed API v0.2。
+```
+
+**Imedtac pre-meeting prompt:** 5/19 LINE 明確問「工程師會需要 API 的設計文件，
+再麻煩回覆什麼時候可以提供」。
+
+**Why this answer:** Markdown + JSON examples 最快可讀、可討論；OpenAPI / Postman
+等工程 artifact 應在欄位與流程確認後再產生，避免反覆改 schema。
+
+### Q39. NYCU 回傳的 question object 應該包含什麼？
+
+**Answer:**
+
+建議回答：
+
+```text
+每一題至少包含 question_id、type、text、options、progress、session_key、question_phase、demo_boundary。
+
+type 先支援 single_choice、multi_choice、scale。multi_choice 需要 none_option_id 互斥邏輯；scale 需要 min/max 與兩端語意標籤。
+```
+
+Example:
+
+```json
+{
+  "session_key": "demo-session-uuid",
+  "status": "question",
+  "progress": {
+    "current": 2,
+    "expected_total": 7
+  },
+  "question": {
+    "id": "dyspnea-duration",
+    "type": "single_choice",
+    "text": "How long have you felt short of breath?",
+    "options": [
+      {"id": "today", "label": "Started today"},
+      {"id": "days", "label": "A few days"},
+      {"id": "week_plus", "label": "More than a week"}
+    ]
+  },
+  "demo_boundary": "Synthetic-data staff-review intake support only."
+}
+```
+
+**Imedtac pre-meeting prompt:** 5/19 email 明確列出「陽交大回傳問題格式：
+選擇類型、選項、預計問題數量 AC07、session key 等」。
+
+**Why this answer:** UI 需要 deterministic render contract；progress 和 session
+key 是產品規格與 API state 的共同需求。
+
+### Q40. OPQRST / VINDICATE 這些規格裡的問診邏輯，我們要照做嗎？
+
+**Answer:**
+
+建議回答：
+
+```text
+六月 demo 可以採用 OPQRST 作為 question-flow 的結構參考，尤其是 onset、location、quality、severity、timing 這些病人可理解的問診維度。
+
+但不把 OPQRST / VINDICATE 包成已完成的 clinical standard engine。每一個 specialty 或 red-flag logic 未來仍需要 source mapping 與 clinical review。
+```
+
+**Imedtac pre-meeting prompt:** 5/19 product spec US06 與 3.2 明確提到 OPQRST /
+VINDICATE dynamic questioning。
+
+**Why this answer:** OPQRST 很適合 demo 的結構化問題，但不能取代臨床驗證或
+triage protocol signoff。
+
+### Q41. 慧誠文件寫 SOAP、Assessment、Plan、建議科別，我們為什麼不用這些欄位？
+
+**Answer:**
+
+建議回答：
+
+```text
+六月 demo 先保留 S/O 類型資訊：patient-reported symptoms 和 measured vitals。
+
+對 A/P 類型內容，我們建議改名為 review_basis、review_action、staff_handoff_note，避免被誤解為診斷、治療計畫或正式分流結論。
+
+如果未來要進 HIS SOAP view，需要 clinical owner、hospital workflow owner、evidence mapping、security 和 version-control signoff。
+```
+
+**Imedtac pre-meeting prompt:** 5/19 product spec US15-US16 與 3.3 提到 SOAP
+摘要、Assessment/Plan、Evidence Mapping、HIS 接軌。
+
+**Why this answer:** SOAP 的 A/P 容易被理解為醫療判斷或處置建議；六月 demo
+只應產生 staff-review summary。
+
+### Q42. 慧誠問進度時，我們怎麼定義目前進度？
+
+**Answer:**
+
+建議回答：
+
+```text
+目前 NYCU 已收斂出 API v0.2 draft：iMVS vital payload -> NYCU question object + session_key -> iMVS answer + session_key -> NYCU next question or staff_review_summary。
+
+下一步不是重新討論方向，而是 5/21 sync 確認欄位、UI insertion、demo environment、fallback、clinical wording owner，然後產出 confirmed API v0.2。
+```
+
+**Imedtac pre-meeting prompt:** 5/19 LINE 明確問「這週四有空快速討論一下目前的
+進度嗎？同時我也會帶工程設計團隊一起加入討論細節」。
+
+**Why this answer:** 讓會議從 brainstorm 轉成 contract-freeze，避免工程團隊會後
+仍不知道要接什麼。
+
+### Q43. 慧誠技術團隊需要從 NYCU 拿到哪些最小交付物？
+
+**Answer:**
+
+建議回答：
+
+```text
+最小交付物是：
+1. API v0.2 Markdown spec；
+2. start-session / submit-answer / update-vitals / summary / error JSON examples；
+3. first respiratory synthetic case fixture；
+4. question object schema；
+5. staff_review_summary schema；
+6. error and fallback behavior；
+7. owner/date closeout checklist。
+```
+
+**Imedtac pre-meeting prompt:** 5/15 minutes 要 NYCU 做技術架構設計；5/19 LINE
+說工程師需要 API 設計文件；5/19 email 列出 API 欄位需求。
+
+**Why this answer:** 這些是 engineering team 可以直接拿去做 UI / integration
+rehearsal 的最小材料。
+
+### Q44. 慧誠說規格中的檢傷標準與呈現邏輯可調整，我們要怎麼接？
+
+**Answer:**
+
+建議回答：
+
+```text
+我們建議把規格中的 clinical standards / presentation logic 分成兩層：
+
+第一層是六月可以先凍結的 engineering contract：payload、question object、session_key、answer loop、summary schema。
+
+第二層是需要 clinical review 的 logic：red flag、stop rule、summary wording、evidence refs、是否出現建議科別或 triage wording。
+
+5/21 可以先凍結第一層，第二層請許醫師 / 多寶和慧誠一起確認。
+```
+
+**Imedtac pre-meeting prompt:** 5/19 direct LINE 中 Johnny 明確說文件中的檢傷標準與
+呈現邏輯是先與 AI 討論後定下來的，實務上可以再與 NYCU 討論、可以調整。
+
+**Why this answer:** 把可工程凍結的部分和需臨床審查的部分分開，才能同時推進
+demo integration 和安全邊界。
+
+## L. Must-Ask Closeout Questions
 
 Ask these before the call ends:
 
@@ -864,7 +1171,7 @@ Ask these before the call ends:
 10. Who owns field dictionary, UI insertion decision, clinical wording signoff,
     local fallback, demo environment, and confirmed API v0.2 by `2026-05-22`?
 
-## L. Closing Script
+## M. Closing Script
 
 Use this to close:
 
