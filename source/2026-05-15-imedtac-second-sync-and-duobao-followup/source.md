@@ -8,7 +8,7 @@ subtopic: sources
 type: source-bundle
 source: user-provided-meeting-record-transcripts-line-log-and-company-minutes
 course: ""
-keywords: [imedtac, imedtac, ai-triage, urgent-care, june-demo, vital-sign-kiosk, duobao, clinical-workflow, asr, llm, emr, his]
+keywords: [imedtac, ai-triage, urgent-care, june-demo, vital-sign-kiosk, duobao, clinical-workflow, asr, llm, emr, his]
 status: active
 participants:
   - Jason Miao

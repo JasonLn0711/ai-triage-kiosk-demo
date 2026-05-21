@@ -7,7 +7,7 @@ topic: personal
 subtopic: sources
 type: company-provided-minutes
 source: company-provided-email-pdf
-keywords: [imedtac, imedtac, ai-triage, meeting-minutes, urgent-care, june-demo, action-items, comparison]
+keywords: [imedtac, ai-triage, meeting-minutes, urgent-care, june-demo, action-items, comparison]
 status: active
 source_id: IMEDTAC-MINUTES-20260515
 pdf_file: assets/2026-05-15-imedtac-company-meeting-minutes-email.pdf

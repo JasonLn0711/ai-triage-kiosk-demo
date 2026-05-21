@@ -8,7 +8,7 @@ subtopic: sources
 type: meeting-record
 source: user-provided-meeting-record-transcripts-and-line-log
 course: ""
-keywords: [imedtac, imedtac, ai-triage, urgent-care, june-demo, vital-sign-kiosk, duobao, asr, llm, clinical-workflow, emr, his]
+keywords: [imedtac, ai-triage, urgent-care, june-demo, vital-sign-kiosk, duobao, asr, llm, clinical-workflow, emr, his]
 status: active
 ---
 
