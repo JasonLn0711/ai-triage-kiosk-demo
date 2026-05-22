@@ -23,7 +23,12 @@
   attribution, product co-development contract questions, postdoc runway, and
   June deep-cultivation proposal timing.
 - Updated the two-endpoint API reply to use external-facing `貴司` language and
-  explicit `not_sure` answer behavior instead of a generic skip interaction.
+  explicit `not_sure` answer behavior instead of a generic no-reason bypass.
+- Added the June API contract-freeze rule: the sent
+  `2026-05-21-imedtac-two-endpoint-api-reply.md` file is the implementation
+  baseline, and endpoint paths, field names, field meanings, requiredness,
+  enum values, answer semantics, and version identifiers require an explicit
+  recorded change request before either engineering team changes them.
 
 ## v0.2.0 - 2026-05-19
 

@@ -1,11 +1,11 @@
 ---
 id: 2026-05-21-to-2026-05-25-imedtac-response-plan
-title: "imedtac Response Plan Through 2026-05-25"
+title: "貴司 Response Plan Through 2026-05-25"
 date: 2026-05-21
 topic: ai-triage
 type: handoff
 status: active
-audience: internal NYCU / Jason / 多寶 coordination
+audience: internal NYCU / Jason / 許醫師 coordination
 source:
   - ../source/2026-05-21-imedtac-engineering-sync/meeting-record.md
   - ../source/2026-05-21-imedtac-post-meeting-progress-record/source.md
@@ -16,19 +16,19 @@ source:
   - ./2026-05-21-imedtac-engineering-open-issues-checklist.md
 ---
 
-# imedtac Response Plan Through 2026-05-25
+# 貴司 Response Plan Through 2026-05-25
 
 ## Answer
 
-Yes. By Monday `2026-05-25`, NYCU can respond to imedtac's current engineering
+Yes. By Monday `2026-05-25`, NYCU can respond to 貴司's current engineering
 needs if the scope is:
 
 ```text
 two-endpoint API document
 -> JSON examples
 -> preset question / option template for the first demo lane
--> skip-behavior recommendation after 多寶 / 許醫師 discussion
--> clear list of remaining inputs needed from imedtac
+-> not_sure answer-behavior recommendation after 許醫師 discussion
+-> clear list of remaining inputs needed from 貴司
 ```
 
 Do not frame Monday as a frozen clinical triage product, final clinical
@@ -39,15 +39,15 @@ writeback design.
 
 ### From Johnny's post-meeting Gmail record
 
-imedtac recorded:
+貴司 recorded:
 
 - US customer demo around `2026-06-10`.
 - Demo flow: measure first, then ask questions.
-- API: merge Endpoint 1 and Endpoint 3; after imedtac uploads measurement data,
+- API: merge Endpoint 1 and Endpoint 3; after 貴司 uploads measurement data,
   NYCU returns `Session Key` plus first question; later calls use Endpoint 2 for
   one-question / one-answer loop.
 - UI: generated questions should be `single_choice` or `multi_choice`.
-- UI: imedtac will add a demo preview button / page after the measurement report
+- UI: 貴司 will add a demo preview button / page after the measurement report
   for the AI-organized summary / result.
 - Voice is out of the current demo.
 - Proposed live demo lane: tachycardia / arrhythmia / chest tightness because
@@ -57,29 +57,29 @@ imedtac recorded:
 
 ### From Johnny / Ben / Lauren's Microsoft Teams follow-up
 
-imedtac asked:
+貴司 asked:
 
 - provide the two-endpoint API document;
 - provide template contents by tomorrow or Monday, including preset questions
   and options;
-- confirm whether a user may skip a question if they cannot answer.
+- confirm how the UI should represent a user who is not sure how to answer.
 
 ## Delivery Plan
 
 | Date | Deliverable | Owner | Status | Notes |
 | --- | --- | --- | --- | --- |
-| Thu `2026-05-21` night | Discuss Johnny's two Teams questions with 多寶. | Jason + 多寶 | pending | Focus on question template timing and skip behavior. |
-| Thu `2026-05-21` night or Fri `2026-05-22` morning | Send holding reply in Teams. | Jason | ready | Acknowledge two-endpoint API document; say question template and skip behavior will be confirmed after internal clinical review. |
-| Fri `2026-05-22` | Send two-endpoint API document draft. | Jason / NYCU | ready as draft | Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`. |
-| Fri `2026-05-22` | Track engineering open issues and change-control. | Jason | ready as checklist | Use `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md`; send selected P0/P1 asks to imedtac. |
-| Fri `2026-05-22` | Draft preset question / option template. | Jason | drafted | Use `handoff/2026-05-21-duobao-style-tachycardia-live-demo-question-set.md` for the tachycardia live lane; keep single-choice / multi-choice only and include `Not sure` / staff-confirmation options where clinically safer than silent skip. |
-| Fri `2026-05-22` | Ask imedtac for current field-dictionary deltas from the 5/12 iMVS V1.4 baseline and UI limits. | Jason | pending | Required to freeze exact payload names, optionality, missing/failure semantics, and rendering constraints. |
-| Sat-Sun `2026-05-23` to `2026-05-24` | Refine tachycardia live-performance lane and respiratory synthetic fallback lane. | Jason + 多寶 / 許醫師 if available | pending | Avoid diagnosis, final triage level, treatment, disposition, or department recommendation. |
-| Mon `2026-05-25` | Send confirmed question / option template and skip-behavior answer. | Jason / NYCU | target | Include what is final for demo and what remains pending clinical / UI confirmation. |
+| Thu `2026-05-21` night | Discuss Johnny's two Teams questions with 許醫師. | Jason + 許醫師 | pending | Focus on question template timing and `not_sure` answer behavior. |
+| Thu `2026-05-21` night or Fri `2026-05-22` morning | Send holding reply in Teams. | Jason | ready | Acknowledge two-endpoint API document; say question template and `not_sure` answer behavior will be confirmed after internal clinical review. |
+| Fri `2026-05-22` | Send two-endpoint API document baseline. | Jason / NYCU | ready | Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`. |
+| Fri `2026-05-22` | Track engineering open issues and change-control. | Jason | ready as checklist | Use `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md`; send selected P0/P1 asks to 貴司. |
+| Fri `2026-05-22` | Draft preset question / option template. | Jason | drafted | Use the tachycardia live lane; keep single-choice / multi-choice only and include `Not sure` / staff-confirmation options where clinically safer than an unexplained bypass. |
+| Fri `2026-05-22` | Ask 貴司 for current field-dictionary deltas from the 5/12 iMVS V1.4 baseline and UI limits. | Jason | pending | Required to freeze exact payload names, optionality, missing/failure semantics, and rendering constraints. |
+| Sat-Sun `2026-05-23` to `2026-05-24` | Refine tachycardia live-performance lane and respiratory synthetic fallback lane. | Jason + 許醫師 if available | pending | Avoid diagnosis, final triage level, treatment, disposition, or department recommendation. |
+| Mon `2026-05-25` | Send confirmed question / option template and `not_sure` answer-behavior answer. | Jason / NYCU | target | Include what is final for demo and what remains pending clinical / UI confirmation. |
 
 ## Teams Reply Strategy For Tonight Or Tomorrow Morning
 
-Do not answer the skip question as final before discussing with 多寶.
+Do not introduce a generic no-reason bypass as the final answer. The current direction is explicit `not_sure` option IDs; clinical review should confirm which questions include that option.
 
 Safe holding reply:
 
@@ -91,10 +91,10 @@ Ben、Lauren、Johnny 大家好，收到，謝謝。
 1. Start session with measured vitals：iMVS 完成量測後送 measured vital payload，NYCU 回 session_key 與第一題 question object。
 2. Submit answer：iMVS 帶 session_key 回傳答案，NYCU 回下一題 question object 或 staff_review_summary。
 
-題目與選項範本、以及「使用者答不出來是否可略過」這兩點，我們今晚或明早先跟多寶 / 臨床端確認後回覆。初步方向會以單選 / 複選、demo-safe wording、以及 staff-review summary boundary 為主。
+題目與選項範本、以及「使用者答不出來時如何以 Not sure 選項回傳」這兩點，我們今晚或明早先跟許醫師 / 臨床端確認後回覆。初步方向會以單選 / 複選、demo-safe wording、明確 option id，以及 staff-review summary boundary 為主。
 ```
 
-## Recommended Position Before 多寶 Review
+## Recommended Position Before 許醫師 Review
 
 ### Question / option template
 
@@ -111,51 +111,32 @@ Recommended structure:
 - output effect in `staff_review_summary`;
 - forbidden output language.
 
-Current first-lane packet:
-
-```text
-handoff/2026-05-21-duobao-style-tachycardia-live-demo-question-set.md
-```
-
-This packet implements the post-meeting decision to lead with a live-performable
+The current first-lane packet implements the post-meeting decision to lead with a live-performable
 tachycardia / palpitation / chest-tightness lane while keeping respiratory
 low-SpO2 as a synthetic fallback lane. It also records the API impact: endpoints
 stay the same, but `flow_version`, `case_id`, `question_set_version`, and
 question-object metadata must reflect the tachycardia lane.
 
-### Skip behavior
+### Not Sure behavior
 
 Working recommendation:
 
-- Do not use a generic silent skip for required safety questions.
-- For user uncertainty, prefer explicit answer options:
+- Do not use a generic no-reason bypass for required safety questions.
+- For user uncertainty, use explicit answer options:
   - `Not sure`
   - `Unable to answer`
   - `None of these`
-- If a question is non-critical and imedtac needs a skip button, represent it
-  explicitly in the API:
-
-```json
-{
-  "answer": {
-    "selected_option_ids": [],
-    "scale_value": null,
-    "skipped": true,
-    "skip_reason": "user_unable_to_answer"
-  }
-}
-```
-
+- iMVS should submit the returned option id through `answer.selected_option_ids`, for example `not_sure` or a question-specific `*_not_sure` id.
 - If required information is missing, `staff_review_summary` should say
   information is incomplete and staff should confirm, rather than inventing a
   clinical conclusion.
 
-Confirm with 多寶:
+Confirm with 許醫師:
 
 - Which first-lane questions are required?
 - Which can include `Not sure`?
 - Which can be optional?
-- Whether a generic "skip" button is acceptable in the first customer demo.
+- Which `not_sure` option ids should be returned for each question that supports uncertainty.
 
 ## Monday Deliverable Boundary
 
@@ -166,8 +147,8 @@ Can deliver by Monday:
 - API change-control note: question wording and option changes are versioned
   through `question_set_version` / `wording_version`, not endpoint churn;
 - question template for first demo lane;
-- skip-behavior policy;
-- imedtac input checklist;
+- `not_sure` answer-behavior policy;
+- 貴司 input checklist;
 - demo-safe staff-review output wording draft.
 
 Should not claim by Monday:
@@ -180,9 +161,9 @@ Should not claim by Monday:
 - clinical threshold validation;
 - validated tachycardia/arrhythmia diagnostic logic.
 
-## Open Inputs From imedtac
+## Open Inputs From 貴司
 
-Need from imedtac to freeze engineering details:
+Need from 貴司 to freeze engineering details:
 
 - actual Vital Upload API field dictionary;
 - example payload;

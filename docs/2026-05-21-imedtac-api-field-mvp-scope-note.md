@@ -70,8 +70,8 @@ MVP fixed value baseline:
 For the tachycardia live lane, option IDs such as `heart_racing`,
 `chest_tightness`, and `breathing_or_dizzy` are stable ids under
 `tachycardia-question-set-v0.2-draft`. Labels such as
-`Heart racing / palpitations` are display text and may change after 多寶 /
-許醫師 wording review without changing the API answer contract.
+`Heart racing / palpitations` are display text and may change after 許醫師 wording
+review without changing the API answer contract.
 
 ## Endpoint 1 Request
 
@@ -83,7 +83,7 @@ For the tachycardia live lane, option IDs such as `heart_racing`,
 | `case_id` | MVP 必要 | 選定本次 demo case。 |
 | `case_version` | MVP 建議 | MVP 可先固定；完整 API 用於 case 內容變更追蹤。 |
 | `fixture_version` | MVP 建議 | MVP 可先固定；完整 API 用於 rehearsal / regression 對帳。 |
-| `question_set_version` | MVP 必要 | 多寶 / 許醫師調整題目時維持 endpoint 穩定。 |
+| `question_set_version` | MVP 必要 | 許醫師調整題目時維持 endpoint 穩定。 |
 | `wording_version` | MVP 必要 | 管理對外 summary wording 與 scope-control wording。 |
 | `request_id` | MVP 必要 | demo rehearsal debug 需要。 |
 | `idempotency_key` | MVP 必要 | 處理 timeout / retry 的核心欄位。 |
@@ -179,8 +179,7 @@ Scope controls:
 | `question.option_count` | MVP 建議 | 支援 UI capacity check。 |
 | `question.none_option_id` | 完整 API | MVP 可在有 none 選項的題目才提供。 |
 | `question.required` | MVP 建議 | tachycardia live lane 需要區分 Q1-Q5 必答與 Q7 可選 / staff-confirmation 題。 |
-| `question.allow_not_sure` | MVP 建議 | 用 explicit option 支援使用者不確定，避免 silent skip 造成 summary 誤讀。 |
-| `question.allow_skip` | 完整 API / 需 imedtac 確認 | 若 iMVS 要顯示 skip button，需和 `answer.skipped` / `skip_reason` 一起定義；Q1-Q5 預設不允許 silent skip。 |
+| `question.allow_not_sure` | MVP 建議 | 用 explicit option 支援使用者不確定，避免無原因略過造成 summary 誤讀。 |
 | `question.max_selections` | MVP 建議 | `multi_choice` 題需要限制選取數與互斥選項行為。 |
 | `question.trigger_reason_codes` | MVP 建議 | 記錄為什麼此題出現，例如 `measured_elevated_heart_rate_demo` 或 `reported_palpitations`。 |
 | `question.summary_effect` | 完整 API | 讓工程與 clinical reviewer 對齊選項如何進入 `staff_review_summary`。 |
@@ -207,9 +206,9 @@ configuration values and question metadata, not the endpoint shape.
 System-design conclusion: the same two endpoints can serve both respiratory and
 tachycardia lanes if the router treats `flow_version`, `case_id`, and
 `question_set_version` as configuration. The API schema only needs revision if
-imedtac requires a generic skip button, more question types, or stricter UI
-rendering constraints than the current `single_choice` / `multi_choice` object
-can express.
+貴司 requires a generic no-reason bypass control, more question types, or stricter
+UI rendering constraints than the current `single_choice` / `multi_choice`
+object can express.
 
 ## API Contract Audit For Tachycardia Demo Case
 
@@ -303,11 +302,11 @@ The tachycardia demo case makes several integration questions more visible:
   (`live_measured`, `synthetic_override`, `local_scripted_demo`).
 - `measurement_status` / `quality_flag`: imedtac should confirm current device
   values for missing, failed, poor quality, and manual-entry cases.
-- `answer.skipped` / `skip_reason`: only needed if iMVS exposes a generic skip
-  button. The current tachycardia questions should use explicit `Not sure` /
-  `Unable to answer` options instead of silent skip.
-- `question.required`, `allow_skip`, `allow_not_sure`, `max_selections`, and
-  `none_option_id`: keep these if imedtac wants NYCU to drive UI validation.
+- Generic no-reason bypass control is excluded from the June v0.2 contract. If
+  requested later, it should be handled as a separate change request with a new
+  answer-field definition.
+- `question.required`, `allow_not_sure`, `not_sure_option_id`, `max_selections`, and
+  `none_option_id`: keep these if 貴司 wants NYCU to drive UI validation.
 - API base URL, authentication, CORS / firewall / VPN path, and timeout budget:
   these are not clinical fields, but they are required for a real remote demo
   rehearsal.

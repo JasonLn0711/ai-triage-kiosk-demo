@@ -13,7 +13,6 @@ source:
   - ../source/2026-05-21-imedtac-post-meeting-progress-record/source.md
   - ../source/2026-05-21-imedtac-teams-api-followup/source.md
   - ./2026-05-21-imvs-nycu-api-design-v0.2-draft.md
-  - ./2026-05-21-duobao-style-tachycardia-live-demo-question-set.md
   - ./api-examples/
 ---
 
@@ -26,6 +25,14 @@ Ben、Lauren、Johnny 大家好：
 本版同時把 `2026-05-12` 貴司已提供的 iMVS Product Spec `V2.0.4` 與 iMVS API Definition `V1.4` 納入設計 baseline。 NYCU 端會先以既有 Vital Sign Upload API 的欄位與單位作為 adapter 起點，再請貴司工程團隊確認目前 demo machine / GitHub 格式是否有欄位名稱、optional/required 或 missing/failure semantics 的更新。
 
 此 API contract 定位為 synthetic-data demo / product capability demo 的工程整合文件。輸出聚焦在 vital-aware intake support、typed-question workflow、staff-review summary 與 demo preview；正式臨床決策、production HIS / EMR / FHIR integration、real patient-data flow 與產品化驗證由後續 governance path 管理。
+
+## Contract Baseline And Change-Control Rule
+
+本文送出後即作為六月 demo 的 shared implementation baseline。除非 NYCU 與貴司另行討論、明確記錄並更新版本，本文的檔案識別、endpoint path、request / response JSON object shape、欄位名稱、欄位定義、required / optional 狀態、enum / code values、answer semantics、version fields 與六月預設 workflow mode 都視為固定契約。
+
+Teams、email 或會議訊息可以提出問題與釐清事項，但不會直接改變 API contract。任何 contract change 都需要一筆明確 change request，內容包含 current rule、proposed rule、reason、compatibility impact、owner、target date、是否需要 version bump，以及雙方工程團隊確認結果；在 change request 確認前，兩邊 implementation 都以本文為準。
+
+Display text、clinical wording、question label 與 `staff_review_summary` wording 可以透過 `question_set_version` 與 `wording_version` 持續臨床審查；貴司 UI 不應解析 display text 作為流程判斷。Machine-readable keys、IDs、enums、booleans、numbers、endpoint paths 與 answer option IDs 是雙方工程團隊共同遵守的 integration surface。
 
 ## 六月 Demo 確認流程
 
@@ -95,18 +102,14 @@ NYCU 建議六月先 freeze 兩個 endpoint 的 shape。許醫師後續若調整
 下列情境會啟動 API schema revision：
 
 - 新增超出目前六月 scope 的題型，例如 free text、voice input 或待貴司 UI 確認的 `scale`；
-- 改變 answer payload，例如需要 question-specific `not_sure` option ids 或其他 answer metadata；
+- 改變目前已固定的 answer payload，例如不再使用 `selected_option_ids`、新增 free-text answer body、或新增目前 `question.allow_not_sure` / `question.not_sure_option_id` 無法表達的 answer metadata；
 - 新增 early handoff / stop behavior，需要更明確的 `handoff_required`、`handoff_reason_codes`、`session_state` 或 `next_action`；
 - 貴司 UI template constraints 比目前假設更嚴格，例如固定 option count、progress display constraints，或單題選項 / label 長度限制更嚴格；
 - vital payload field dictionary 需要 adapter 或 schema 對齊。
 
 因此，題庫與 wording 可以持續臨床審查；endpoint 串接則可先依照本文兩個 endpoint 進行。
 
-第一版 preset question / option template 建議採用 tachycardia live lane：
-
-```text
-handoff/2026-05-21-duobao-style-tachycardia-live-demo-question-set.md
-```
+第一版 preset question / option template 建議採用許醫師 tachycardia live lane；對外 integration contract 以本文的 endpoint、field、version values 與 JSON examples 為準。
 
 這份題組使用 `single_choice` / `multi_choice`，以 `demo-tachycardia-live-001`、`tachycardia-live-demo-flow-v0.2-draft`、以及 `tachycardia-question-set-v0.2-draft` 管理版本。Respiratory low-SpO2 lane 保留為 synthetic fallback / evidence demo lane。
 

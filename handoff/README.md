@@ -38,6 +38,7 @@ Current detailed discussion artifacts:
 - `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
+- `decisions/2026-05-22-api-contract-freeze-and-change-control.md`
 - `docs/2026-05-19-two-phase-question-flow-design.md`
 - `docs/version-control-policy.md`
 - `docs/2026-05-19-api-session-design-plain-explanation.md`
@@ -64,13 +65,17 @@ Current v0.2 freeze-gate additions:
 - respiratory early handoff is registered as
   `FLOW-RESPIRATORY-EARLY-HANDOFF`;
 - tachycardia live demo is registered as `FLOW-TACHYCARDIA-LIVE-DEMO` with the
-  first-lane question template in
-  `2026-05-21-duobao-style-tachycardia-live-demo-question-set.md`;
+  first-lane tachycardia question template as the active clinical review draft;
 - examples carry `case_version`, `fixture_version`, `question_set_version`, and
   `wording_version`;
+- `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` is the June demo
+  implementation baseline after it is sent; endpoint paths, file identity,
+  field names, field meanings, requiredness, enum values, answer semantics, and
+  version identifiers should not change without an explicit recorded change
+  request;
 - staff summary uses `review_basis` rather than `assessment_support`;
 - the answer contract uses explicit `not_sure`-style option IDs instead of a
-  generic skip interaction, because `skip` is a result rather than an
+  generic no-reason bypass, because the bypass event is a result rather than an
   interpretable reason;
 - error examples fall back to standard staff workflow and do not include
   generated summaries.
@@ -99,8 +104,8 @@ Post-Duobao internal sync update:
 - Confirm reusable iMVS question templates before promising a scalable dynamic
   question loop: `single_choice`, `multi_choice`, numeric / scale, variable
   option counts, label limits, and no-scroll behavior.
-- Schedule an actual iMVS machine review with 多寶 / 許醫師 before freezing the
-  customer-visible flow.
+- Schedule an actual iMVS machine review with 許醫師 before freezing the
+  customer-visible wording and clinical content.
 
 Post-Wu patent-protection update:
 

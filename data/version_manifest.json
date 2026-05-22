@@ -2,7 +2,7 @@
   "project_version": "0.2.0",
   "version_scheme": "semver",
   "status": "draft_demo_only",
-  "updated_at": "2026-05-21",
+  "updated_at": "2026-05-22",
   "api_contract": {
     "api_version": "2026-05-22-demo-v0.2-draft",
     "schema_version": "imvs-nycu-triage-demo-schema-v0.2-draft",
@@ -31,6 +31,8 @@
       "POST /api/triage-demo/sessions",
       "POST /api/triage-demo/sessions/{session_key}/answers"
     ],
+    "contract_baseline_document": "handoff/2026-05-21-imedtac-two-endpoint-api-reply.md",
+    "contract_freeze_rule": "Endpoint paths, field names, field definitions, requiredness, enum values, answer semantics, version identifiers, and the default workflow mode remain fixed unless both engineering teams record an explicit change request.",
     "future_workflow_modes": ["parallel_measurement_intake"],
     "future_workflow_example_files": [
       "2026-05-21-update-vitals-request-demo-tachycardia.json"
@@ -59,6 +61,10 @@
     {
       "item": "schema_version",
       "control": "Payload/schema version used by all API examples and integration handoffs."
+    },
+    {
+      "item": "contract_baseline_document",
+      "control": "External-ready API reply that serves as the fixed June demo implementation baseline unless a recorded bilateral change request updates it."
     },
     {
       "item": "field_dictionary_baseline",
