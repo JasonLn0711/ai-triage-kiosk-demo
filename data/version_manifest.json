@@ -32,7 +32,15 @@
       "POST /api/triage-demo/sessions/{session_key}/answers"
     ],
     "contract_baseline_document": "handoff/2026-05-21-imedtac-two-endpoint-api-reply.md",
-    "contract_freeze_rule": "Endpoint paths, field names, field definitions, requiredness, enum values, answer semantics, version identifiers, and the default workflow mode remain fixed unless both engineering teams record an explicit change request.",
+    "contract_scope": "june_small_fixed_contract",
+    "baseline_evidence": {
+      "sent_email_record": "source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md",
+      "sent_email_time": "2026-05-22T12:17:00+08:00",
+      "teams_reply_record": "source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md",
+      "teams_reply_time": "2026-05-22T12:24:00+08:00"
+    },
+    "future_complete_api_design_plan": "docs/2026-05-22-future-complete-api-design-plan.md",
+    "contract_freeze_rule": "Only the small June implementation contract in the external API reply is fixed for immediate integration. Complete trace-friendly fields stay in future planning until both engineering teams record an explicit change request.",
     "future_workflow_modes": ["parallel_measurement_intake"],
     "future_workflow_example_files": [
       "2026-05-21-update-vitals-request-demo-tachycardia.json"
@@ -64,7 +72,11 @@
     },
     {
       "item": "contract_baseline_document",
-      "control": "External-ready API reply that serves as the fixed June demo implementation baseline unless a recorded bilateral change request updates it."
+      "control": "External-ready API reply that serves as the small fixed June demo implementation baseline unless a recorded bilateral change request updates it."
+    },
+    {
+      "item": "future_complete_api_design_plan",
+      "control": "Internal roadmap for complete trace-friendly API fields that are not required from the June demo integration."
     },
     {
       "item": "field_dictionary_baseline",

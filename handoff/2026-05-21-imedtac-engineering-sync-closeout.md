@@ -144,13 +144,14 @@ engineering boundary after the imedtac call:
 Sources:
 
 - `../source/2026-05-21-imedtac-teams-api-followup/source.md`
+- `../source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md`
 - `../source/2026-05-21-imedtac-post-meeting-progress-record/source.md`
 
 | Task | Owner | Due / timing | Status | Notes |
 | --- | --- | --- | --- | --- |
-| Provide two-endpoint API document to Ben / Lauren / Johnny. | NYCU / Jason | `2026-05-22` target | drafted | Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`; June contract is start-session-with-vitals plus submit-answer. |
+| Provide two-endpoint API document to Ben / Lauren / Johnny. | NYCU / Jason | `2026-05-22` target | sent | Jason sent the API packet by Gmail at `2026-05-22 12:17` and confirmed it in Teams at `2026-05-22 12:24`; use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` as the June small fixed contract. |
 | Provide preset question and option template contents. | NYCU / Jason with 多寶 / 許醫師 wording review | Tomorrow or Monday from the Teams ask: `2026-05-22` or `2026-05-25` | pending | Include question ids, option ids, labels, required/optional status, and demo-safe wording. |
-| Decide and reply on user skip behavior. | NYCU / Jason with 多寶 / 許醫師 clinical review; imedtac UI to confirm rendering | Before sending question template if possible | pending | Default to explicit `Unable to answer` / `I am not sure` options for clinically relevant questions; avoid silent skip for required safety questions. |
+| Decide and reply on user skip behavior. | NYCU / Jason with 多寶 / 許醫師 clinical review; imedtac UI to confirm rendering | Before sending question template if possible | replied | Jason's Teams reply states that the June demo should not use a generic skip button; use explicit `Not sure` option ids returned through `answer.selected_option_ids`. |
 | Align first customer-demo lane with imedtac's post-meeting preference. | NYCU / Jason with 多寶 / 許醫師 review | Before Monday `2026-05-25` if possible | pending | imedtac prefers tachycardia / chest-tightness because HR can be raised live; keep output as staff-review summary, not formal triage result. |
 | Preserve Teams channel as engineering communication route. | NYCU / Jason | done after source capture | recorded | Johnny opened `AI Triage 討論 w/ 陽交大`; Ben and Lauren are the primary imedtac technical contacts. |
 

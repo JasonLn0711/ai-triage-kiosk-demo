@@ -7,10 +7,15 @@ type: source
 status: active
 channel: Microsoft Teams
 source_note: user-provided screenshot and copied chat text
+records:
+  - teams-thread-record-2026-05-22.md
 related:
   - ../2026-05-21-imedtac-engineering-sync/meeting-record.md
   - ../../handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md
   - ../../handoff/2026-05-21-imedtac-engineering-sync-closeout.md
+  - ../../handoff/2026-05-21-imedtac-two-endpoint-api-reply.md
+  - ../../decisions/2026-05-22-api-contract-freeze-and-change-control.md
+  - ../2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md
 ---
 
 # 2026-05-21 imedtac Teams API Follow-Up
@@ -18,14 +23,16 @@ related:
 ## Source Boundary
 
 This note preserves the Microsoft Teams chat follow-up provided by Jason on
-`2026-05-21`. It records the post-meeting engineering communication channel and
-the immediate imedtac asks after the `2026-05-21` engineering sync.
+`2026-05-21` and the follow-up reply screenshot provided on `2026-05-22`. It records the post-meeting engineering communication channel, the immediate imedtac asks after the `2026-05-21` engineering sync, and Jason's `2026-05-22 12:24` Teams reply after sending the API packet by email.
 
 Treat this as coordination evidence and task routing. It is not a clinical
 source, regulatory source, production integration approval, or final API
 acceptance.
 
 ## Raw Teams Conversation
+
+The complete screenshot-based working record is preserved in
+`teams-thread-record-2026-05-22.md`.
 
 ```text
 Johnny Fang 方偉翰, imedtac Corp. added Jason Lin and 3 others to the chat.
@@ -60,6 +67,19 @@ Ben Siu 蕭銳輝, imedtac Corp.
 另外在設計上有想請教的，原先有設想到用戶如果答不出來可以略過，想問實務上可以嗎? 如果不行可以取消這個行為
  
 以上兩個問題我們確認後回覆
+
+Today 12:24 PM
+
+Dear all,
+API 回覆文件我剛剛已經用 email 寄出，方便後續討論以及工程端串接。
+
+關於前面的兩個問題：
+
+1. 預設題目與選項範本，我們會先做第一版 preset questions/options，預計星期一提供。
+
+2. 使用者答不出來的行為，我們建議這次 demo 不做 generic skip button。因為 skip 只代表使用者略過，但無法判斷是不理解問題、不知道怎麼回答，還是忘記答案。建議改成較明確的 `Not sure` 選項，iMVS 回傳對應的 option id，例如 `not_sure` 或 question-specific `*_not_sure`，這樣 summary 裡也能保留可解讀的回答狀態。
+
+再麻煩大家查閱 email 附件，謝謝。
 ```
 
 ## Working Extraction
@@ -72,7 +92,8 @@ Participants / roles surfaced in the chat:
   contacts.
 - Lauren Wang 王瑀蕎: added by Ben as a primary imedtac technical contact.
 - Jason Lin: acknowledged the channel and said NYCU would confirm the two
-  follow-up questions.
+  follow-up questions, then replied on `2026-05-22 12:24` that the API packet
+  had been sent by email.
 - 多寶 / 許: tagged by Jason for visibility check.
 
 Immediate imedtac asks:
@@ -84,12 +105,23 @@ Immediate imedtac asks:
    not clinically or operationally appropriate, imedtac can remove the skip
    behavior.
 
+Jason's `2026-05-22 12:24` answer:
+
+- API reply file was already sent by email for follow-up discussion and
+  engineering integration.
+- First preset questions/options will be prepared as a first version and are
+  expected by Monday.
+- June demo should not use a generic skip button for unable-to-answer behavior.
+- Use an explicit `Not sure` option and return its option id, such as `not_sure`
+  or question-specific `*_not_sure`, so the summary preserves interpretable
+  answer state.
+
 ## Task Routing
 
-The API document ask maps to:
+The API document ask is now answered by:
 
-- `../../handoff/2026-05-21-imvs-nycu-api-design-v0.2-draft.md`
-- `../../handoff/api-examples/`
+- `../../handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`
+- `../2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md`
 
 The preset questions and options ask maps to:
 
@@ -97,11 +129,8 @@ The preset questions and options ask maps to:
 - `../../data/api_question_mapping.csv`
 - future company-facing question template packet.
 
-The skip behavior question needs review before company response:
+The unable-to-answer behavior is now externally answered:
 
-- Product / UI: whether iMVS supports a skip action and how skipped answers are
-  represented.
-- Clinical / safety: which questions are required for safe staff-review summary
-  generation and which can be optional.
-- API: whether `answer.skipped=true`, `skip_reason`, or a fixed "unable to
-  answer" option is safer than a generic skip button.
+- Do not implement a generic skip button for the June demo.
+- Use explicit `Not sure` option IDs returned through `answer.selected_option_ids`.
+- Treat future changes to this behavior as a recorded change request.

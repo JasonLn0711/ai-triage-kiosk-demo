@@ -10,7 +10,9 @@ source:
   - ../source/2026-05-21-imedtac-engineering-sync/meeting-record.md
   - ../source/2026-05-21-imedtac-post-meeting-progress-record/source.md
   - ../source/2026-05-21-imedtac-teams-api-followup/source.md
+  - ../source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md
   - ../source/2026-05-21-duobao-post-imedtac-internal-sync/meeting-record.md
+  - ../source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md
   - ./2026-05-21-imedtac-two-endpoint-api-reply.md
   - ./2026-05-21-duobao-style-tachycardia-live-demo-question-set.md
   - ./2026-05-21-imedtac-engineering-open-issues-checklist.md
@@ -64,22 +66,49 @@ writeback design.
   and options;
 - confirm how the UI should represent a user who is not sure how to answer.
 
+Jason replied in Teams at `2026-05-22 12:24` that the API reply document had
+already been sent by email, the first preset questions/options would be
+provided by Monday, and the June demo should use explicit `Not sure` option ids
+instead of a generic skip button.
+
 ## Delivery Plan
 
 | Date | Deliverable | Owner | Status | Notes |
 | --- | --- | --- | --- | --- |
 | Thu `2026-05-21` night | Discuss Johnny's two Teams questions with 許醫師. | Jason + 許醫師 | pending | Focus on question template timing and `not_sure` answer behavior. |
-| Thu `2026-05-21` night or Fri `2026-05-22` morning | Send holding reply in Teams. | Jason | ready | Acknowledge two-endpoint API document; say question template and `not_sure` answer behavior will be confirmed after internal clinical review. |
-| Fri `2026-05-22` | Send two-endpoint API document baseline. | Jason / NYCU | ready | Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`. |
+| Thu `2026-05-21` night or Fri `2026-05-22` morning | Send holding reply in Teams. | Jason | superseded by sent reply | Jason sent a concrete reply at `2026-05-22 12:24`: API packet sent by email, first question/option template by Monday, and no generic skip button for the June demo. |
+| Fri `2026-05-22` | Send two-endpoint API document baseline. | Jason / NYCU | sent | Sent by Gmail at `2026-05-22 12:17`; confirmed in Teams at `2026-05-22 12:24`; use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` as the small fixed June contract. |
 | Fri `2026-05-22` | Track engineering open issues and change-control. | Jason | ready as checklist | Use `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md`; send selected P0/P1 asks to 貴司. |
 | Fri `2026-05-22` | Draft preset question / option template. | Jason | drafted | Use the tachycardia live lane; keep single-choice / multi-choice only and include `Not sure` / staff-confirmation options where clinically safer than an unexplained bypass. |
 | Fri `2026-05-22` | Ask 貴司 for current field-dictionary deltas from the 5/12 iMVS V1.4 baseline and UI limits. | Jason | pending | Required to freeze exact payload names, optionality, missing/failure semantics, and rendering constraints. |
 | Sat-Sun `2026-05-23` to `2026-05-24` | Refine tachycardia live-performance lane and respiratory synthetic fallback lane. | Jason + 許醫師 if available | pending | Avoid diagnosis, final triage level, treatment, disposition, or department recommendation. |
-| Mon `2026-05-25` | Send confirmed question / option template and `not_sure` answer-behavior answer. | Jason / NYCU | target | Include what is final for demo and what remains pending clinical / UI confirmation. |
+| Mon `2026-05-25` | Send confirmed question / option template. | Jason / NYCU | target | The `not_sure` answer-behavior direction has already been sent in Teams; Monday should focus on the first preset question/option packet and any remaining clinical / UI confirmation notes. |
 
-## Teams Reply Strategy For Tonight Or Tomorrow Morning
+## Sent Communication Record
 
-Do not introduce a generic no-reason bypass as the final answer. The current direction is explicit `not_sure` option IDs; clinical review should confirm which questions include that option.
+Email sent at `2026-05-22 12:17`:
+
+- source: `../source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md`;
+- attachments: `2026-05-21-imedtac-two-endpoint-api-reply.md` and `iMVS__NYCU_AI_Triage_Demo_有關_Endpoint_API_回覆文件.pdf`;
+- baseline rule: the attached API reply is the June demo implementation baseline, and endpoint, field-name, requiredness, enum, answer-behavior, or UI-constraint changes require an explicit change request.
+
+Teams reply sent at `2026-05-22 12:24`:
+
+- source: `../source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md`;
+- API packet was sent by email for follow-up discussion and engineering integration;
+- first preset questions/options are expected by Monday;
+- the June demo should not use a generic skip button for unable-to-answer behavior;
+- iMVS should return an explicit `Not sure` option id such as `not_sure` or question-specific `*_not_sure`.
+
+## Superseded Teams Holding-Reply Draft
+
+The actual Teams reply was sent at `2026-05-22 12:24` and is preserved in the
+source record above. Keep this earlier holding-reply draft only as planning
+context; do not use it as the current external answer.
+
+Do not introduce a generic no-reason bypass as the final answer. The current
+direction is explicit `not_sure` option IDs; clinical review should confirm
+which questions include that option.
 
 Safe holding reply:
 

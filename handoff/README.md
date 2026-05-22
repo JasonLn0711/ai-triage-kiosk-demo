@@ -39,6 +39,9 @@ Current detailed discussion artifacts:
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
 - `decisions/2026-05-22-api-contract-freeze-and-change-control.md`
+- `source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md`
+- `source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md`
+- `docs/2026-05-22-future-complete-api-design-plan.md`
 - `docs/2026-05-19-two-phase-question-flow-design.md`
 - `docs/version-control-policy.md`
 - `docs/2026-05-19-api-session-design-plain-explanation.md`
@@ -66,13 +69,21 @@ Current v0.2 freeze-gate additions:
   `FLOW-RESPIRATORY-EARLY-HANDOFF`;
 - tachycardia live demo is registered as `FLOW-TACHYCARDIA-LIVE-DEMO` with the
   first-lane tachycardia question template as the active clinical review draft;
-- examples carry `case_version`, `fixture_version`, `question_set_version`, and
-  `wording_version`;
-- `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` is the June demo
-  implementation baseline after it is sent; endpoint paths, file identity,
-  field names, field meanings, requiredness, enum values, answer semantics, and
-  version identifiers should not change without an explicit recorded change
-  request;
+- `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` is the June demo small
+  fixed implementation baseline after it is sent; the complete trace-friendly
+  API design belongs in `docs/2026-05-22-future-complete-api-design-plan.md`
+  until a later recorded change request promotes fields into the external
+  contract;
+- Jason's `2026-05-22 12:17` sent Gmail reply confirms that this baseline was
+  communicated externally and that endpoint, field-name, requiredness, enum,
+  answer-behavior, or UI-constraint changes require a recorded change request;
+- Jason's `2026-05-22 12:24` Teams reply confirms the same API packet was sent
+  by email, commits NYCU to provide the first preset questions/options by
+  Monday, and states that the June demo should use explicit `Not sure` option
+  IDs instead of a generic skip button;
+- minimum external versions are `api_version`, `question_set_version`, and
+  `wording_version`; additional trace versions can be NYCU-managed or future
+  fields;
 - staff summary uses `review_basis` rather than `assessment_support`;
 - the answer contract uses explicit `not_sure`-style option IDs instead of a
   generic no-reason bypass, because the bypass event is a result rather than an
