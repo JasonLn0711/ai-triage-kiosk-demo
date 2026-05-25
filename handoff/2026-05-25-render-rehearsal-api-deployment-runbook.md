@@ -77,7 +77,7 @@ manual deploy of GitHub commit `c190240`.
 | Health Check Path | `/healthz` |
 | Root Directory | leave blank |
 | Auto-Deploy | `On Commit` is acceptable for rehearsal |
-| Environment Variables | `DEMO_BEARER_TOKEN` is configured in Render for token-required rehearsal; the actual value is not stored in repo files |
+| Environment Variables | `DEMO_BEARER_TOKEN` should be saved in Render for token-required rehearsal; the actual value is not stored in repo files |
 
 The repo now defines:
 
@@ -141,10 +141,18 @@ Set the actual token only in Render environment variables and share it with
 imedtac through the agreed private channel. Do not paste the token into
 Markdown, screenshots, logs, Git history, or command history.
 
-Jason configured `DEMO_BEARER_TOKEN` in the Render Environment page on
+Jason prepared `DEMO_BEARER_TOKEN` in the Render Environment page on
 `2026-05-25`. The value is intentionally not recorded here. Token-required
-runtime behavior becomes effective after the token-gate code is published to
-GitHub `main` and Render rebuilds/redeploys the service.
+runtime behavior becomes effective only after the environment variable is saved
+and Render rebuilds/redeploys the latest GitHub `main` commit.
+
+Post-push verification on `2026-05-25 20:01 GMT+8`, after publishing the
+token-gate code to GitHub `main`, still returned HTTP `200` for a no-token
+`POST /api/triage-demo/sessions`. This means the public Render service has not
+yet entered token-required mode. Remaining Render action: confirm
+`DEMO_BEARER_TOKEN` is saved, trigger `Save, rebuild, and deploy` or
+`Manual Deploy -> Deploy latest commit`, then verify no-token POST returns
+HTTP `401` / `demo_bearer_token_required`.
 
 ## CORS Origin Boundary
 

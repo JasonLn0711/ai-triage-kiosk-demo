@@ -194,10 +194,13 @@ NYCU implementation checklist:
 - Before enabling token-required rehearsal, set `DEMO_BEARER_TOKEN` in Render
   and share the actual token only through the agreed private channel.
 - Keep tokens out of repo docs and screenshots.
-- Render Environment now has a `DEMO_BEARER_TOKEN` value configured by Jason for
-  token-required rehearsal; the value is intentionally not stored in this repo.
-  Token-required behavior becomes live after this token-gate code is published
-  to GitHub `main` and Render rebuilds/redeploys.
+- Jason prepared a `DEMO_BEARER_TOKEN` value in Render for token-required
+  rehearsal; the value is intentionally not stored in this repo. Token-required
+  behavior becomes live only after the environment variable is saved and Render
+  rebuilds/redeploys the latest GitHub `main` commit. Post-push public
+  verification on `2026-05-25 20:01 GMT+8` still returned HTTP `200` for a
+  no-token start-session request, so the remaining Render action is to
+  save/rebuild/redeploy and verify the expected HTTP `401` no-token response.
 - Render settings for the API service must use:
   - Build Command: `npm install && npm run render:build`
   - Start Command: `npm run render:start`

@@ -127,10 +127,13 @@ NYCU runtime behavior:
 The actual token is not stored in this repo, Markdown, screenshots, or logs; it
 should be shared only through the agreed private channel.
 
-Jason has configured `DEMO_BEARER_TOKEN` in Render for token-required rehearsal;
-the value is intentionally not recorded in this packet. Token-required behavior
-becomes live after the token-gate code is published to GitHub `main` and Render
-rebuilds/redeploys.
+Jason prepared `DEMO_BEARER_TOKEN` in Render for token-required rehearsal; the
+value is intentionally not recorded in this packet. Token-required behavior
+becomes live only after the environment variable is saved and Render
+rebuilds/redeploys the latest GitHub `main` commit. A post-push public check on
+`2026-05-25 20:01 GMT+8` still returned HTTP `200` for a no-token start-session
+request, so the remaining Render action is to save/rebuild/redeploy and verify
+the expected `401` no-token response.
 
 ## Start Session Request
 
