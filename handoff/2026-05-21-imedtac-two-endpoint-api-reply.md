@@ -12,6 +12,8 @@ source:
   - ../source/2026-05-21-imedtac-engineering-sync/meeting-record.md
   - ../source/2026-05-21-imedtac-post-meeting-progress-record/source.md
   - ../source/2026-05-21-imedtac-teams-api-followup/source.md
+  - ../source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md
+  - ../source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md
   - ../source/2026-05-25-duobao-afrvr-tachycardia-case/source.md
   - ../source/2026-05-23-to-2026-05-25-imedtac-teams-ui-api-followup/source.md
   - ./2026-05-21-imvs-nycu-api-design-v0.2-draft.md

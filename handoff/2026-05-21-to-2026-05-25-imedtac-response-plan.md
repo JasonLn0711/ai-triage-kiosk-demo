@@ -10,6 +10,8 @@ source:
   - ../source/2026-05-21-imedtac-engineering-sync/meeting-record.md
   - ../source/2026-05-21-imedtac-post-meeting-progress-record/source.md
   - ../source/2026-05-21-imedtac-teams-api-followup/source.md
+  - ../source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md
+  - ../source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md
   - ../source/2026-05-21-duobao-post-imedtac-internal-sync/meeting-record.md
   - ../source/2026-05-25-duobao-afrvr-tachycardia-case/source.md
   - ../source/2026-05-23-to-2026-05-25-imedtac-teams-ui-api-followup/source.md
@@ -42,6 +44,12 @@ writeback design.
 
 The `2026-05-25` delivery target is achieved for the current imedtac response
 package.
+
+The initial two-endpoint API packet was already sent by Gmail at
+`2026-05-22 12:17` and confirmed in Teams at `2026-05-22 12:24`. The current
+`2026-05-25` package keeps that shared implementation baseline and adds the
+tachycardia lane, Render rehearsal base URL, `idempotency_conflict` recovery,
+and iMVS answer-locking recommendation as the next-step integration layer.
 
 多寶 has provided the Case 2 AfRVR-style tachycardia question-answer demo case.
 It is archived as:
@@ -102,8 +110,8 @@ imedtac asked:
 | Date | Deliverable | Owner | Status | Notes |
 | --- | --- | --- | --- | --- |
 | Thu `2026-05-21` night | Discuss Johnny's two Teams questions with 多寶. | Jason + 多寶 | achieved / recorded | 多寶's `2026-05-25` case closes the first-lane question-template input; skip behavior is handled through explicit answer options rather than silent skip for required questions. |
-| Thu `2026-05-21` night or Fri `2026-05-22` morning | Send holding reply in Teams. | Jason | ready | Acknowledge two-endpoint API document; say question template and skip behavior will be confirmed after internal clinical review. |
-| Fri `2026-05-22` | Send two-endpoint API document draft. | Jason / NYCU | ready as draft | Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`. |
+| Thu `2026-05-21` night or Fri `2026-05-22` morning | Send holding reply in Teams. | Jason | sent / superseded | Jason confirmed in Teams at `2026-05-22 12:24` that the API packet had been sent by email and that the first question/option template would follow. |
+| Fri `2026-05-22` | Send two-endpoint API document draft. | Jason / NYCU | sent | Sent by Gmail at `2026-05-22 12:17`; use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` as the June small fixed contract baseline. |
 | Fri `2026-05-22` | Track engineering open issues and change-control. | Jason | ready as checklist | Use `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md`; send selected P0/P1 asks to imedtac. |
 | Fri `2026-05-22` | Draft preset question / option template. | Jason | achieved for first lane | Use `handoff/2026-05-21-duobao-style-tachycardia-live-demo-question-set.md` for the tachycardia live lane; 多寶's `2026-05-25` case confirms the selected answer path. Keep single-choice / multi-choice only and include `Not sure`, `None of these`, or staff-confirmation options where clinically safer than silent skip. |
 | Fri `2026-05-22` | Ask imedtac for current field-dictionary deltas from the 5/12 iMVS V1.4 baseline and UI limits. | Jason | pending | Required to freeze exact payload names, optionality, missing/failure semantics, and rendering constraints. |

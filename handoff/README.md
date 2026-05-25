@@ -38,6 +38,11 @@ Current detailed discussion artifacts:
 - `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
+- `decisions/2026-05-22-api-contract-freeze-and-change-control.md`
+- `decisions/2026-05-22-not-sure-answer-boundary.md`
+- `source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md`
+- `source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md`
+- `docs/2026-05-22-future-complete-api-design-plan.md`
 - `handoff/2026-05-25-render-rehearsal-api-deployment-runbook.md`
 - `docs/2026-05-19-two-phase-question-flow-design.md`
 - `docs/version-control-policy.md`
@@ -67,6 +72,10 @@ Current v0.2 freeze-gate additions:
 - tachycardia live demo is registered as `FLOW-TACHYCARDIA-LIVE-DEMO` with the
   first-lane question template in
   `2026-05-21-duobao-style-tachycardia-live-demo-question-set.md`;
+- Jason's `2026-05-22 12:17` Gmail reply and `2026-05-22 12:24` Teams reply
+  record that the two-endpoint packet was sent externally and that future
+  endpoint, field-name, requiredness, enum, answer-behavior, or UI-constraint
+  changes require a recorded change request;
 - examples carry `case_version`, `fixture_version`, `question_set_version`, and
   `wording_version`;
 - staff summary uses `review_basis` rather than `assessment_support`;

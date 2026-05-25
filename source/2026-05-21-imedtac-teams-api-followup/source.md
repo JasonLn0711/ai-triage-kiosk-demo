@@ -107,6 +107,12 @@ The skip behavior question needs review before company response:
 - API: whether `answer.skipped=true`, `skip_reason`, or a fixed "unable to
   answer" option is safer than a generic skip button.
 
+The `2026-05-22` Teams reply then answered the first demo behavior:
+
+- Do not implement a generic skip button for the June demo.
+- Use explicit `Not sure` option IDs returned through `answer.selected_option_ids`.
+- Treat future changes to this behavior as a recorded change request.
+
 ## Continued Follow-Up
 
 The visible follow-up from `2026-05-23` to `2026-05-25` is preserved separately

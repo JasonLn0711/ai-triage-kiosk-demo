@@ -52,7 +52,8 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `source/2026-05-20-duobao-demo-cases-question-design/` | 多寶 structured demo cases and question-design draft; use as clinical/product design input, not direct runtime wording |
 | `source/2026-05-21-imedtac-engineering-sync/` | Post-sync engineering source bundle: corrected transcript, user-provided meeting record, and repo-level meeting record confirming June `post_measurement_only` flow, Endpoint 1/3 merge, no voice, local fallback, and live-case performability decisions |
 | `source/2026-05-21-imedtac-post-meeting-progress-record/` | Johnny's post-meeting Gmail record confirming measure-first flow, Endpoint 1/3 merge, single/multi-choice UI, no voice, tachycardia live-demo preference, and NYCU action items |
-| `source/2026-05-21-imedtac-teams-api-followup/` | Microsoft Teams follow-up with Ben / Lauren / Johnny asking for the two-endpoint API document, preset questions/options, and skip-behavior guidance |
+| `source/2026-05-21-imedtac-teams-api-followup/` | Microsoft Teams follow-up with Ben / Lauren / Johnny asking for the two-endpoint API document, preset questions/options, and not-sure answer-behavior guidance; includes Jason's `2026-05-22 12:24` reply confirming the email-sent API packet, Monday preset question/option target, and no-generic-skip direction |
+| `source/2026-05-22-nycu-sent-api-reply-email/` | Jason's sent Gmail reply with the API packet, preserving the externally communicated small fixed June implementation baseline and `not_sure` answer-behavior position |
 | `source/2026-05-21-duobao-post-imedtac-internal-sync/` | Internal Jason / 多寶 post-meeting sync: full corrected transcript and notes confirming no formal triage-level output, AI placement in vital-aware question selection / summary, UI template requirements, and need for an actual iMVS machine review |
 | `source/2026-05-21-wu-line-ai-triage-patent-protection/` | Prof. Wu LINE instruction to discuss patents with Tomi and protect NYCU's patent/IP position before teaching imedtac the full reusable method |
 | `source/2026-05-21-wu-ai-triage-ip-and-career-call/` | Prof. Wu phone call confirming lab API as know-how boundary, idea-attribution requirements, product co-development contract questions, postdoc/personnel-cost runway, and June deep-cultivation proposal framing |
@@ -66,10 +67,11 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `docs/2026-05-19-expert-review-action-plan.md` | Expert-review action plan: keep scope narrow, add v0.2 fields, use `review_basis` / `review_action`, lock wording, and require owner/date closeout |
 | `docs/2026-05-19-two-phase-question-flow-design.md` | Two-phase API/UI design for parallel measurement-time intake and post-vital follow-up |
 | `docs/2026-05-20-duobao-demo-design-consistency-review.md` | Review of 多寶's structured cases/question design against current demo, API, and claim-boundary decisions |
+| `docs/2026-05-22-future-complete-api-design-plan.md` | Future complete API roadmap for trace-friendly fields, lifecycle, fallback, provenance, and two-phase expansion beyond the June small fixed contract |
 | `decisions/2026-05-20-june-demo-question-budget.md` | Decision that June case flows follow the 慧誠 / iMVS product-spec cap of fewer than 8 visible patient-facing questions |
-| `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` | External-ready two-endpoint API reply for imedtac engineering |
+| `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` | External-ready small fixed two-endpoint API contract for the June demo |
 | `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md` | Engineering integration checklist for open issues not fully captured by the API field tables |
-| `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md` | Internal response plan for API, question templates, and skip-behavior answer before Monday `2026-05-25` |
+| `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md` | Internal response plan for API, question templates, and `not_sure` answer behavior before Monday `2026-05-25` |
 | `docs/writing-method-policy.md` | Repo-wide confident, affirmative, non-defensive writing policy for articles, handoff notes, pre-reads, meeting packets, and company-facing artifacts |
 | `docs/version-control-policy.md` | Automated version-control policy for SemVer runtime, API/schema/flow versions, and demo-readiness checks |
 | `data/version_manifest.json` | Canonical version manifest checked against runtime files and API examples |
@@ -232,13 +234,15 @@ docs/repo-organization.md
    `idempotency_key` explained, and two-phase kept as future optimized mode.
 2. Use the closeout handoff as the next action sheet:
    `handoff/2026-05-21-imedtac-engineering-sync-closeout.md`.
-3. Respond to the Microsoft Teams follow-up:
-   provide the two-endpoint API document; prepare the preset question / option
-   template by `2026-05-22` or `2026-05-25`; answer whether users may skip
-   questions, with clinical review for required items.
-4. Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` as the API response
-   draft and `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md` as the
-   internal Monday response plan.
+3. Continue the Microsoft Teams follow-up from the recorded `2026-05-22 12:24`
+   reply: the API packet has been sent by email, the first preset question /
+   option template is due Monday `2026-05-25`, and user uncertainty should be
+   represented by explicit `not_sure` option IDs rather than a generic skip
+   button.
+4. Use `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` as the small fixed
+   June API response baseline and
+   `docs/2026-05-22-future-complete-api-design-plan.md` as the future complete
+   API roadmap.
 5. Use `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md` to
    track the engineering issues that are not solved by API field tables:
    change-control, session lifecycle, timeout / retry / idempotency, error /
@@ -251,7 +255,7 @@ docs/repo-organization.md
 7. Ask Ben / engineering whether imedtac can render generic question templates:
    `single_choice`, `multi_choice`, numeric / scale input, variable option
    counts, and no-scroll limits.
-8. Schedule an actual iMVS machine review with 多寶 / 許醫師 next week.
+8. Schedule an actual iMVS machine review with 許醫師 next week.
 9. Prepare the AI-Triage patent-protection brief for Prof. Wu / Tomi before
    sharing deeper reusable method details with imedtac.
 10. Add idea-attribution labels to high-value meeting records before the next
