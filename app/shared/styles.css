@@ -77,14 +77,26 @@ a {
 }
 
 button,
-.link-button {
+.link-button,
+select {
   min-height: 38px;
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 8px 12px;
   font: inherit;
+}
+
+button,
+.link-button {
   cursor: pointer;
   text-decoration: none;
+}
+
+select {
+  min-width: 190px;
+  border-color: var(--line);
+  background: #fff;
+  color: var(--ink);
 }
 
 .primary-button {
@@ -328,8 +340,20 @@ h3 {
 .actions-row {
   display: flex;
   flex-wrap: wrap;
+  align-items: end;
   gap: 8px;
   margin-top: 12px;
+}
+
+.select-control {
+  display: inline-grid;
+  gap: 4px;
+}
+
+.select-control span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .safety-strip {

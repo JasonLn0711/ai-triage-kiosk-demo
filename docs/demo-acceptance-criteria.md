@@ -1,7 +1,7 @@
 # Demo Acceptance Criteria
 
 Status: v0 clickable demo gate
-Last updated: 2026-05-20
+Last updated: 2026-05-25
 
 ## FIRST PRINCIPLE
 
@@ -14,7 +14,8 @@ integration.
 ## Functional Criteria
 
 - The demo opens at `http://localhost:4183/app/triage-kiosk/`.
-- The chest-pressure and fever/urinary synthetic cases are selectable.
+- The chest-pressure, fever/urinary, respiratory, and tachycardia live-demo
+  synthetic cases are selectable.
 - Each case shows a synthetic patient profile.
 - Each case shows a vital payload.
 - June case flows stay under `8` visible patient-facing questions; hidden
@@ -26,6 +27,26 @@ integration.
 - The right-side panel shows ranking rationale, answered fields, and a
   staff-review summary.
 - Reset returns the selected case to turn `0`.
+- The runtime visibly labels the active demo mode as `live_measured`,
+  `synthetic_override`, or `local_scripted_demo`.
+- The tachycardia live lane uses `demo-tachycardia-live-001`, HR `130 bpm`,
+  and no more than `7` visible questions.
+
+## Contract API Criteria
+
+- `npm run mock:api` starts a local contract API on `http://localhost:4193`.
+- `POST /api/triage-demo/sessions` returns `session_key`, `response_id`,
+  `progress.expected_total`, and one typed question.
+- `POST /api/triage-demo/sessions/{session_key}/answers` returns the next
+  typed question or `status=summary`.
+- `capabilities.max_questions` is treated as a UI capacity cap; it is not the
+  progress denominator.
+- Same `idempotency_key` retry returns the same response without advancing the
+  flow.
+- Same `idempotency_key` with a different body returns `idempotency_conflict`.
+- Invalid `session_key` returns stable `status=error`.
+- The final summary response includes `staff_review_summary` and
+  `summary_visibility=staff_only`.
 
 ## Governance Criteria
 
@@ -67,6 +88,7 @@ Expected result:
 
 ```text
 node tests pass
+contract tests pass
 smoke check passes
 git diff --check passes
 registry check reports OK

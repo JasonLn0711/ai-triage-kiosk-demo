@@ -65,7 +65,7 @@ MVP fixed value baseline:
 | `summary_visibility` | `staff_only` |
 | `client_event.input_mode` | `touch`; future: `keyboard`, `voice_confirmed`, `operator_scripted` |
 | `fallback.recommended_mode` | `standard_staff_workflow`, `local_scripted_demo`, `retry_remote_api` |
-| `error.code` | `api_timeout`, `invalid_session`, `measurement_quality_unavailable`, `missing_required_field`, `unsupported_question_type`, `idempotency_conflict` |
+| `error.code` | `api_timeout`, `invalid_session`, `invalid_answer`, `invalid_start_session_request`, `session_summary_ready`, `measurement_quality_unavailable`, `missing_required_field`, `unsupported_question_type`, `idempotency_conflict` |
 
 For the tachycardia live lane, option IDs such as `heart_racing`,
 `chest_tightness`, and `breathing_or_dizzy` are stable ids under

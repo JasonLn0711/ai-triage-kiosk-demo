@@ -11,9 +11,14 @@ const REQUIRED_FILES = [
   "app/triage-kiosk/triage-kiosk.js",
   "app/shared/styles.css",
   "core/triage_engine/index.js",
+  "api/lib/triage-demo-contract.js",
+  "api/triage-demo/sessions.js",
+  "api/triage-demo/sessions/[session_key]/answers.js",
+  "tests/contract/triage-demo-api.test.js",
   "demo/fixtures/chest-pain-high-bp-low-spo2.json",
   "demo/fixtures/fever-urinary.json",
-  "demo/fixtures/respiratory-low-spo2-early-handoff.json"
+  "demo/fixtures/respiratory-low-spo2-early-handoff.json",
+  "demo/fixtures/tachycardia-live-demo.json"
 ];
 
 function read(relativePath) {
@@ -33,16 +38,22 @@ for (const relativePath of REQUIRED_FILES) {
 const html = read("app/triage-kiosk/index.html");
 const script = read("app/triage-kiosk/triage-kiosk.js");
 const engine = require(path.join(ROOT, "core/triage_engine/index.js"));
+const contract = require(path.join(ROOT, "api/lib/triage-demo-contract.js"));
 
 assert(html.includes("AI Triage Kiosk Demo"), "Demo HTML should expose the English product title.");
 assert(html.includes("../../core/triage_engine/index.js"), "Demo HTML should load the triage engine.");
 assert(script.includes("AiTriageKioskEngine"), "Demo script should bind to the triage engine.");
 assert(script.includes("Selected #"), "Multi-choice selections should show visible selection order.");
 assert(script.includes("markVitalsReady"), "Demo script should expose the two-phase vitals-ready transition.");
+assert(script.includes("loadTachycardia"), "Demo script should expose a tachycardia live-case load control.");
+assert(script.includes("demoModeSelect"), "Demo script should expose the live/synthetic/local fallback mode control.");
 assert(engine.CASES.length >= 3, "At least three synthetic cases are required.");
 assert(engine.QUESTION_BANK.length >= 8, "The governed question bank is too small for the demo.");
 assert(engine.CASES.every((demoCase) => demoCase.profile && demoCase.profile.age && demoCase.profile.sex), "Every case should include synthetic patient profile metadata.");
 assert(engine.CASES.some((demoCase) => demoCase.id === "respiratory-low-spo2-early-handoff"), "Respiratory handoff case should be wired into the runtime.");
+assert(engine.CASES.some((demoCase) => demoCase.id === "demo-tachycardia-live-001"), "Tachycardia live case should be wired into the runtime.");
+assert(contract.expectedTotal === 7, "Contract API should expose the tachycardia expected_total denominator.");
+assert(contract.questionSequence.some((question) => question.id === "tachy-post-vital-heart-rate-cue"), "Contract API should include the post-vital HR cue question.");
 assert(engine.CASES.every((demoCase) => !demoCase.questionLimit || demoCase.questionLimit <= 7), "June demo cases should keep visible questions under 8.");
 assert(!html.includes("<textarea"), "Demo runtime should stay choice-only and not expose free-text input.");
 assert(engine.QUESTION_BANK.every((question) => question.type !== "text"), "Question bank should not include free-text questions.");

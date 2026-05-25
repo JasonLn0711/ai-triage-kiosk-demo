@@ -71,6 +71,26 @@ iMVS 完成 vital-sign measurement
 | P0-07 | Engineering environment path | imedtac plans browser direct call to NYCU API. NYCU must provide base URL, CORS for `http://localhost` and `http://localhost:5174`, and bearer-token header rule if enabled. | NYCU + imedtac engineering | before rehearsal | Browser preflight and first API call pass from imedtac demo origin. |
 | P0-08 | Demo acceptance criteria | 定義「串接完成」的最小可驗證流程。 | NYCU + imedtac | before rehearsal | rehearsal 能跑完 vital payload -> first question -> answer -> next question -> summary -> fallback check。 |
 
+## P0 Contract Closeout Snapshot - 2026-05-25
+
+NYCU can now start engineering rehearsal without waiting for final clinical
+wording. The endpoint shape is frozen for the June mock path:
+
+```http
+POST /api/triage-demo/sessions
+POST /api/triage-demo/sessions/{session_key}/answers
+```
+
+| ID | Rehearsal status | Evidence |
+| --- | --- | --- |
+| P0-02 | Closed for NYCU mock and first rehearsal. The field baseline uses the `2026-05-12` iMVS API `V1.4` vital dictionary and the tachycardia fixture uses HR `130`, SpO2 `98`, BP `102/68`, RR `16`, T `36.5 C`. imedtac still owns current-device delta confirmation, but it is no longer an endpoint-shape blocker. | `docs/2026-05-21-imedtac-api-field-mvp-scope-note.md`; `demo/fixtures/tachycardia-live-demo.json`; `handoff/2026-05-25-first-rehearsal-packet.md`. |
+| P0-03 | Closed for mock. Sessions return `session_key`, `session_expires_at`, `session_state=active`, then `summary_ready`. New answers after summary return `session_summary_ready`; invalid keys return `invalid_session`. | `api/lib/triage-demo-contract.js`; `tests/contract/triage-demo-api.test.js`. |
+| P0-04 | Closed for mock. Same `idempotency_key` retry returns the same response without advancing; same key with a different body returns `idempotency_conflict`. | `api/lib/triage-demo-contract.js`; `tests/contract/triage-demo-api.test.js`. |
+| P0-05 | Closed. `capabilities.max_questions` is a capacity cap; UI progress uses response-level `progress.expected_total`. The tachycardia lane returns `expected_total=7`. | `handoff/2026-05-25-imedtac-integration-next-steps.md`; `handoff/2026-05-25-first-rehearsal-packet.md`; contract tests. |
+| P0-06 | Closed for rehearsal. Runtime and presenter notes support `live_measured`, `synthetic_override`, and `local_scripted_demo`; error responses include stable `status=error`. | `docs/2026-05-25-demo-fallback-script.md`; `docs/demo-script-for-presenter.md`; `api/lib/triage-demo-contract.js`. |
+| P0-07 | Closed for local/serverless mock. CORS allows `http://localhost` and `http://localhost:5174`, supports `OPTIONS`, and documents `Authorization: Bearer <demo token>` without storing a token. Hosted base URL remains a deployment value, not a schema blocker. | `api/triage-demo/sessions.js`; `api/triage-demo/sessions/[session_key]/answers.js`; `handoff/2026-05-25-first-rehearsal-packet.md`. |
+| P0-08 | Closed for first rehearsal. Acceptance now covers start session, next question, answer, summary, retry, conflict, invalid session, CORS, summary preview, and fallback mode. | `docs/demo-acceptance-criteria.md`; `handoff/2026-05-25-first-rehearsal-packet.md`; `tests/contract/triage-demo-api.test.js`. |
+
 ## P1 Important Integration Issues
 
 這些項目不一定阻擋 API 文件送出，但會影響 demo 畫面、工程量與 rehearsal
@@ -139,9 +159,9 @@ endpoint。
 | --- | --- | --- |
 | Add API change-control section to the external API reply file. | Jason | done |
 | Send the two-endpoint API reply first. | Jason / NYCU | done / in discussion |
-| Reply to Ben's `request_id` / `idempotency_key` and `max_questions` questions. | Jason / NYCU | immediate |
-| Confirm whether summary preview should be iMVS-native rendering or temporary NYCU-hosted demo preview. | imedtac UI + NYCU | immediate |
+| Reply to Ben's `request_id` / `idempotency_key` and `max_questions` questions. | Jason / NYCU | drafted in Teams reply; send externally |
+| Confirm whether summary preview should be iMVS-native rendering or temporary NYCU-hosted demo preview. | imedtac UI + NYCU | first rehearsal acceptance item |
 | Ask imedtac for the remaining P0/P1 engineering input packet. | Jason | before rehearsal |
 | Discuss skip / required-question policy with 多寶 / 許醫師. | Jason + 多寶 / 許醫師 | achieved for tachycardia lane; refine after UI confirmation |
-| Decide whether mock endpoint is needed or JSON examples are enough. | imedtac engineering + NYCU | before first rehearsal |
+| Decide whether mock endpoint is needed or JSON examples are enough. | imedtac engineering + NYCU | mock implemented for rehearsal |
 | Run first rehearsal against Remote REST API Mode or Local Scripted Demo Mode. | both teams | before `2026-06-10` customer demo |

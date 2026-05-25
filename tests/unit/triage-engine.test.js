@@ -73,3 +73,58 @@ test("respiratory case keeps visible question count under eight", () => {
   assert.equal(engine.rankQuestions(state).length, 0);
   assert.equal(engine.buildStaffSummary(state).missing.length, 0);
 });
+
+test("tachycardia live case is wired as the HR 130 seven-question lane", () => {
+  const tachyCase = engine.findCase("demo-tachycardia-live-001");
+  assert.equal(tachyCase.fixturePath, "demo/fixtures/tachycardia-live-demo.json");
+  assert.equal(tachyCase.vitals.heartRate, "130 bpm");
+  assert.equal(tachyCase.questionLimit, 7);
+  assert.deepEqual(tachyCase.allowedQuestionIds, [
+    "tachy-chief-concern",
+    "tachy-onset",
+    "tachy-current-feeling",
+    "tachy-associated-symptoms",
+    "tachy-post-vital-heart-rate-cue",
+    "tachy-heart-history-meds",
+    "tachy-medication-allergy-confirm"
+  ]);
+
+  const state = engine.createInitialState(tachyCase.id);
+  assert.equal(state.demoMode, "live_measured");
+  const ranked = engine.rankQuestions(state).map((item) => item.question.id);
+  assert.equal(ranked[0], "tachy-chief-concern");
+  assert.ok(ranked.includes("tachy-post-vital-heart-rate-cue"));
+});
+
+test("tachycardia live staff summary carries the demo-safe preview wording", () => {
+  let state = engine.createInitialState("demo-tachycardia-live-001");
+  state = engine.recordAnswer(state, "tachy-chief-concern", "Heart racing / palpitations");
+  state = engine.recordAnswer(state, "tachy-onset", "About half a day");
+  state = engine.recordAnswer(state, "tachy-current-feeling", ["Heart racing or pounding", "Chest tightness or heaviness"]);
+  state = engine.recordAnswer(state, "tachy-associated-symptoms", ["None of these"]);
+  state = engine.recordAnswer(state, "tachy-post-vital-heart-rate-cue", "Both");
+  state = engine.recordAnswer(state, "tachy-heart-history-meds", ["Known rhythm problem", "Heart or blood-pressure medicine"]);
+  state = engine.recordAnswer(state, "tachy-medication-allergy-confirm", ["Regular medicines", "No known medication allergy"]);
+
+  const summary = engine.buildStaffSummary(state);
+  assert.equal(summary.requiresStaffReview, true);
+  assert.match(summary.vitalCues.join(" "), /130 bpm/);
+  assert.match(summary.forbiddenOutput, /No AfRVR diagnosis/);
+  assert.ok(summary.staffReviewSummary);
+  assert.match(summary.staffReviewSummary.subjective.join(" "), /palpitations and middle chest tightness/);
+  assert.match(summary.staffReviewSummary.objective.join(" "), /HR 130 bpm/);
+  assert.equal(summary.missing.length, 0);
+});
+
+test("tachycardia live demo mode supports synthetic and local scripted fallback", () => {
+  let state = engine.createInitialState("demo-tachycardia-live-001");
+  state = engine.setDemoMode(state, "synthetic_override");
+  assert.equal(state.demoMode, "synthetic_override");
+  assert.equal(engine.buildStaffSummary(state).demoMode, "synthetic_override");
+
+  state = engine.setDemoMode(state, "local_scripted_demo");
+  assert.equal(state.demoMode, "local_scripted_demo");
+
+  state = engine.setDemoMode(state, "unsupported_mode");
+  assert.equal(state.demoMode, "live_measured");
+});

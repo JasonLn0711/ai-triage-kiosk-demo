@@ -133,6 +133,85 @@
       sourceFamilies: ["CDC respiratory warning reference family", "AHA chest-warning reference family", "local protocol placeholder", "Duobao design draft context"],
       allowedOutput: "Staff-review summary and source-family display only.",
       forbiddenOutput: "No diagnosis, final acuity assignment, condition identification, disposition recommendation, treatment advice, or HIS/EMR/FHIR writeback."
+    },
+    {
+      id: "demo-tachycardia-live-001",
+      label: "Palpitation and chest tightness with HR 130 cue",
+      shortLabel: "Tachycardia live",
+      fixturePath: "demo/fixtures/tachycardia-live-demo.json",
+      opening: "I feel my heart racing and tightness in the middle of my chest.",
+      defaultMeasurementState: MEASUREMENT_STATES.COMPLETE,
+      allowedQuestionIds: [
+        "tachy-chief-concern",
+        "tachy-onset",
+        "tachy-current-feeling",
+        "tachy-associated-symptoms",
+        "tachy-post-vital-heart-rate-cue",
+        "tachy-heart-history-meds",
+        "tachy-medication-allergy-confirm"
+      ],
+      questionLimit: 7,
+      profile: {
+        demoId: "DEMO-TACHY-001",
+        age: "76",
+        sex: "Female",
+        language: "English",
+        arrivalMode: "Walk-in kiosk",
+        context: "Synthetic live-performance visitor"
+      },
+      vitals: {
+        bloodPressure: "102/68 mmHg",
+        spo2: "98%",
+        heartRate: "130 bpm",
+        respiratoryRate: "16/min",
+        temperature: "36.5 C",
+        bmiContext: "Not provided"
+      },
+      vitalCues: [
+        "Heart rate is 130 bpm in the synthetic/live demo payload and needs staff review.",
+        "SpO2 is 98% in the synthetic payload.",
+        "Blood pressure is 102/68 mmHg in the synthetic payload."
+      ],
+      sourceFamilies: ["Duobao tachycardia case draft", "AHA tachycardia symptom family", "AHA heart-warning symptom family", "MedlinePlus AFib symptom context", "local protocol placeholder"],
+      liveDemoControls: {
+        primaryMode: "live_measured",
+        fallbackModes: ["synthetic_override", "local_scripted_demo"],
+        operatorNote: "Use voluntary live measurement only; switch to synthetic override or local scripted demo when the live HR cue is not suitable."
+      },
+      summaryPreview: {
+        handoffReasonCodes: [
+          "measured_elevated_heart_rate_demo",
+          "reported_palpitations",
+          "reported_chest_tightness",
+          "associated_symptoms_none_selected",
+          "staff_review_needed"
+        ],
+        subjective: [
+          "Synthetic demo patient reports palpitations and middle chest tightness for about half a day.",
+          "Selected associated symptoms: none of the listed shortness of breath, sweating, dizziness, or fainting options.",
+          "Patient selected rhythm-history and hypertension context; aspirin, antihypertensive medication, and allergy status should be confirmed by staff."
+        ],
+        objective: [
+          "Demo vital payload includes HR 130 bpm, SpO2 98%, BP 102/68 mmHg, respiratory rate 16/min, and temperature 36.5 C.",
+          "Heart-rate field quality flag is needs_review."
+        ],
+        reviewBasis: [
+          "Measured heart-rate cue plus reported palpitation / chest-tightness symptoms supports staff review in this demo workflow.",
+          "The summary organizes measured vitals and selected answers for human review."
+        ],
+        reviewAction: [
+          "Please review measured heart rate, reported symptoms, rhythm-history selection, and medication/allergy confirmation."
+        ],
+        staffHandoffNote: "Review measured heart rate and reported cardiopulmonary symptoms.",
+        scopeControls: [
+          "Staff-review intake support",
+          "Human review workflow",
+          "Synthetic-data demo context",
+          "Separate validation path before clinical use"
+        ]
+      },
+      allowedOutput: "Staff-review summary and source-family display only.",
+      forbiddenOutput: "No AfRVR diagnosis, arrhythmia diagnosis, ACS diagnosis, ECG order, treatment advice, final acuity assignment, formal triage score, or HIS/EMR/FHIR writeback."
     }
   ];
 
@@ -264,6 +343,69 @@
       options: ["Medication list available", "Medication list not available", "Known drug allergy", "No known drug allergy", "Not sure"]
     },
     {
+      id: "tachy-chief-concern",
+      field: "tachyChiefConcern",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "What is the main reason you are using the kiosk today?",
+      type: "single",
+      value: "Anchors the cardiopulmonary branch after the heart-rate cue is available.",
+      options: ["Heart racing / palpitations", "Chest tightness / pressure", "Shortness of breath or dizziness", "Other / not sure"]
+    },
+    {
+      id: "tachy-onset",
+      field: "tachyOnset",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "When did this start?",
+      type: "single",
+      value: "Adds onset and duration context to the staff-review summary.",
+      options: ["Within the last hour", "A few hours ago", "About half a day", "More than one day / not sure"]
+    },
+    {
+      id: "tachy-current-feeling",
+      field: "tachyCurrentFeeling",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "Which descriptions fit what you feel now?",
+      type: "multi",
+      value: "Preserves the palpitation and chest-tightness branch using choice-only input.",
+      options: ["Heart racing or pounding", "Chest tightness or heaviness", "Chest pressure or pain", "Burning, sharp discomfort, or not sure"]
+    },
+    {
+      id: "tachy-associated-symptoms",
+      field: "tachyAssociatedSymptoms",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "Are any of these happening with it?",
+      type: "multi",
+      value: "Captures warning-symptom families for staff review without diagnosis.",
+      options: ["Shortness of breath", "Sweating, nausea, or unusual fatigue", "Dizziness, lightheadedness, or fainting", "None of these"]
+    },
+    {
+      id: "tachy-post-vital-heart-rate-cue",
+      field: "tachyPostVitalHeartRateCue",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "The kiosk received a high heart-rate reading for this demo. How do you feel right now?",
+      type: "single",
+      value: "Connects the HR 130 vital cue with current patient-reported status.",
+      options: ["My heart still feels fast", "My chest still feels heavy / tight", "Both", "Neither now / not sure"]
+    },
+    {
+      id: "tachy-heart-history-meds",
+      field: "tachyHeartHistoryMeds",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "Have you been told you have a heart rhythm problem, or do you take heart / blood-pressure medicine?",
+      type: "multi",
+      value: "Adds rhythm-history and heart/blood-pressure medication context for staff confirmation.",
+      options: ["Known rhythm problem", "Heart or blood-pressure medicine", "No known history / medicine", "Not sure, staff should confirm"]
+    },
+    {
+      id: "tachy-medication-allergy-confirm",
+      field: "tachyMedicationAllergyConfirm",
+      phase: QUESTION_PHASES.POST_VITAL_FOLLOWUP,
+      text: "Do you have medication allergies or medicines staff should confirm?",
+      type: "multi",
+      value: "Keeps medication and allergy context visible for the human review workflow.",
+      options: ["Medication allergy", "Regular medicines", "No known medication allergy", "Not sure"]
+    },
+    {
       id: "support-needed",
       field: "supportNeeded",
       phase: QUESTION_PHASES.PRE_VITAL_INTAKE,
@@ -282,6 +424,7 @@
       caseId: selectedCase.id,
       turn: 0,
       measurementState: options.measurementState || selectedCase.defaultMeasurementState || MEASUREMENT_STATES.COMPLETE,
+      demoMode: options.demoMode || (selectedCase.liveDemoControls && selectedCase.liveDemoControls.primaryMode) || "local_scripted_demo",
       answers: {},
       answeredQuestionIds: [],
       transcript: selectedCase.opening
@@ -315,6 +458,18 @@
     return {
       ...state,
       measurementState: MEASUREMENT_STATES.COMPLETE
+    };
+  }
+
+  function setDemoMode(state, demoMode) {
+    const selectedCase = findCase(state.caseId);
+    const allowedModes = selectedCase.liveDemoControls
+      ? [selectedCase.liveDemoControls.primaryMode, ...selectedCase.liveDemoControls.fallbackModes]
+      : ["local_scripted_demo"];
+    const nextMode = allowedModes.includes(demoMode) ? demoMode : allowedModes[0];
+    return {
+      ...state,
+      demoMode: nextMode
     };
   }
 
@@ -441,6 +596,12 @@
       reasons.push("handoff readiness");
     }
 
+    if (question.id.startsWith("tachy-") && selectedCase.id === "demo-tachycardia-live-001") {
+      const order = selectedCase.allowedQuestionIds.indexOf(question.id);
+      score += 80 - Math.max(order, 0) * 3;
+      reasons.push("tachycardia live lane sequence");
+    }
+
     if (question.id === "support-needed") {
       score += state.turn >= 4 ? 10 : 2;
       reasons.push("kiosk assistance check");
@@ -514,6 +675,15 @@
     if (Array.isArray(state.answers.urinaryDetails) && state.answers.urinaryDetails.includes("Unable to urinate")) {
       reviewCues.push("Patient selected inability to urinate.");
     }
+    if (Array.isArray(state.answers.tachyAssociatedSymptoms) && state.answers.tachyAssociatedSymptoms.includes("None of these")) {
+      reviewCues.push("Patient selected none of the listed associated symptom options in the tachycardia lane.");
+    }
+    if (String(state.answers.tachyPostVitalHeartRateCue || "").includes("Both")) {
+      reviewCues.push("Patient selected ongoing fast heart feeling and chest heaviness after the heart-rate cue.");
+    }
+    if (Array.isArray(state.answers.tachyHeartHistoryMeds) && state.answers.tachyHeartHistoryMeds.length > 0) {
+      reviewCues.push("Patient selected heart-rhythm history or heart/blood-pressure medicine context for staff confirmation.");
+    }
 
     return {
       caseLabel: selectedCase.label,
@@ -525,8 +695,11 @@
       sourceFamilies: selectedCase.sourceFamilies,
       allowedOutput: selectedCase.allowedOutput,
       forbiddenOutput: selectedCase.forbiddenOutput,
+      staffReviewSummary: selectedCase.summaryPreview || null,
       requiresStaffReview: true,
       measurementState: state.measurementState || MEASUREMENT_STATES.COMPLETE,
+      demoMode: state.demoMode || (selectedCase.liveDemoControls && selectedCase.liveDemoControls.primaryMode) || "local_scripted_demo",
+      liveDemoControls: selectedCase.liveDemoControls || null,
       questionPhases: {
         preVitalIntakeAnswered: answered.filter((item) => {
           const question = QUESTION_BANK.find((candidate) => candidate.field === item.field);
@@ -554,6 +727,7 @@
     inferConcernKeywords,
     measurementComplete,
     markVitalsReady,
+    setDemoMode,
     rankQuestions,
     selectNextQuestion,
     recordAnswer,

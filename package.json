@@ -5,9 +5,12 @@
   "description": "English synthetic-data AI triage kiosk demo for workflow-support review.",
   "scripts": {
     "build": "node scripts/build-vercel.js",
+    "mock:api": "node scripts/mock-api-server.js",
     "start": "python3 -m http.server 4183",
     "smoke": "node scripts/checks/smoke-demo.js",
-    "test": "node --test",
+    "test": "npm run test:unit && npm run test:contract",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "test:contract": "node --test tests/contract/*.test.js",
     "version:check": "python3 scripts/check_version_control.py",
     "version:bump": "python3 scripts/bump_version.py",
     "version:bump:patch": "python3 scripts/bump_version.py --part patch",

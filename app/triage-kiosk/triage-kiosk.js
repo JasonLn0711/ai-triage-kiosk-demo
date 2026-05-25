@@ -14,11 +14,13 @@ const elements = {
   questionTitle: document.querySelector("#question-title"),
   questionValue: document.querySelector("#questionValue"),
   turnLabel: document.querySelector("#turnLabel"),
+  demoModeLabel: document.querySelector("#demoModeLabel"),
   choiceMount: document.querySelector("#choiceMount"),
   continueButton: document.querySelector("#continueButton"),
   skipButton: document.querySelector("#skipButton"),
   vitalsReadyButton: document.querySelector("#vitalsReadyButton"),
   summaryButton: document.querySelector("#summaryButton"),
+  demoModeSelect: document.querySelector("#demoModeSelect"),
   boundaryText: document.querySelector("#boundaryText"),
   rationaleMount: document.querySelector("#rationaleMount"),
   answeredFields: document.querySelector("#answeredFields"),
@@ -27,6 +29,7 @@ const elements = {
   loadChest: document.querySelector("#loadChest"),
   loadFever: document.querySelector("#loadFever"),
   loadRespiratory: document.querySelector("#loadRespiratory"),
+  loadTachycardia: document.querySelector("#loadTachycardia"),
   resetDemo: document.querySelector("#resetDemo")
 };
 
@@ -86,6 +89,13 @@ function markVitalsReadyForDemo() {
   saveState();
   render();
   showToast("Synthetic vital payload marked ready.");
+}
+
+function setDemoMode(demoMode) {
+  state = Engine.setDemoMode(state, demoMode);
+  saveState();
+  render();
+  showToast(`Demo mode: ${state.demoMode.replaceAll("_", " ")}.`);
 }
 
 function renderCases() {
@@ -148,6 +158,8 @@ function renderQuestion() {
   elements.versionBadge.textContent = Engine.VERSION.versionLabel;
   elements.boundaryText.textContent = Engine.VERSION.boundary;
   elements.turnLabel.textContent = `Turn ${state.turn}`;
+  elements.demoModeLabel.textContent = `Mode: ${String(state.demoMode || "local_scripted_demo").replaceAll("_", " ")}`;
+  elements.demoModeSelect.value = state.demoMode || "local_scripted_demo";
   elements.vitalsReadyButton.hidden = Engine.measurementComplete(state);
 
   if (!selectedQuestion) {
@@ -256,10 +268,18 @@ function renderAnsweredFields() {
 
 function renderSummary() {
   const summary = Engine.buildStaffSummary(state);
+  const staffReviewSummaryCards = summary.staffReviewSummary ? [
+    `<div class="summary-card"><strong>Subjective</strong><p>${escapeHtml(summary.staffReviewSummary.subjective.join(" "))}</p></div>`,
+    `<div class="summary-card"><strong>Objective</strong><p>${escapeHtml(summary.staffReviewSummary.objective.join(" "))}</p></div>`,
+    `<div class="summary-card"><strong>Review basis</strong><p>${escapeHtml(summary.staffReviewSummary.reviewBasis.join(" "))}</p></div>`,
+    `<div class="summary-card ok"><strong>Review action</strong><p>${escapeHtml(summary.staffReviewSummary.reviewAction.join(" "))}</p></div>`
+  ] : [];
   elements.summaryMount.innerHTML = [
     `<div class="summary-card warning"><strong>Review boundary</strong><p>${escapeHtml(summary.boundary)}</p></div>`,
     `<div class="summary-card"><strong>Synthetic profile</strong><p>${escapeHtml(summary.profileSummary)}</p></div>`,
     `<div class="summary-card"><strong>Visible review cues</strong><p>${escapeHtml(summary.vitalCues.join(" "))}</p></div>`,
+    `<div class="summary-card"><strong>Demo mode</strong><p>${escapeHtml(String(summary.demoMode).replaceAll("_", " "))}</p></div>`,
+    ...staffReviewSummaryCards,
     `<div class="summary-card ok"><strong>Allowed output</strong><p>${escapeHtml(summary.allowedOutput)}</p></div>`,
     `<div class="summary-card warning"><strong>Forbidden output</strong><p>${escapeHtml(summary.forbiddenOutput)}</p></div>`,
     `<div class="summary-card"><strong>Still missing</strong><p>${escapeHtml(summary.missing.slice(0, 5).map((item) => item.label).join(" | ") || "No core demo gaps remain.")}</p></div>`
@@ -281,9 +301,11 @@ elements.summaryButton.addEventListener("click", () => {
   renderSummary();
   showToast("Staff-review summary refreshed.");
 });
+elements.demoModeSelect.addEventListener("change", () => setDemoMode(elements.demoModeSelect.value));
 elements.loadChest.addEventListener("click", () => setCase("chest-pain-high-bp-low-spo2"));
 elements.loadFever.addEventListener("click", () => setCase("fever-urinary"));
 elements.loadRespiratory.addEventListener("click", () => setCase("respiratory-low-spo2-early-handoff"));
+elements.loadTachycardia.addEventListener("click", () => setCase("demo-tachycardia-live-001"));
 elements.resetDemo.addEventListener("click", resetDemo);
 
 render();

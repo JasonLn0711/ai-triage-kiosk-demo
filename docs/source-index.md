@@ -111,9 +111,13 @@ Derived analysis:
 - `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md`
 - `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md`
 - `handoff/2026-05-25-imedtac-integration-next-steps.md`
+- `handoff/2026-05-25-first-rehearsal-packet.md`
 - `handoff/2026-05-21-decision-defaults-and-owner-matrix.md`
 - `handoff/2026-05-22-api-v0.2-requirements-from-expert-review.md`
 - `handoff/api-examples/`
+- `docs/2026-05-25-demo-fallback-script.md`
+- `api/lib/triage-demo-contract.js`
+- `tests/contract/triage-demo-api.test.js`
 
 ## Upstream Prof. Wu Context
 

@@ -20,6 +20,7 @@
         <button class="ghost-button" id="loadChest" type="button">Chest case</button>
         <button class="ghost-button" id="loadFever" type="button">Fever case</button>
         <button class="ghost-button" id="loadRespiratory" type="button">Respiratory case</button>
+        <button class="ghost-button" id="loadTachycardia" type="button">Tachycardia case</button>
         <button class="ghost-button" id="resetDemo" type="button">Reset</button>
         <a class="secondary-button link-button" href="../../demo/fixtures/">Fixtures</a>
       </nav>
@@ -62,6 +63,7 @@
               <span class="status-pill">Demo only</span>
               <span class="status-pill">Staff review required</span>
               <span class="status-pill">No diagnosis</span>
+              <span class="status-pill" id="demoModeLabel">Mode: local scripted demo</span>
             </div>
           </section>
           <section class="panel-section">
@@ -71,6 +73,14 @@
               <button class="secondary-button" id="skipButton" type="button">Skip for demo</button>
               <button class="secondary-button" id="vitalsReadyButton" type="button">Vitals ready</button>
               <button class="secondary-button" id="summaryButton" type="button">Build staff summary</button>
+              <label class="select-control" for="demoModeSelect">
+                <span>Mode</span>
+                <select id="demoModeSelect">
+                  <option value="live_measured">Live measured</option>
+                  <option value="synthetic_override">Synthetic override</option>
+                  <option value="local_scripted_demo">Local scripted demo</option>
+                </select>
+              </label>
             </div>
           </section>
           <section class="panel-section safety-strip">

@@ -1,7 +1,7 @@
 # Demo Script For Presenter
 
 Status: internal presenter script
-Last updated: 2026-05-18
+Last updated: 2026-05-25
 
 ## Opening
 
@@ -30,6 +30,33 @@ Avoid:
 - implying the profile is sufficient for clinical risk scoring;
 - saying the demo uses real hospital data;
 - saying the vital values alone determine triage.
+
+## Step 1A - Name The Active Demo Mode
+
+Point to the mode label in the middle panel.
+
+Say one of:
+
+```text
+This run is live_measured: the demo is using the measured vital payload and
+keeps the output as staff-review support.
+```
+
+```text
+This run is synthetic_override: we are using the HR 130 synthetic fixture so the
+rehearsal stays deterministic.
+```
+
+```text
+This run is local_scripted_demo: the same governed question set and summary are
+running locally without depending on the remote API or live device state.
+```
+
+Avoid:
+
+- asking anyone to exercise for a heart-rate target;
+- presenting HR 130 as a validated clinical threshold;
+- hiding the fallback mode from the audience.
 
 ## Step 2 - Show Choice-Only Questioning
 
@@ -85,6 +112,14 @@ Say:
 The output is a staff-review summary: synthetic profile, visible vital cues,
 recorded answers, allowed output, and forbidden output. It stops before
 diagnosis, treatment, final acuity assignment, or emergency ordering.
+```
+
+For the tachycardia lane, add:
+
+```text
+The summary organizes the HR 130 demo cue, palpitations, chest tightness,
+history context, medication context, and allergy confirmation for staff review.
+It does not diagnose arrhythmia or recommend treatment.
 ```
 
 Avoid:
