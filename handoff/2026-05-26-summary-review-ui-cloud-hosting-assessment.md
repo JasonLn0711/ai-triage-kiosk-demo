@@ -274,6 +274,8 @@ Current selected choice: Option B.
 Same Render service
 -> existing API remains under /api/triage-demo/
 -> summary visual support page is served at /demo-ui/summary-review/
+-> Endpoint 2 summary payload can be handed to that fixed page by same-tab
+   window.name before navigation; the page clears the handoff after reading
 -> required shared stylesheet is served at /demo-ui/shared/styles.css
 -> source, handoff, docs, planning, decisions, credentials, and arbitrary app
    files are not exposed
@@ -298,6 +300,29 @@ Implemented tasks:
    - `GET /demo-ui/summary-review/assets/review-your-information-fallback.svg`
      returns SVG;
    - protected POST endpoints still require bearer token when configured.
+5. Added fixed-URL dynamic rendering support:
+   - iMVS can set `window.name` to a JSON envelope before navigating to the
+     fixed summary URL;
+   - the page accepts only a `status=summary` payload with
+     `staff_review_summary`;
+   - the page clears `window.name` immediately after reading;
+   - the page does not put vital signs or answers in the URL query string.
+
+Recommended direct-navigation handoff:
+
+```javascript
+if (response.status === "summary") {
+  window.name = JSON.stringify({
+    type: "nycu_summary_review_payload",
+    payload: response
+  });
+  window.location.href =
+    "https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/";
+}
+```
+
+This keeps the URL fixed, avoids iframe-only dependency, avoids query-string
+data exposure, and preserves the two POST endpoint API contract.
 
 Remaining deployment tasks:
 
@@ -334,6 +359,8 @@ static HTML copy even if Option A or B is implemented.
 
 - The page displays the final tachycardia staff-review summary from the same
   field names used in Endpoint 2.
+- The fixed URL can render dynamic content from a one-time `status=summary` /
+  `staff_review_summary` browser handoff without adding a third API endpoint.
 - The page states `staff-review intake support`, `human review workflow`, and
   `synthetic-data demo context`.
 - The page does not display diagnosis, treatment advice, final triage level, ECG

@@ -234,7 +234,8 @@ side implements against the new behavior.
 
 ## 2026-05-26 Option B Decision
 
-NYCU decided to implement the hosted summary page as a same-Render static route:
+NYCU decided to implement the hosted summary page as a same-Render fixed visual
+route:
 
 ```text
 https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/
@@ -245,6 +246,17 @@ URL while also supporting Johnny's direct replacement / QR-code-page replacement
 direction. It is a demo-only visual support URL. It does not create a third API
 endpoint, does not change the two POST endpoint contract, and does not expose
 credentials or source/handoff/docs/decision folders.
+
+Compatible dynamic rendering direction:
+
+```text
+Fixed URL remains /demo-ui/summary-review/.
+Endpoint 2 remains the source of status=summary / staff_review_summary.
+If iMVS uses direct page replacement instead of iframe, it can pass the Endpoint
+2 summary response through a one-time browser window.name handoff before
+navigating to the fixed URL. The page reads and clears that handoff, then
+renders the summary values without placing vital signs or answers in the URL.
+```
 
 ### Commitment / Change-Control Reading
 
