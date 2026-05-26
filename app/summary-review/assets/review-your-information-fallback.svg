@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Review Your Information</title>
+  <desc id="desc">Patient-facing hospital review screen with vital signs, reported symptoms, and staff confirmation guidance.</desc>
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f9fcff"/>
+      <stop offset="1" stop-color="#f3f8fb"/>
+    </linearGradient>
+    <linearGradient id="amberPanel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fffaf1"/>
+      <stop offset="1" stop-color="#fffdf9"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f9fdff"/>
+      <stop offset="1" stop-color="#f3f9ff"/>
+    </linearGradient>
+    <linearGradient id="softGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfffd"/>
+      <stop offset="1" stop-color="#f2fbf8"/>
+    </linearGradient>
+    <linearGradient id="softPurple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdff"/>
+      <stop offset="1" stop-color="#f7f5ff"/>
+    </linearGradient>
+    <linearGradient id="primaryButton" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1f78e0"/>
+      <stop offset="1" stop-color="#0a55bb"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#1d4050" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      .title { font: 800 56px Inter, Arial, sans-serif; fill: #07193d; letter-spacing: -1px; }
+      .subtitle { font: 400 26px Inter, Arial, sans-serif; fill: #40516e; }
+      .small { font: 400 16px Inter, Arial, sans-serif; fill: #4f6078; }
+      .section { font: 800 22px Inter, Arial, sans-serif; fill: #0d1938; letter-spacing: .5px; }
+      .cardTitle { font: 800 26px Inter, Arial, sans-serif; }
+      .cardSub { font: 400 19px Inter, Arial, sans-serif; fill: #52637a; }
+      .metric { font: 800 78px Inter, Arial, sans-serif; letter-spacing: -2px; }
+      .metricUnit { font: 800 28px Inter, Arial, sans-serif; }
+      .body { font: 400 25px Inter, Arial, sans-serif; fill: #101936; }
+      .bodyStrong { font: 800 34px Inter, Arial, sans-serif; fill: #b43b14; }
+      .chipTitle { font: 800 21px Inter, Arial, sans-serif; }
+      .chipText { font: 400 17px Inter, Arial, sans-serif; fill: #202943; }
+      .secureTitle { font: 800 18px Inter, Arial, sans-serif; fill: #13203c; }
+      .secureText { font: 400 17px Inter, Arial, sans-serif; fill: #31415f; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1200" fill="url(#pageBg)"/>
+
+  <!-- Header -->
+  <g transform="translate(45 38)">
+    <path d="M52 18c13-22 48-18 58 4 10-22 45-26 58-4 16 28-3 68-58 105C55 86 36 46 52 18Z" fill="#1b7585"/>
+    <path d="M36 65h43l14-25 21 53 17-31h50" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="160" y="82" class="title">Review Your Information</text>
+  <text x="160" y="128" class="subtitle">Please review your symptoms and measurements.</text>
+
+  <g transform="translate(1290 38)">
+    <path d="M18 0l24 10v20c0 24-16 39-24 43C10 69-6 54-6 30V10L18 0Z" fill="#eef6ff" stroke="#184aa8" stroke-width="3"/>
+    <path d="M8 31l8 8 18-22" fill="none" stroke="#184aa8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="52" y="18" class="secureTitle">Your information is secure</text>
+    <text x="52" y="48" class="secureText">This summary will be shared</text>
+    <text x="52" y="72" class="secureText">with our care team.</text>
+  </g>
+
+  <!-- Primary status panel -->
+  <rect x="45" y="165" width="1510" height="205" rx="20" fill="url(#amberPanel)" stroke="#f0b27b" stroke-width="1.5" filter="url(#softShadow)"/>
+  <circle cx="150" cy="267" r="70" fill="#fff1df"/>
+  <path d="M111 238c12-21 43-18 52 3 10-21 41-24 53-3 15 26-5 61-53 92-47-31-67-66-52-92Z" fill="#e16a20"/>
+  <circle cx="153" cy="266" r="14" fill="#fff4e9"/>
+  <circle cx="185" cy="296" r="24" fill="#fff4e9"/>
+  <path d="M185 279v22M185 314v2" stroke="#d65b16" stroke-width="6" stroke-linecap="round"/>
+  <text x="260" y="240" class="bodyStrong">Your heart rate was higher than expected.</text>
+  <text x="260" y="286" class="body">A staff member may review your symptoms and measurements.</text>
+  <text x="260" y="328" class="body">If you feel worse, tell a staff member right away.</text>
+
+  <!-- Nurse illustration -->
+  <g transform="translate(1128 178)">
+    <path d="M43 176c17-74 57-104 97-104s80 30 97 104" fill="#8cc7f2"/>
+    <path d="M75 176l16-66h100l16 66Z" fill="#78bce9"/>
+    <path d="M99 73c0 50 32 84 64 84s64-34 64-84c0-44-27-70-64-70S99 29 99 73Z" fill="#ffc38f"/>
+    <path d="M104 77c-17-18-15-52 7-75 27-29 80-21 107-3 26 17 27 54 18 78-16-33-47-42-86-40-22 1-37 14-46 40Z" fill="#5d351a"/>
+    <circle cx="238" cy="18" r="24" fill="#5d351a"/>
+    <path d="M117 89c9 10 26 10 34 0M186 89c9 10 26 10 34 0" fill="none" stroke="#1a2436" stroke-width="3" stroke-linecap="round"/>
+    <path d="M160 117c10 8 27 8 37 0" fill="none" stroke="#c66b3a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M95 156l36 49M229 156l-36 49" stroke="#2d83be" stroke-width="4"/>
+    <rect x="183" y="141" width="34" height="27" rx="2" fill="#f5fbff" stroke="#2c7eb5" stroke-width="2"/>
+    <circle cx="196" cy="145" r="3" fill="#2c7eb5"/>
+  </g>
+  <path d="M1320 204h142c23 0 42 19 42 42v55c0 23-19 42-42 42h-122l-38 26 15-37c-23-8-39-29-39-54v-32c0-23 19-42 42-42Z" fill="#fff4e5"/>
+  <text x="1356" y="244" class="body" style="font-size:24px">We’re here</text>
+  <text x="1356" y="276" class="body" style="font-size:24px">to help.</text>
+  <path d="M1364 312c8-14 29-12 35 2 7-14 28-16 36-2 10 18-4 41-36 62-31-21-45-44-35-62Z" fill="#52a7df"/>
+
+  <!-- Measurements -->
+  <g transform="translate(45 425)">
+    <path d="M17 0c8-13 28-11 34 2 6-13 27-15 34-2 9 17-3 39-34 59C20 39 8 17 17 0Z" fill="#1b7585"/>
+    <path d="M10 30h22l8-14 13 31 10-18h28" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="56" y="29" class="section">YOUR MEASUREMENTS</text>
+  </g>
+
+  <g transform="translate(45 478)">
+    <rect width="385" height="240" rx="18" fill="#fffaf2" stroke="#f06d18" stroke-width="1.5"/>
+    <text x="38" y="54" class="cardTitle" fill="#b9320f">Heart Rate</text>
+    <rect x="292" y="28" width="66" height="36" rx="10" fill="#ffead7"/>
+    <text x="306" y="54" style="font:800 20px Inter,Arial,sans-serif;fill:#b9320f">High</text>
+    <path d="M38 112c9-16 32-13 39 2 7-15 30-18 39-2 11 19-4 45-39 68-35-23-50-49-39-68Z" fill="none" stroke="#d65b16" stroke-width="4"/>
+    <text x="110" y="150" class="metric" fill="#c84b13">130</text>
+    <text x="260" y="150" class="metricUnit" fill="#c84b13">bpm</text>
+    <text x="38" y="202" class="cardSub">Normal range: 60–100 bpm</text>
+  </g>
+  <g transform="translate(455 478)">
+    <rect width="335" height="240" rx="18" fill="url(#softBlue)" stroke="#a9c8ef" stroke-width="1.5"/>
+    <text x="36" y="54" class="cardTitle" fill="#0e4eaf">Oxygen (SpO₂)</text>
+    <path d="M61 92c24 33 40 56 40 80 0 25-19 43-43 43s-43-18-43-43c0-24 18-48 46-80Z" fill="none" stroke="#0e4eaf" stroke-width="4"/>
+    <text x="37" y="158" style="font:800 26px Inter,Arial,sans-serif;fill:#0e4eaf">O₂</text>
+    <text x="115" y="150" class="metric" fill="#245bb7">98</text>
+    <text x="230" y="150" class="metricUnit" fill="#245bb7">%</text>
+    <text x="36" y="202" class="cardSub">Normal range: 95–100%</text>
+  </g>
+  <g transform="translate(815 478)">
+    <rect width="340" height="240" rx="18" fill="url(#softGreen)" stroke="#92c6bd" stroke-width="1.5"/>
+    <text x="38" y="54" class="cardTitle" fill="#117766">Blood Pressure</text>
+    <rect x="38" y="102" width="24" height="64" rx="5" fill="none" stroke="#117766" stroke-width="4"/>
+    <circle cx="89" cy="132" r="18" fill="none" stroke="#117766" stroke-width="4"/>
+    <path d="M62 134h28" stroke="#117766" stroke-width="4"/>
+    <text x="110" y="150" class="metric" fill="#117766">102/68</text>
+    <text x="218" y="183" class="metricUnit" fill="#117766" style="font-size:22px">mmHg</text>
+    <text x="38" y="202" class="cardSub">Normal range: &lt; 120/80 mmHg</text>
+  </g>
+  <g transform="translate(1180 478)">
+    <rect width="375" height="240" rx="18" fill="url(#softPurple)" stroke="#b9ade8" stroke-width="1.5"/>
+    <text x="38" y="54" class="cardTitle" fill="#6250b6">Temperature</text>
+    <path d="M56 99v66a25 25 0 1 0 30 0V99a15 15 0 0 0-30 0Z" fill="none" stroke="#6250b6" stroke-width="4"/>
+    <text x="110" y="150" class="metric" fill="#6855ba">36.5</text>
+    <text x="278" y="150" class="metricUnit" fill="#6855ba">°C</text>
+    <text x="38" y="202" class="cardSub">Normal range: 36.0–37.5 °C</text>
+  </g>
+
+  <!-- Symptoms -->
+  <rect x="45" y="744" width="1510" height="212" rx="18" fill="#fff" stroke="#d8e4ec" stroke-width="1.5"/>
+  <g transform="translate(78 768)">
+    <rect x="0" y="0" width="24" height="30" rx="4" fill="none" stroke="#1b7585" stroke-width="3"/>
+    <path d="M7 8h10M7 15h10M7 22h8" stroke="#1b7585" stroke-width="3"/>
+    <text x="52" y="22" class="section">YOUR REPORTED SYMPTOMS</text>
+  </g>
+  <g transform="translate(68 805)">
+    <rect width="268" height="142" rx="16" fill="#fff5e9"/>
+    <circle cx="40" cy="42" r="17" fill="#d85b12"/><path d="M32 42l7 7 14-17" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <text x="72" y="48" class="chipTitle" fill="#b9320f">Palpitations</text>
+    <text x="72" y="78" class="chipText">Feeling your heart</text><text x="72" y="104" class="chipText">racing or pounding</text>
+  </g>
+  <g transform="translate(358 805)">
+    <rect width="292" height="142" rx="16" fill="#fff5e9"/>
+    <circle cx="40" cy="42" r="17" fill="#d85b12"/><path d="M32 42l7 7 14-17" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <text x="72" y="48" class="chipTitle" fill="#b9320f">Chest tightness</text>
+    <text x="72" y="78" class="chipText">Pressure or tightness</text><text x="72" y="104" class="chipText">in the chest</text>
+  </g>
+  <g transform="translate(672 805)">
+    <rect width="282" height="142" rx="16" fill="#eef8f7"/>
+    <circle cx="40" cy="42" r="17" fill="#178274"/><path d="M32 42l7 7 14-17" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <text x="72" y="42" class="chipTitle" fill="#0e6058">No shortness</text><text x="72" y="68" class="chipTitle" fill="#0e6058">of breath</text>
+    <text x="72" y="96" class="chipText">You reported no</text><text x="72" y="120" class="chipText">shortness of breath</text>
+  </g>
+  <g transform="translate(978 805)">
+    <rect width="275" height="142" rx="16" fill="#eef8f7"/>
+    <circle cx="40" cy="42" r="17" fill="#178274"/><path d="M32 42l7 7 14-17" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <text x="72" y="48" class="chipTitle" fill="#0e6058">No dizziness</text>
+    <text x="72" y="78" class="chipText">You reported no</text><text x="72" y="104" class="chipText">dizziness</text>
+  </g>
+  <g transform="translate(1276 805)">
+    <rect width="260" height="142" rx="16" fill="#eef8f7"/>
+    <circle cx="40" cy="42" r="17" fill="#178274"/><path d="M32 42l7 7 14-17" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <text x="72" y="48" class="chipTitle" fill="#0e6058">No fainting</text>
+    <text x="72" y="78" class="chipText">You reported no</text><text x="72" y="104" class="chipText">fainting</text>
+  </g>
+
+  <!-- Confirmation -->
+  <rect x="45" y="982" width="1510" height="182" rx="18" fill="#f9fdff" stroke="#b7d8f0" stroke-width="1.5"/>
+  <circle cx="168" cy="1073" r="64" fill="#e8f3fb"/>
+  <circle cx="142" cy="1043" r="24" fill="#f0b37f"/>
+  <path d="M119 1125c6-47 28-69 55-69s48 22 55 69" fill="#b5d4e8"/>
+  <circle cx="205" cy="1041" r="25" fill="#f0b37f"/>
+  <path d="M183 1125c7-48 30-72 60-72s53 24 60 72" fill="#60a9df"/>
+  <path d="M122 1030c14-28 51-29 61 1-25-4-42 3-61-1Z" fill="#d8d8d8"/>
+  <path d="M184 1028c17-29 60-27 67 9-29-8-49 3-67-9Z" fill="#11315f"/>
+  <text x="300" y="1054" class="section" style="font-size:27px">Please confirm your information with staff.</text>
+  <text x="300" y="1092" class="subtitle" style="font-size:23px">This summary will help our care team understand your condition</text>
+  <text x="300" y="1124" class="subtitle" style="font-size:23px">and decide the best next steps for you.</text>
+  <line x1="964" y1="1009" x2="964" y2="1138" stroke="#c8d8e5" stroke-width="2"/>
+  <rect x="1028" y="1018" width="420" height="66" rx="12" fill="url(#primaryButton)"/>
+  <path d="M1098 1048a12 12 0 1 0-24 0 12 12 0 0 0 24 0ZM1065 1070c5-19 42-19 47 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <text x="1133" y="1061" style="font:800 28px Inter,Arial,sans-serif;fill:#fff">I will speak with staff</text>
+  <circle cx="1088" cy="1123" r="10" fill="none" stroke="#0e58c5" stroke-width="3"/>
+  <text x="1085" y="1129" style="font:800 16px Inter,Arial,sans-serif;fill:#0e58c5">i</text>
+  <text x="1116" y="1119" style="font:400 20px Inter,Arial,sans-serif;fill:#0e58c5">Tell staff if anything is incorrect</text>
+  <text x="1116" y="1145" style="font:400 20px Inter,Arial,sans-serif;fill:#0e58c5">or if you feel worse.</text>
+
+  <!-- Footer -->
+  <rect x="45" y="1180" width="1510" height="0" fill="none"/>
+  <rect x="45" y="1166" width="1510" height="48" rx="14" fill="#eef4f8"/>
+  <path d="M80 1188v-12a8 8 0 0 1 16 0v12M76 1188h24v18H76z" fill="none" stroke="#253d55" stroke-width="3"/>
+  <text x="118" y="1197" class="small">This is not a diagnosis. If you feel severe chest pain, trouble breathing, or feel like you may faint, tell a staff member immediately.</text>
+</svg>

@@ -1,5 +1,8 @@
 const fs = require("node:fs");
+const http = require("node:http");
+const net = require("node:net");
 const path = require("node:path");
+const { spawn } = require("node:child_process");
 
 const ROOT = path.resolve(__dirname, "../..");
 const REQUIRED_FILES = [
@@ -9,6 +12,10 @@ const REQUIRED_FILES = [
   "app/index.html",
   "app/triage-kiosk/index.html",
   "app/triage-kiosk/triage-kiosk.js",
+  "app/summary-review/index.html",
+  "app/summary-review/SummaryReview.tsx",
+  "app/summary-review/fallback.html",
+  "app/summary-review/assets/review-your-information-fallback.svg",
   "app/shared/styles.css",
   "core/triage_engine/index.js",
   "api/lib/triage-demo-contract.js",
@@ -31,12 +38,87 @@ function assert(condition, message) {
   }
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getFreePort() {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.on("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const { port } = server.address();
+      server.close(() => resolve(port));
+    });
+  });
+}
+
+function requestLocal(port, requestPath, options = {}) {
+  const body = options.body || "";
+  return new Promise((resolve, reject) => {
+    const req = http.request({
+      hostname: "127.0.0.1",
+      port,
+      path: requestPath,
+      method: options.method || "GET",
+      headers: {
+        ...(options.headers || {}),
+        ...(body ? { "Content-Length": Buffer.byteLength(body) } : {})
+      }
+    }, (res) => {
+      const chunks = [];
+      res.on("data", (chunk) => chunks.push(chunk));
+      res.on("end", () => resolve({
+        statusCode: res.statusCode,
+        headers: res.headers,
+        body: Buffer.concat(chunks).toString("utf8")
+      }));
+    });
+
+    req.on("error", reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
+async function waitForServer(port, childProcess) {
+  const deadline = Date.now() + 5000;
+  while (Date.now() < deadline) {
+    if (childProcess.exitCode !== null) {
+      throw new Error(`Mock API server exited early with code ${childProcess.exitCode}`);
+    }
+
+    try {
+      const response = await requestLocal(port, "/healthz");
+      if (response.statusCode === 200) return;
+    } catch {
+      await delay(100);
+    }
+  }
+
+  throw new Error("Timed out waiting for mock API server.");
+}
+
+async function stopServer(childProcess) {
+  if (childProcess.exitCode !== null) return;
+  childProcess.kill("SIGTERM");
+  await new Promise((resolve) => {
+    childProcess.once("exit", resolve);
+    setTimeout(resolve, 1000);
+  });
+}
+
 for (const relativePath of REQUIRED_FILES) {
   assert(fs.existsSync(path.join(ROOT, relativePath)), `Missing required demo file: ${relativePath}`);
 }
 
 const html = read("app/triage-kiosk/index.html");
+const summaryReviewHtml = read("app/summary-review/index.html");
+const summaryReviewTsx = read("app/summary-review/SummaryReview.tsx");
+const summaryFallbackHtml = read("app/summary-review/fallback.html");
+const summaryFallbackSvg = read("app/summary-review/assets/review-your-information-fallback.svg");
 const script = read("app/triage-kiosk/triage-kiosk.js");
+const sharedStyles = read("app/shared/styles.css");
 const packageJson = JSON.parse(read("package.json"));
 const mockApiServer = read("scripts/mock-api-server.js");
 const contractSource = read("api/lib/triage-demo-contract.js");
@@ -44,6 +126,32 @@ const engine = require(path.join(ROOT, "core/triage_engine/index.js"));
 const contract = require(path.join(ROOT, "api/lib/triage-demo-contract.js"));
 
 assert(html.includes("AI Triage Kiosk Demo"), "Demo HTML should expose the English product title.");
+assert(summaryReviewHtml.includes("Review Your Information"), "Summary review screen should expose the patient-facing title.");
+assert(summaryReviewHtml.includes("review-your-information-fallback.svg"), "Summary review screen should render the saved fallback image.");
+assert(summaryReviewHtml.includes("SummaryReview.tsx"), "Summary review page should mount the React TSX component.");
+assert(summaryReviewHtml.includes("createRoot"), "Summary review page should initialize the React renderer.");
+assert(summaryReviewHtml.includes("Babel.transform"), "Summary review page should transpile the TSX component for static hosting.");
+assert(summaryFallbackHtml.includes("review-your-information-fallback.svg"), "Fallback page should render the saved fallback image.");
+assert(summaryFallbackSvg.includes("Review Your Information"), "Fallback SVG should preserve the visual title.");
+assert(summaryReviewTsx.includes("Your heart rate was higher than expected."), "Summary review component should lead with the patient-facing clinical finding.");
+assert(summaryFallbackSvg.includes("Your heart rate was higher than expected."), "Fallback SVG should include the main clinical finding.");
+assert(summaryFallbackSvg.includes("Please confirm your information with staff."), "Fallback SVG should include clear confirmation guidance.");
+assert(summaryReviewHtml.includes("summary-review-page"), "Summary review screen should use the no-scroll page shell.");
+assert(summaryReviewHtml.includes("summary-review-frame"), "Summary review screen should use a fixed 4:3 frame.");
+assert(summaryReviewTsx.includes("export default function SummaryReview"), "Summary review React component should export a default component.");
+assert(summaryReviewTsx.includes("FallbackBoundary"), "Summary review component should include a render-failure fallback boundary.");
+assert(!summaryReviewTsx.includes("Staff-review summary"), "Summary review screen should not show the removed title.");
+assert(!summaryReviewTsx.includes("Staff-review summary is ready"), "Summary review screen should not use the old ready-state title.");
+assert(!summaryReviewTsx.includes("4:3 static screen") && !summaryReviewTsx.includes("Synthetic data") && !summaryReviewTsx.includes("Staff review</span>"), "Summary review screen should not show removed header badges.");
+assert(!summaryReviewTsx.includes("Endpoint 2 summary fields used by this screen"), "Summary review screen should not show API debug field headings.");
+assert(!summaryReviewTsx.includes("Demo operating scope"), "Summary review screen should not show the removed operating-scope block.");
+assert(!summaryReviewTsx.includes("Demo note"), "Summary review screen should not show the removed demo-note block.");
+assert(!summaryReviewTsx.includes("Status:") && !summaryReviewTsx.includes("Progress:") && !summaryReviewTsx.includes("Visibility:"), "Summary review screen should not show the removed response status block.");
+assert(sharedStyles.includes(".summary-review-page"), "Shared styles should include summary review page rules.");
+assert(sharedStyles.includes("aspect-ratio: 4 / 3"), "Summary review frame should preserve a 4:3 ratio.");
+assert(sharedStyles.includes("overflow: hidden"), "Summary review page/frame should prevent scrolling.");
+assert(sharedStyles.includes(".primary-status-panel"), "Summary review styles should define the dominant primary status panel.");
+assert(sharedStyles.includes(".measurement-card-primary"), "Summary review styles should emphasize the HR measurement card.");
 assert(html.includes("../../core/triage_engine/index.js"), "Demo HTML should load the triage engine.");
 assert(script.includes("AiTriageKioskEngine"), "Demo script should bind to the triage engine.");
 assert(script.includes("Selected #"), "Multi-choice selections should show visible selection order.");
@@ -105,6 +213,8 @@ const expertForbiddenPhrases = [
 ];
 const runtimeAndApiExamples = [
   serializedDemo,
+  summaryReviewHtml,
+  summaryReviewTsx,
   ...fs.readdirSync(path.join(ROOT, "demo/fixtures")).filter((file) => file.endsWith(".json")).map((file) => read(path.join("demo/fixtures", file))),
   ...fs.readdirSync(path.join(ROOT, "handoff/api-examples")).filter((file) => file.endsWith(".json")).map((file) => read(path.join("handoff/api-examples", file)))
 ].join("\n");
@@ -112,4 +222,63 @@ for (const phrase of expertForbiddenPhrases) {
   assert(!runtimeAndApiExamples.includes(phrase), `Runtime/API examples contain expert-forbidden phrase: ${phrase}`);
 }
 
-console.log("AI triage kiosk demo smoke check passed.");
+async function runRenderStaticRouteSmoke() {
+  const port = await getFreePort();
+  const childProcess = spawn(process.execPath, ["scripts/mock-api-server.js"], {
+    cwd: ROOT,
+    env: {
+      ...process.env,
+      PORT: String(port),
+      DEMO_BEARER_TOKEN: "smoke-token"
+    },
+    stdio: ["ignore", "pipe", "pipe"]
+  });
+
+  let output = "";
+  childProcess.stdout.on("data", (chunk) => {
+    output += chunk.toString("utf8");
+  });
+  childProcess.stderr.on("data", (chunk) => {
+    output += chunk.toString("utf8");
+  });
+
+  try {
+    await waitForServer(port, childProcess);
+
+    const summaryPage = await requestLocal(port, "/demo-ui/summary-review/");
+    assert(summaryPage.statusCode === 200, "Summary review UI route should return HTTP 200.");
+    assert(String(summaryPage.headers["content-type"]).includes("text/html"), "Summary review UI route should return HTML.");
+    assert(summaryPage.body.includes("Review Your Information"), "Summary review UI route should serve the final-screen HTML.");
+
+    const sharedCss = await requestLocal(port, "/demo-ui/shared/styles.css");
+    assert(sharedCss.statusCode === 200, "Summary review UI route should expose shared CSS through the safe demo-ui path.");
+    assert(String(sharedCss.headers["content-type"]).includes("text/css"), "Shared CSS route should return text/css.");
+
+    const fallbackSvg = await requestLocal(port, "/demo-ui/summary-review/assets/review-your-information-fallback.svg");
+    assert(fallbackSvg.statusCode === 200, "Summary review fallback SVG route should return HTTP 200.");
+    assert(String(fallbackSvg.headers["content-type"]).includes("image/svg+xml"), "Summary review fallback route should return SVG.");
+    assert(fallbackSvg.body.includes("Review Your Information"), "Summary review fallback SVG should preserve the visual title.");
+
+    const protectedPost = await requestLocal(port, "/api/triage-demo/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}"
+    });
+    assert(protectedPost.statusCode === 401, "Protected POST endpoints should still require the demo bearer token.");
+    assert(protectedPost.body.includes("demo_bearer_token_required"), "Protected POST endpoint should preserve the token-required error code.");
+  } catch (error) {
+    error.message = `${error.message}\nMock server output:\n${output}`;
+    throw error;
+  } finally {
+    await stopServer(childProcess);
+  }
+}
+
+runRenderStaticRouteSmoke()
+  .then(() => {
+    console.log("AI triage kiosk demo smoke check passed.");
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
