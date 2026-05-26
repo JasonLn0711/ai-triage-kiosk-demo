@@ -4,7 +4,7 @@ title: "Summary Review UI Cloud Hosting Assessment"
 date: 2026-05-26
 topic: ai-triage
 type: handoff
-status: option-b-live-verified-dynamic-handoff-pending-render-redeploy
+status: option-b-live-verified-dynamic-handoff-live
 audience: internal NYCU / Jason; selective imedtac engineering follow-up
 source:
   - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
@@ -176,14 +176,21 @@ Dynamic handoff update:
 
 ```text
 GitHub main now contains fixed-URL dynamic handoff support in commits
-32dca85 and 722ca72. Public Render checks from 2026-05-26 17:14 through 17:21
-Asia/Taipei still served the previous HTML, so the dynamic handoff code is not
-yet active on the public service. Trigger Render Manual Deploy -> Deploy latest
-commit, then verify the HTML contains nycu_summary_review_payload before sending
-the dynamic handoff snippet to imedtac.
+32dca85 and 722ca72. Public Render checks at 2026-05-26 17:44 Asia/Taipei
+confirmed the deployed HTML now contains nycu_summary_review_payload and
+window.name. The dynamic fixed-URL handoff is active on the public service and
+ready for the imedtac direct-navigation snippet.
 ```
 
-4. Re-run the public verification commands below.
+Current dynamic-handoff public verification:
+
+| URL | Result | Reading |
+| --- | --- | --- |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/` | HTTP `200`, `text/html`, `11682` bytes | Summary review HTML is live and contains `nycu_summary_review_payload` plus `window.name`. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/SummaryReview.tsx` | HTTP `200`, `text/plain`, `23743` bytes | Dynamic rendering component is live and contains `summaryPayload` plus `buildReviewModel`. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/assets/review-your-information-fallback.svg` | HTTP `200`, SVG | Fallback artwork remains live. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/healthz` | HTTP `200` JSON | API service remains live. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/source/` | HTTP `404` JSON | Source folders remain unexposed. |
 
 ## Feasible Hosting Options
 
