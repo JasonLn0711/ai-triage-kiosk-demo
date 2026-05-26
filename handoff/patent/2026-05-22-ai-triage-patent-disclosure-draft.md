@@ -1,11 +1,13 @@
 # 專利提案揭露書草稿 - AI Triage
 
-Status: `draft-ready for Tomi review; must be transferred into Tomi / 德米專用範本 docx before formal submission`
+Status: `Tomi-reviewable protection packet; must be transferred into Tomi / 德米專用範本 docx before formal submission`
 
 Template basis:
 `/home/jnln3799/record_jn/record_audio_ubuntu/260309_0904_lab_sync_(patent_Tomi)/260310_專利撰寫/專利提案揭露書-德米專用範本.docx`
 
-Draft date: `2026-05-18`
+Initial draft date: `2026-05-18`
+
+Tomi-review packet update: `2026-05-22`
 
 Source basis:
 
@@ -24,6 +26,87 @@ Disclosure boundary:
 - This is a patent-disclosure drafting packet, not a legal filing.
 - This is not a clinical protocol, regulatory submission, FDA/TFDA claim, or production clinical-triage claim.
 - Hidden implementation details such as exact scoring formulas, model weights, prompt chains, embedding configuration, threshold constants, source-ranking weights, and data curation logic should remain trade secret unless Tomi / counsel asks for controlled disclosure.
+
+## 2026-05-22 Tomi Review Packet Addendum
+
+### Review Objective
+
+This packet is ready for Prof. Wu / Tomi review as a cooperation-protection
+draft. The immediate review question is not whether the June demo can proceed.
+The immediate review question is what must be filed, internally disclosed,
+contractually reserved, or held as trade secret before NYCU teaches imedtac the
+full reusable AI-Triage method.
+
+### Invention Center
+
+```text
+measured vital-sign payload
+-> vital-context adapter
+-> controlled question bank / source-governed question router
+-> dynamic next-question selection
+-> staff-review / clinician-review summary
+-> human final-decision boundary
+```
+
+This invention center should be reviewed as workflow / interaction /
+orchestration protection. The claim should not depend on a particular LLM,
+prompt chain, ASR model, embedding model, threshold, or clinical diagnosis rule.
+
+### What imedtac Already Knows
+
+| Area | Current shared / known level | Boundary |
+| --- | --- | --- |
+| June demo shape | Post-measurement AI-assisted intake after iMVS vital measurement. | Do not treat this as production clinical triage. |
+| API contract | Two endpoints: start session with measured vitals, submit answer with `session_key`. | Endpoint shape can be shared; internal routing logic stays protected. |
+| Question object | Typed question object with options, answer loop, and explicit `not_sure` option ids. | Question-bank design and ranking / source-governance method stay protected. |
+| Staff-review output | `staff_review_summary` / clinician-review summary for demo preview. | No diagnosis, treatment, final ESI / acuity assignment, or autonomous triage. |
+| Demo case direction | Tachycardia / chest-tightness live-performance lane and respiratory synthetic fallback. | Case expansion logic and clinical source governance stay internal. |
+| Integration boundary | Remote REST API Mode primary; Local Scripted Demo Mode fallback. | Lab API / NYCU-controlled service remains a know-how boundary. |
+| Field gaps | imedtac still needs to confirm current-device field-name deltas, measurement-quality semantics, UI limits, and environment constraints. | Do not freeze patent-sensitive implementation around unconfirmed device details. |
+
+### NYCU / Jason / 多寶 Contribution To Preserve
+
+- Jason / NYCU shaped the two-endpoint post-measurement API contract, session
+  ownership, answer-loop semantics, value-set discipline, and `not_sure` answer
+  behavior.
+- 多寶 / 許醫師 supplied clinical calibration for urgent-care / emergency-style
+  vital-aware intake, especially the value of vital signs for deciding which
+  short questions and staff-review signals matter.
+- Prof. Wu set the cooperation-protection rule: API-level integration can move,
+  but the reusable method and know-how should be protected before deeper
+  teaching.
+- imedtac owns the device / iMVS context, kiosk workflow constraints, hardware
+  measurement process, and integration requirements they provide.
+- Future meeting records should label idea origin as `Jason`, `多寶`, `Prof. Wu`,
+  `NYCU`, `imedtac`, `Johnny`, `Ben`, or `shared discussion` for each major
+  workflow decision.
+
+### Share-Now / Protect-First Boundary
+
+| Share now for June demo | Protect first before deeper transfer |
+| --- | --- |
+| API endpoint paths and request / response fields. | Reusable vital-context adapter logic. |
+| `session_key`, `api_version`, `schema_version`, `flow_version`, and answer-loop format. | Question-routing / ranking method. |
+| Typed question object, option IDs, and explicit `not_sure` behavior. | Source-governance method and clinical source registry scoring. |
+| Synthetic demo cases and safe staff-review summary shape. | Prompt chains, embeddings, retrieval weights, thresholds, and model orchestration. |
+| Demo boundary: staff-review support, no final triage, no diagnosis. | Case-library expansion method and proprietary clinical curation. |
+| Remote REST API Mode and Local Scripted Demo Mode fallback. | Claim language, invention-center framing, and protected know-how that would let another party rebuild the reusable method. |
+
+### Contract / Ownership Questions For Prof. Wu And Tomi
+
+1. Should NYCU / 智德萬 file an invention disclosure, provisional-style packet, or
+   other protected record before the next detailed imedtac technical handoff?
+2. Which parts should be patent claims, and which parts should be trade secret?
+3. Is the current MOU enough for demo cooperation only, or is a product
+   co-development agreement needed before deeper workflow transfer?
+4. Who owns or licenses the reusable AI-Triage workflow method if imedtac uses it
+   in a customer-facing product?
+5. How should license / revenue logic be framed: per product, per site, per
+   module, service fee, or another structure?
+6. Which contributors should be named at the invention-disclosure stage, and
+   which company-side contributions are device / integration context rather than
+   invention center?
+7. What can Jason safely send to imedtac before protection is in place?
 
 ## 2026-05-21 Prof. Wu Protection Signal
 
