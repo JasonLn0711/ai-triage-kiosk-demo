@@ -4,7 +4,7 @@ title: "Summary Review UI Cloud Hosting Assessment"
 date: 2026-05-26
 topic: ai-triage
 type: handoff
-status: option-b-implemented-local-verified
+status: option-b-pushed-render-manual-redeploy-needed
 audience: internal NYCU / Jason; selective imedtac engineering follow-up
 source:
   - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
@@ -122,6 +122,50 @@ Verified local URLs:
 
 `npm run smoke` now starts the mock API server on a temporary port and checks
 the same summary-review HTML/SVG routes plus token-required POST behavior.
+
+## Post-Push Render Verification On 2026-05-26
+
+NYCU pushed the Option B implementation and commitment record to GitHub `main`:
+
+| Commit | Purpose |
+| --- | --- |
+| `9a46992` | Serve the summary review UI from the Render API server and add smoke coverage. |
+| `d13b5c3` | Record the imedtac Teams summary-review commitments and archive the demo image. |
+
+Remote `origin/main` was verified at `d13b5c3`.
+
+Public checks from `2026-05-26 16:08` through `16:20` Asia/Taipei showed:
+
+| URL | Result | Reading |
+| --- | --- | --- |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/healthz` | HTTP `200` JSON | Existing Render service remains live. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/` | HTTP `404` JSON | Render has not yet served the pushed Option B route. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/index.html` | HTTP `404` JSON | The latest static-route code is not active on the public service. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/source/` | HTTP `404` JSON | Source folders remain unexposed. |
+
+Interpretation:
+
+```text
+GitHub main contains the implementation.
+The public Render service is still running the previous deployed code, or the
+new deploy has not completed successfully.
+Do not notify imedtac that the summary URL is ready until this route returns
+HTTP 200.
+```
+
+Required next action:
+
+1. Open Render service `nycu-imedtac-triage-demo-api`.
+2. Use `Manual Deploy -> Deploy latest commit`.
+3. Confirm the deploy logs run:
+
+```text
+npm install && npm run render:build
+npm run render:start
+AI triage demo mock API listening on http://localhost:<PORT>
+```
+
+4. Re-run the public verification commands below.
 
 ## Feasible Hosting Options
 
@@ -251,7 +295,11 @@ Implemented tasks:
 Remaining deployment tasks:
 
 1. Commit and push the change to `main`, the branch Render deploys from.
-2. Wait for Render redeploy.
+   - Completed with `9a46992` and `d13b5c3`.
+2. Trigger or wait for Render redeploy.
+   - Post-push public checks still returned HTTP `404` for the summary route,
+     so a Render dashboard manual deploy is now required unless auto-deploy
+     later catches up.
 3. Verify:
 
 ```text
