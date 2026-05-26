@@ -46,6 +46,9 @@ store credentials or live hospital integration details.
 - New outgoing message visible in the `2026-05-26` screenshot:
   - Jason sent the NYCU demo summary page image and wrote
     `畫面大致呈現如上`.
+  - Jason later provided the deployed fixed summary review URL and the
+    `window.name` direct-navigation handoff snippet at `2026-05-26 17:52`
+    Asia/Taipei.
 
 ## Visible Conversation Transcript
 
@@ -124,6 +127,23 @@ Ben Siu 蕭銳輝, imedtac Corp. 你覺得這次demo的做法直接取代QRcode�
 就不用有 iframe 的工
 
 好的
+
+[Today 5:52 PM]
+
+Jason Lin:
+Dear all,
+已部署 summary review demo-only visual support 之 URL 如下：
+https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/
+當 Endpoint 2 回傳 `status=summary` 時，iMVS 可以直接導到這個固定 URL。若要讓畫面依照當次 summary payload 更新，可以在導頁前用 `window.name` 做一次性 handoff：
+```
+window.name = JSON.stringify({
+  type: "nycu_summary_review_payload",
+  payload: response
+});
+window.location.href =
+  "https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/";
+```
+頁面會讀取並清除這個 handoff，依 `staff_review_summary` 顯示 summary review。API contract 不變（這個 URL 是 demo-only visual support page）
 ```
 
 ## Archived Demo Summary Image
@@ -203,6 +223,13 @@ Scope controls:
 - The implementation path should therefore provide one stable hosted summary
   page URL, suitable either for iframe embedding or direct replacement of the QR
   code page, while preserving the original two-endpoint API contract.
+- Jason replied at `2026-05-26 17:52` Asia/Taipei with the deployed summary
+  review URL and told imedtac that iMVS can navigate directly to that fixed URL
+  when Endpoint 2 returns `status=summary`.
+- Jason provided the optional `window.name` handoff snippet for cases where the
+  page should render from the current `summary` payload.
+- Jason stated that the page reads and clears the handoff, renders from
+  `staff_review_summary`, and does not change the API contract.
 
 ## Jason External Statement And Action Record
 
@@ -220,6 +247,10 @@ Teams, so they are no longer private draft intentions.
 | `2026-05-26 after 13:52` | Johnny wrote `這樣沒問題，足夠我們進行說明 謝謝`. | imedtac accepted the visual as sufficient for demo explanation. | Provide a hosted page that preserves the same visual support concept. |
 | `2026-05-26 14:21` | Ben wrote that imedtac would embed the summary page by iframe and asked Jason to provide the iframe URL. | imedtac now expects a URL from NYCU for the summary page. | Provide a stable URL before telling imedtac the page is ready; do not change this URL later without notice. |
 | `2026-05-26 14:31` | Johnny asked whether replacing the QR code page directly would be more convenient than iframe, and Ben replied `好的`. | The hosted page should support either iframe use or direct navigation/replacement in the iMVS demo flow. | Do not make the page depend on iframe-only behavior; keep it as a normal standalone URL. |
+| `2026-05-26 17:52` | Sent the deployed summary review URL: `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/`. | imedtac now has the fixed external URL for the summary review demo-only visual support page. | Keep this URL stable for the June demo unless a change notice is recorded and sent to imedtac first. |
+| `2026-05-26 17:52` | Stated that when Endpoint 2 returns `status=summary`, iMVS can directly navigate to the fixed URL. | Direct page replacement is the recommended and externally communicated path; iframe is no longer required for this demo route. | Do not reintroduce iframe-only dependency without notifying imedtac. |
+| `2026-05-26 17:52` | Provided the `window.name = JSON.stringify({ type: "nycu_summary_review_payload", payload: response })` handoff snippet before `window.location.href`. | The dynamic summary page should accept the current Endpoint 2 summary response through a one-time browser handoff. | Preserve `nycu_summary_review_payload`, `payload: response`, and fixed-URL navigation semantics unless changed with imedtac. |
+| `2026-05-26 17:52` | Stated that the page reads and clears the handoff, renders by `staff_review_summary`, and that `API contract 不變`. | The visual URL is not a new API endpoint and should not change the two POST endpoint contract. | Keep the existing two POST endpoint contract stable; do not add URL query-string vital/answer handoff or third endpoint semantics without a recorded change notice. |
 
 Practical implementation rule:
 
