@@ -36,6 +36,35 @@ this repository. Tracked files may record the fact of token handoff, the header
 format, the recipient, and the change-control obligation, but must not record
 the credential itself.
 
+## Jason External Statement And Action Record
+
+These are Jason's outgoing Teams statements and actions visible in the
+screenshots. Because they were communicated to 慧誠智醫（imedtac Co., Ltd.）or to
+Ben through the agreed Teams channel, they are implementation commitments unless
+NYCU explicitly notifies imedtac of a change.
+
+| Time | Jason said / did | External reading | Must preserve unless changed with imedtac |
+| --- | --- | --- | --- |
+| `2026-05-22 12:24` | Said the API reply document had been sent by email. | The emailed two-endpoint API packet is the active June implementation baseline. | Do not treat later internal drafts as the external baseline unless re-sent or explicitly promoted. |
+| `2026-05-22 12:24` | Committed that NYCU would provide the first preset questions/options by Monday. | imedtac can expect a first preset question/option template for integration. | If delivery scope or timing changes, notify imedtac instead of silently drifting. |
+| `2026-05-22 12:24` | Recommended no generic skip button and an explicit `Not sure` option id such as `not_sure` or question-specific `*_not_sure`. | Unable-to-answer behavior is option-id based, not silent skip. | Do not add generic silent skip or reinterpret `not_sure` without a change note. |
+| `2026-05-25 20:09` | Clarified `request_id` is unique per HTTP request. | imedtac may generate a new trace id for each request. | Keep this trace behavior stable. |
+| `2026-05-25 20:09` | Clarified `idempotency_key` is stable for retrying the same logical operation and should change for different questions or explicit new answer attempts. | Retry semantics are scoped to one logical answer operation. | Do not change idempotency scope without notifying imedtac. |
+| `2026-05-25 20:09` | Stated same-key/different-answer-body conflicts return HTTP `409` / `idempotency_conflict` and do not advance the question flow. | Conflict recovery is deterministic and flow-safe. | Preserve `409` / `idempotency_conflict`, or communicate any new recovery behavior first. |
+| `2026-05-25 20:09` | Recommended June recovery as restart questionnaire / restart demo session, not automatic answer revision. | imedtac should not implement automatic answer revision for June. | Do not require automatic answer revision after this message without re-alignment. |
+| `2026-05-25 20:09` | Proposed pending-answer state: snapshot `question_id`, answer body, and `idempotency_key`; disable answer-related controls during request; retry the same body/key after timeout. | UI race-control behavior is part of the rehearsal expectation. | If NYCU changes retry expectations, inform imedtac before UI implementation depends on the old rule. |
+| `2026-05-25 20:09` | Defined `capabilities.max_questions` as a question-count cap, not final question total. | imedtac should not use `capabilities.max_questions` as the denominator for final progress. | Keep this field meaning stable. |
+| `2026-05-25 20:09` | Recommended `progress.expected_total` as the `Question X of Y` denominator and said tachycardia lane can keep it stable. | UI progress should follow NYCU response-level progress metadata. | Do not remove or alter `progress.expected_total` behavior without change control. |
+| `2026-05-25 20:09` | Agreed to no generic silent skip, keep `I'm not sure`, and avoid a fixed `None of these` button unless NYCU returns it as an option id. | Answer rendering is driven by returned options. | Preserve option-id behavior and avoid hidden UI-only answer states. |
+| `2026-05-25 20:09` | Agreed to work within up to `9` short no-scroll options and keep first tachycardia preset short. | NYCU content should respect imedtac UI capacity. | Do not send long labels or more than the agreed working capacity without UI confirmation. |
+| `2026-05-25 20:09` | Said Endpoint 2 returns `status=summary` and `staff_review_summary`. | Final question-loop result is represented by the summary status and staff-review payload. | Keep summary field names and shape aligned with the sent API examples. |
+| `2026-05-25 20:09` | Provided Render rehearsal base URL and the two full endpoint URLs. | imedtac can configure browser calls to the NYCU-hosted Render URL. | Do not move base URL or endpoint paths without explicit notice. |
+| `2026-05-25 20:09` | Said `http://localhost` and `http://localhost:5174` are in the CORS allowlist. | Those origins are supported for first rehearsal. | Keep them allowed or notify imedtac before removing/changing them. |
+| `2026-05-25 20:09` | Stated demo auth uses `Authorization: Bearer <demo token>` with `Content-Type: application/json`. | Header format is part of the integration contract. | Do not alter bearer-token requirement or header format without notice. |
+| `2026-05-25 20:09` | Said the first tachycardia preset questions were aligned with 許醫師's case. | The first rehearsal case should use that aligned tachycardia path. | Do not swap the first rehearsal case without telling imedtac. |
+| `2026-05-25 after 20:09` | Told Johnny that NYCU-provided UI may affect visual consistency and device-operation completeness and may need discussion. | Summary UI ownership remains a coordinated display-route question. | Do not unilaterally make NYCU UI the required iMVS path without discussion. |
+| `2026-05-25 20:13` | Privately sent the demo bearer token to Ben and said it had been tested successfully. | Ben has an active token for token-required rehearsal. | Do not rotate, revoke, or change token behavior without directly notifying Ben / imedtac. |
+
 ## Visible Conversation Transcript
 
 The following transcript is reconstructed from the user-provided screenshots.

@@ -73,6 +73,7 @@ go-to-market 與美國客戶展示，還不是正式醫療決策產品。
 | `handoff/2026-05-21-imedtac-engineering-open-issues-checklist.md` | Engineering integration checklist for open issues not fully captured by the API field tables |
 | `handoff/2026-05-21-to-2026-05-25-imedtac-response-plan.md` | Internal response plan for API, question templates, and `not_sure` answer behavior before Monday `2026-05-25` |
 | `docs/writing-method-policy.md` | Repo-wide confident, affirmative, non-defensive writing policy for articles, handoff notes, pre-reads, meeting packets, and company-facing artifacts |
+| `decisions/2026-05-26-imedtac-external-commitment-governance.md` | Repo-wide rule that anything already said, sent, shown, promised, or demonstrated to 慧誠智醫（imedtac Co., Ltd.）must be implemented as communicated unless a recorded change is explicitly shared with imedtac first |
 | `docs/version-control-policy.md` | Automated version-control policy for SemVer runtime, API/schema/flow versions, and demo-readiness checks |
 | `data/version_manifest.json` | Canonical version manifest checked against runtime files and API examples |
 | `docs/source-index.md` | Complete index of copied source bundles and upstream context |

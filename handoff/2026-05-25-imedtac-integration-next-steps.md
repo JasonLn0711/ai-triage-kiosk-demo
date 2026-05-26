@@ -2,6 +2,7 @@
 id: 2026-05-25-imedtac-integration-next-steps
 title: "imedtac Integration Next Steps After Teams UI / API Follow-Up"
 date: 2026-05-25
+last_updated: 2026-05-26
 topic: ai-triage
 type: handoff
 status: active-next-step-plan
@@ -9,6 +10,7 @@ audience: internal NYCU / Jason / 多寶 coordination; selective imedtac enginee
 source:
   - ../source/2026-05-21-imedtac-teams-api-followup/source.md
   - ../source/2026-05-23-to-2026-05-25-imedtac-teams-ui-api-followup/source.md
+  - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
   - ../source/2026-05-25-duobao-afrvr-tachycardia-case/source.md
   - ./2026-05-21-imedtac-two-endpoint-api-reply.md
   - ./2026-05-21-imedtac-engineering-open-issues-checklist.md
@@ -51,7 +53,8 @@ Frozen for the first integration rehearsal:
 | Retry/idempotency | Same logical operation retries with the same body/key; changed body with same key returns `idempotency_conflict`. |
 | Conflict recovery | `idempotency_conflict` recovery is restart demo session or clearly labeled fallback, not answer revision. |
 | iMVS pending state | iMVS locks answer-related controls immediately after answer submit and unlocks after NYCU returns next question or summary. |
-| Summary | Endpoint 2 returns `status=summary` and `staff_review_summary`; summary remains `staff_only`. |
+| Summary | Endpoint 2 returns `status=summary` and `staff_review_summary`; summary remains `staff_only`; as of Johnny's `2026-05-26` Teams reply, the demo may use previously provided NYCU prototype materials to introduce the summary/result concept, and NYCU should not build a new preview page unless later requested. |
+| Summary visual URL | NYCU serves the demo-only summary-review page from the same Render service at `/demo-ui/summary-review/`, supporting either iframe embedding or direct QR-code-page replacement without changing the two POST API endpoints. |
 
 This freeze reduces engineering burden because imedtac only needs to wire the
 same two endpoint paths against one stable base URL. NYCU's internal Render
@@ -62,6 +65,34 @@ Change-control rule: after this reply is sent, any change to endpoint paths,
 request/response schema, enum values, workflow mode, conflict recovery,
 required CORS origins, token requirement, or summary display surface should be
 explicitly re-confirmed with imedtac before implementation.
+
+## External Commitments To Preserve
+
+Jason has already communicated the following items through Microsoft Teams.
+They should be treated as execution constraints, not internal draft ideas.
+
+| Area | Already communicated | Execution rule |
+| --- | --- | --- |
+| API baseline | The two-endpoint API reply was sent by email and confirmed in Teams. | Use the small fixed contract as the June baseline; do not silently promote future fields into the rehearsal path. |
+| Idempotency | Same logical operation retries use the same `idempotency_key`; same key with changed body returns HTTP `409` / `idempotency_conflict`; June recovery is restart demo session. | Implement and test this behavior as spoken, or notify imedtac before changing recovery. |
+| Pending answer state | iMVS should snapshot the answer body/key and disable answer-related controls while the request is pending. | Keep NYCU retry behavior compatible with that UI expectation. |
+| Progress | `capabilities.max_questions` is a capacity cap; `progress.expected_total` is the `Question X of Y` denominator. | Keep `progress.expected_total` stable for the tachycardia rehearsal lane unless re-aligned. |
+| Skip / uncertainty | No generic silent skip; keep `I'm not sure`; `None of these` only appears if NYCU returns it as an option id. | Preserve option-id based answer semantics. |
+| Options | Work within up to `9` short no-scroll options and keep first tachycardia options short. | Do not send long option labels or exceed the working option capacity without UI confirmation. |
+| Demo environment | Render base URL, two endpoint paths, CORS origins `http://localhost` and `http://localhost:5174`, and bearer-token header format were sent in Teams. | Keep these reachable and stable for rehearsal; any URL, auth, or CORS change requires notice. |
+| Token handoff | Jason privately sent Ben a tested bearer token. | Do not rotate, revoke, or change token-required behavior without telling Ben / imedtac. |
+| Summary result | Endpoint 2 returns `status=summary` and `staff_review_summary`. | Preserve summary payload names and staff-review boundary. |
+| Summary visual | Jason sent the demo summary-review page image on `2026-05-26 13:52` and wrote `畫面大致呈現如上`; Johnny confirmed it is sufficient for explanation; Ben asked for an iframe URL; Johnny / Ben then accepted direct QR-code-page replacement as a likely simpler path. | Provide one stable standalone summary page URL that can be used either as an iframe source or direct replacement page; material changes to final-screen concept or display route require notice. |
+
+Change process for any deviation:
+
+```text
+1. Record the current Teams commitment.
+2. Record the proposed change and reason.
+3. State compatibility impact for imedtac UI / engineering.
+4. Name owner and target date.
+5. Notify imedtac before either side implements against the changed behavior.
+```
 
 ## Decisions To Send Back
 
@@ -137,23 +168,22 @@ Working design:
 - If a question needs more than `6` options, use grouped wording or split the
   question only when 多寶 / imedtac UI confirms the split is clearer.
 
-### 5. Summary Preview Page
+### 5. Summary Display Surface
 
 Reply position:
 
 ```text
 回答完所有問題後，NYCU Endpoint 2 會回 `status=summary` 與
-`staff_review_summary`。最省工程量的 demo 路徑，是 iMVS 直接在既有 result /
-preview page 顯示同一份 summary payload；這樣不需要另外刻一個完整頁面。
+`staff_review_summary`。Johnny 在 `2026-05-26` Teams 回覆中確認，實際情境下
+summary 內容會進 HIS，沒有預覽內容；這次 preview/display 需求主要是為了 demo
+介紹方便。Johnny 提到先前已看過 NYCU 提供的 prototype，因此可以先用這些素材
+輔助，慧誠智醫暫不需要另刻畫面。
 
-如果 imedtac 想先快速驗證顯示效果，NYCU 也可以提供一個 demo-only 的輕量
-preview page / mock page，展示同一份 summary payload。正式 rehearsal 仍建議以
-iMVS 端 render payload 為主，確保 customer demo 看到的是實際串接結果。
-
-Jason 已在 Teams 補充：若由 NYCU 這邊提供 UI，可能影響畫面設計美觀、
-一致性與設備操作完整性，因此這不是 NYCU 單方面切換的項目。若要從
-iMVS 既有 result / preview page 改成 NYCU-provided UI / mock page，需先與
-imedtac 明確討論。
+NYCU 下一步應提供穩定的 summary payload、範例、欄位說明、display-order 建議
+與 staff-only scope wording，並把先前 prototype / final screen 素材整理成 demo
+介紹可用的最後畫面。若這個 NYCU-provided final screen 要從靜態素材變成
+雲端可互動頁面，應標示為 demo-only review UI，且不改變已送出的兩 endpoint API
+contract。
 ```
 
 Scope control:
@@ -234,14 +264,29 @@ NYCU implementation checklist:
 | 1 | Send concise Teams reply answering Ben's two API questions and confirming the progress rule. | Jason / NYCU | Immediate |
 | 2 | Update the external API reply with clarified idempotency, progress, UI capacity, and CORS notes. | Jason | `2026-05-25` |
 | 3 | Deliver the first tachycardia preset question/option template aligned to 多寶 / 許醫師's HR `130` case as both a backend-returned question set and a shareable imedtac engineering handoff packet. | Jason + 多寶 | `2026-05-25` |
-| 4 | Confirm whether summary display will use iMVS existing preview page or a temporary NYCU-hosted demo preview page. | imedtac UI + NYCU | Immediate |
+| 4 | Summary display direction: imedtac does not need to build a new page; NYCU provides the final prototype / summary-review screen material plus payload examples and wording. Same-Render route: `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/`. | imedtac UI + NYCU | Option B implemented locally; verify after Render redeploy |
 | 5 | Confirm iMVS locks answer-related controls after answer submit and unlocks only after NYCU next-question / summary response. | imedtac UI | Before first rehearsal |
 | 6 | Prepare the Render browser-callable rehearsal API and verify `/healthz`, CORS preflight, start-session, and submit-answer. | NYCU engineering | Achieved on `2026-05-25` |
 | 7 | Run contract rehearsal: start session -> first question -> answer -> next question -> summary. | NYCU + imedtac | Before `2026-06-10` customer demo |
 | 8 | Run fallback rehearsal: API timeout / invalid session / idempotency conflict -> structured error -> restart demo session or local scripted demo label. | NYCU + imedtac | Before customer demo |
 | 9 | Capture UI screenshots from imedtac and update option-count / progress assumptions. | imedtac UI + Jason | After first rehearsal |
 
-## Suggested Teams Reply
+## Suggested 2026-05-26 Teams Reply
+
+Use this short reply to close the summary-preview question without creating a
+new UI commitment:
+
+```text
+了解，summary 這段先以 demo 介紹需求處理，慧誠智醫這邊暫不需要另刻新的預覽畫面。
+
+NYCU 會確保 Endpoint 2 回傳的 status=summary / staff_review_summary payload、欄位名稱、範例與 wording 都維持穩定，並把先前 prototype / final screen 素材整理成可輔助 demo 介紹的最後畫面。若後續要調整 summary payload 或展示路徑，我們再另外明確對齊。
+```
+
+## Previous 2026-05-25 Teams Reply Draft
+
+Note: the summary-preview paragraph in this older draft is superseded by
+Johnny's `2026-05-26` clarification above. Do not read it as a current
+commitment that iMVS must render the summary in an existing preview page.
 
 Send gate: the Render public endpoint now passes `GET /healthz`, CORS
 preflight, `POST /sessions`, and one
@@ -315,8 +360,10 @@ First rehearsal is successful when:
   answer revision.
 - NYCU returns `status=summary` and `staff_review_summary` with staff-only
   scope controls.
-- iMVS renders the summary in an existing result / preview page, or NYCU-hosted
-  demo preview is explicitly labeled as a temporary rehearsal surface.
+- The rehearsal confirms that the NYCU-provided prototype / final summary screen
+  is sufficient for demo explanation, or identifies the exact adjustment needed.
+  Any interactive NYCU-hosted review UI must remain demo-only and must not imply
+  production HIS / EMR / FHIR writeback.
 - UI does not display diagnosis, treatment advice, final triage level, or
   production HIS / EMR writeback claim.
 

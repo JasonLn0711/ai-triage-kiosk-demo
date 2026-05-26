@@ -69,19 +69,35 @@ Do not turn this repo into:
 
 ## External Commitment Change Control
 
-- Treat anything Jason has already sent to 慧誠智醫（imedtac Co., Ltd.）through
-  Teams, Gmail, or another company-facing channel as an external commitment, not
-  as an internal draft.
-- Do not silently change behavior that has already been communicated externally.
-  This includes endpoint paths, request/response schema, workflow mode,
+- Treat anything Jason has already said, sent, shown, promised, handed off, or
+  demonstrated to 慧誠智醫（imedtac Co., Ltd.）as an external commitment, not as
+  an internal draft. This applies across every communication setting: Microsoft
+  Teams, Gmail, LINE, online meetings, in-person meetings, phone calls, hallway
+  or offline discussion, private engineering chats, screenshots, demo images,
+  files, links, tokens, endpoint examples, slide / screen shares, and verbal
+  explanations.
+- Do not silently change behavior, wording, artifacts, demo surfaces, API
+  behavior, or operational assumptions that have already been communicated to
+  imedtac. This includes endpoint paths, request/response schema, workflow mode,
   idempotency behavior, conflict recovery, CORS origins, bearer-token
   requirement or header format, progress semantics, option rendering
   assumptions, skip / not-sure behavior, summary display surface, tachycardia
-  preset-question handoff, and demo environment routing.
-- If a change is needed after an external message has been sent, first record
-  the current commitment, proposed change, reason, compatibility impact, owner,
-  and target date; then explicitly notify and discuss it with imedtac before
-  either side implements against the new behavior.
+  preset-question handoff, demo environment routing, visual summary-page
+  direction, field examples, shared credentials, rehearsal behavior, and any
+  implementation instruction already heard by imedtac.
+- If a commitment was verbal or happened outside a tracked written channel,
+  record it as soon as it becomes known in a dated `source/` note or `decisions/`
+  note, with the channel, date, participants, what was communicated, and the
+  resulting implementation obligation. If exact wording is unavailable, mark
+  the record as reconstructed and state the confidence / source boundary.
+- If a change is needed after anything has been communicated externally, first
+  record the current commitment, proposed change, reason, compatibility impact,
+  affected artifacts/tests, owner, and target date; then explicitly notify and
+  discuss it with imedtac before either side implements against the new behavior.
+- The default implementation rule is: do what was communicated. A later internal
+  preference, refactor, visual improvement, or architecture idea does not
+  supersede an external commitment until imedtac has been told and the change is
+  recorded.
 - Preserve external-message records under `source/` with credential values
   redacted. Record that a credential was shared and through which private
   channel, but never store bearer tokens, API keys, private links, or live

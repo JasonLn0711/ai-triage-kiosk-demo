@@ -334,27 +334,30 @@ iMVS labels the run as local_scripted_demo
 
 ## Summary Preview Acceptance Item
 
-Preferred rehearsal path:
+Preferred rehearsal path after Johnny's `2026-05-26` clarification:
 
 ```text
-iMVS renders NYCU status=summary / staff_review_summary in its existing result
-or preview page.
+慧誠智醫 does not need to build a new summary preview page for the demo.
+NYCU provides the prototype / final summary-review screen material and the
+stable status=summary / staff_review_summary payload for demo explanation.
 ```
 
-Temporary fallback:
+Cloud-hosted option:
 
 ```text
-NYCU-hosted demo-only preview page may be used for debugging, but it must be
-visibly labeled as temporary rehearsal support.
+If useful, NYCU can host a demo-only summary review UI next to the rehearsal API
+or on a separate static deployment. It must be visibly labeled as demo support
+and must not imply production HIS / EMR / FHIR writeback.
 ```
 
 Change-control note:
 
 ```text
 Jason has already told imedtac that a NYCU-provided UI may affect visual
-consistency and device-operation completeness. Do not switch the rehearsal
-summary surface from iMVS rendering to NYCU-provided UI without first discussing
-the impact with imedtac.
+consistency and device-operation completeness. Johnny's clarification means
+慧誠智醫 does not need to implement a new page; it does not remove the need to
+keep any NYCU-provided interactive page demo-only and aligned with the existing
+API contract.
 ```
 
 Acceptance check:

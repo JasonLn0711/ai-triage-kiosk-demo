@@ -6,17 +6,23 @@ topic: ai-triage
 type: decision
 status: active
 source:
+  - ./2026-05-26-imedtac-external-commitment-governance.md
   - ../handoff/2026-05-21-imedtac-two-endpoint-api-reply.md
   - ./2026-05-22-not-sure-answer-boundary.md
   - ../docs/2026-05-22-future-complete-api-design-plan.md
   - ../source/2026-05-22-nycu-sent-api-reply-email/sent-reply-record.md
   - ../source/2026-05-21-imedtac-teams-api-followup/teams-thread-record-2026-05-22.md
   - ../source/2026-05-23-to-2026-05-25-imedtac-teams-ui-api-followup/source.md
+  - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
 ---
 
 # API Contract Freeze And Change Control
 
 ## Decision
+
+This decision is the API-specific application of the repo-wide external
+commitment rule in
+`decisions/2026-05-26-imedtac-external-commitment-governance.md`.
 
 The external-ready API reply at `handoff/2026-05-21-imedtac-two-endpoint-api-reply.md` is the June demo small fixed implementation baseline. After it is sent, the fields and behaviors explicitly listed in that small contract must remain stable unless both engineering teams explicitly discuss and record a change.
 
@@ -65,6 +71,16 @@ summary display surface and any NYCU-hosted / NYCU-provided UI a change-control
 item: NYCU should not unilaterally switch from iMVS-rendered summary display to
 a NYCU-provided UI surface without first discussing that impact with imedtac.
 
+On `2026-05-26 13:52`, after Johnny clarified that the real-world summary
+content would go into HIS and that the preview need is for demo introduction,
+Jason acknowledged the direction, sent the NYCU demo summary-review page image
+in Teams, and wrote `畫面大致呈現如上`. That image and message are now the
+externally communicated approximate visual support direction for the demo
+summary page. The page can still be polished, but NYCU should not materially
+change the summary payload names, display route, final-screen concept, or
+staff-review wording surface without recording the current commitment and
+telling imedtac before either side implements against the changed behavior.
+
 ## First Principle
 
 Two engineering teams do not coordinate through intention; they coordinate through stable interfaces. The scarce resource is shared predictability: each side must know which names, values, and behaviors can be implemented without wondering whether the other side will revise them silently.
@@ -95,7 +111,23 @@ handoff, NYCU must tell imedtac explicitly and discuss the change before either
 side implements against the new behavior. Avoiding contradictory external
 messages is a project reliability requirement, not just etiquette.
 
+This rule also applies to actions, not only wording. If Jason already sent a
+screen image, token, endpoint URL, CORS origin, payload example, or implementation
+instruction through Teams, that action is treated as an external commitment.
+Changing it requires the same record-and-notify process as changing a written
+API field.
+
 Clarifications that do not change runtime behavior can be appended as notes. Display text, question wording, labels, and staff-summary wording can evolve under `question_set_version` and `wording_version`, provided the machine-readable IDs and small contract remain stable.
+
+## External Commitments Already Spoken In Teams
+
+| Date / time | Teams action | Implementation obligation |
+| --- | --- | --- |
+| `2026-05-22 12:24` | Jason confirmed the API packet was sent by email and recommended explicit `Not sure` option ids instead of generic skip. | Keep the emailed two-endpoint API reply as the baseline; preserve option-id based unable-to-answer behavior. |
+| `2026-05-25 20:09` | Jason answered Ben's `request_id`, `idempotency_key`, progress, skip, option-count, summary, Render URL, CORS, and bearer-token questions. | Treat those behaviors as the first-rehearsal contract unless a recorded change request updates them. |
+| `2026-05-25 after 20:09` | Jason told Johnny that NYCU-provided UI may affect visual consistency and device-operation completeness. | Do not silently make NYCU UI the mandatory display route. |
+| `2026-05-25 20:13` | Jason privately sent the tested bearer token to Ben. | Preserve token-required behavior and header format, or notify Ben / imedtac before changing the token path. |
+| `2026-05-26 13:52` | Jason acknowledged Johnny's summary-display direction, sent the demo summary-review image, and wrote `畫面大致呈現如上`. | Treat the archived summary-review image as the approximate visual-support baseline for the demo summary page. |
 
 ## Collaboration Protocol
 
