@@ -301,6 +301,48 @@
       const fallback = document.getElementById("summary-fallback");
       const rootElement = document.getElementById("summary-root");
       const fallbackImageSrc = "./assets/review-your-information-fallback.svg";
+      const SUMMARY_PAYLOAD_STORAGE_KEY = "nycu_summary_review_payload";
+      const SUMMARY_PAYLOAD_HANDOFF_TYPE = "nycu_summary_review_payload";
+
+      function parseSummaryPayload(raw) {
+        if (!raw || raw.length > 100000) return null;
+        try {
+          const parsed = JSON.parse(raw);
+          const payload = parsed && parsed.type === SUMMARY_PAYLOAD_HANDOFF_TYPE
+            ? parsed.payload
+            : parsed;
+          return payload && payload.status === "summary" && payload.staff_review_summary
+            ? payload
+            : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function readSummaryPayloadHandoff() {
+        const candidates = [];
+
+        try {
+          if (window.name) candidates.push(window.name);
+        } finally {
+          window.name = "";
+        }
+
+        try {
+          const stored = window.sessionStorage.getItem(SUMMARY_PAYLOAD_STORAGE_KEY);
+          if (stored) candidates.push(stored);
+          window.sessionStorage.removeItem(SUMMARY_PAYLOAD_STORAGE_KEY);
+        } catch {
+          // Storage may be unavailable in locked-down kiosk shells.
+        }
+
+        for (const candidate of candidates) {
+          const payload = parseSummaryPayload(candidate);
+          if (payload) return payload;
+        }
+
+        return null;
+      }
 
       async function mountSummaryReview() {
         try {
@@ -333,7 +375,10 @@
           }
 
           createRoot(rootElement).render(
-            React.createElement(module.default, { fallbackImageSrc })
+            React.createElement(module.default, {
+              fallbackImageSrc,
+              summaryPayload: readSummaryPayloadHandoff()
+            })
           );
 
           rootElement.hidden = false;

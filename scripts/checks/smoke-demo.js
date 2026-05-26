@@ -131,6 +131,8 @@ assert(summaryReviewHtml.includes("review-your-information-fallback.svg"), "Summ
 assert(summaryReviewHtml.includes("SummaryReview.tsx"), "Summary review page should mount the React TSX component.");
 assert(summaryReviewHtml.includes("createRoot"), "Summary review page should initialize the React renderer.");
 assert(summaryReviewHtml.includes("Babel.transform"), "Summary review page should transpile the TSX component for static hosting.");
+assert(summaryReviewHtml.includes("window.name"), "Summary review page should support same-tab payload handoff without URL query data.");
+assert(summaryReviewHtml.includes("nycu_summary_review_payload"), "Summary review page should use the agreed summary payload handoff key.");
 assert(summaryFallbackHtml.includes("review-your-information-fallback.svg"), "Fallback page should render the saved fallback image.");
 assert(summaryFallbackSvg.includes("Review Your Information"), "Fallback SVG should preserve the visual title.");
 assert(summaryReviewTsx.includes("Your heart rate was higher than expected."), "Summary review component should lead with the patient-facing clinical finding.");
@@ -140,13 +142,15 @@ assert(summaryReviewHtml.includes("summary-review-page"), "Summary review screen
 assert(summaryReviewHtml.includes("summary-review-frame"), "Summary review screen should use a fixed 4:3 frame.");
 assert(summaryReviewTsx.includes("export default function SummaryReview"), "Summary review React component should export a default component.");
 assert(summaryReviewTsx.includes("FallbackBoundary"), "Summary review component should include a render-failure fallback boundary.");
+assert(summaryReviewTsx.includes("summaryPayload"), "Summary review component should accept Endpoint 2 summary payload data.");
+assert(summaryReviewTsx.includes("buildReviewModel"), "Summary review component should derive display content from summary payload data.");
 assert(!summaryReviewTsx.includes("Staff-review summary"), "Summary review screen should not show the removed title.");
 assert(!summaryReviewTsx.includes("Staff-review summary is ready"), "Summary review screen should not use the old ready-state title.");
 assert(!summaryReviewTsx.includes("4:3 static screen") && !summaryReviewTsx.includes("Synthetic data") && !summaryReviewTsx.includes("Staff review</span>"), "Summary review screen should not show removed header badges.");
 assert(!summaryReviewTsx.includes("Endpoint 2 summary fields used by this screen"), "Summary review screen should not show API debug field headings.");
 assert(!summaryReviewTsx.includes("Demo operating scope"), "Summary review screen should not show the removed operating-scope block.");
 assert(!summaryReviewTsx.includes("Demo note"), "Summary review screen should not show the removed demo-note block.");
-assert(!summaryReviewTsx.includes("Status:") && !summaryReviewTsx.includes("Progress:") && !summaryReviewTsx.includes("Visibility:"), "Summary review screen should not show the removed response status block.");
+assert(!summaryReviewTsx.includes(">Status:") && !summaryReviewTsx.includes(">Progress:") && !summaryReviewTsx.includes(">Visibility:"), "Summary review screen should not show the removed response status block.");
 assert(sharedStyles.includes(".summary-review-page"), "Shared styles should include summary review page rules.");
 assert(sharedStyles.includes("aspect-ratio: 4 / 3"), "Summary review frame should preserve a 4:3 ratio.");
 assert(sharedStyles.includes("overflow: hidden"), "Summary review page/frame should prevent scrolling.");

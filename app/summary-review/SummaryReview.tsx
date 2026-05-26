@@ -19,6 +19,86 @@ const FALLBACK_IMAGE_SRC = "./assets/review-your-information-fallback.svg";
 type SummaryReviewProps = {
   fallbackImageSrc?: string;
   forceFallback?: boolean;
+  summaryPayload?: SummaryReviewPayload | null;
+};
+
+type SummaryReviewPayload = {
+  status?: string;
+  handoff_reason_codes?: string[];
+  staff_review_summary?: {
+    subjective?: string[];
+    objective?: string[];
+    review_basis?: string[];
+    review_action?: string[];
+  };
+};
+
+type MeasurementModel = {
+  heartRate: string;
+  oxygen: string;
+  bloodPressure: string;
+  temperature: string;
+  heartRateStatus: string;
+  heartRateTone: "orange" | "green";
+};
+
+type SymptomModel = {
+  title: string;
+  text: string;
+  tone: "orange" | "green";
+};
+
+type ReviewModel = {
+  primaryMessage: string;
+  staffLine: string;
+  urgencyLine: string;
+  measurements: MeasurementModel;
+  symptoms: SymptomModel[];
+  confirmationTitle: string;
+  confirmationBody: string;
+};
+
+const DEFAULT_REVIEW_MODEL: ReviewModel = {
+  primaryMessage: "Your heart rate was higher than expected.",
+  staffLine: "A staff member may review your symptoms and measurements.",
+  urgencyLine: "If you feel worse, tell a staff member right away.",
+  measurements: {
+    heartRate: "130",
+    oxygen: "98",
+    bloodPressure: "102/68",
+    temperature: "36.5",
+    heartRateStatus: "High",
+    heartRateTone: "orange",
+  },
+  symptoms: [
+    {
+      title: "Palpitations",
+      text: "Feeling your heart racing or pounding",
+      tone: "orange",
+    },
+    {
+      title: "Chest tightness",
+      text: "Pressure or tightness in the chest",
+      tone: "orange",
+    },
+    {
+      title: "No shortness of breath",
+      text: "You reported no shortness of breath",
+      tone: "green",
+    },
+    {
+      title: "No dizziness",
+      text: "You reported no dizziness",
+      tone: "green",
+    },
+    {
+      title: "No fainting",
+      text: "You reported no fainting",
+      tone: "green",
+    },
+  ],
+  confirmationTitle: "Please confirm your information with staff.",
+  confirmationBody: "This summary will help our care team understand your condition and decide the best next steps for you.",
 };
 
 type FallbackBoundaryProps = {
@@ -162,21 +242,128 @@ function SpeechBubble() {
   );
 }
 
-function MeasurementCards() {
+function flattenSummaryText(payload?: SummaryReviewPayload | null) {
+  const summary = payload?.staff_review_summary;
+  return [
+    ...(summary?.subjective || []),
+    ...(summary?.objective || []),
+    ...(summary?.review_basis || []),
+    ...(summary?.review_action || []),
+    ...(payload?.handoff_reason_codes || []),
+  ].join(" ");
+}
+
+function matchFirst(text: string, pattern: RegExp, fallback: string) {
+  const match = text.match(pattern);
+  return match?.[1] || fallback;
+}
+
+function buildReviewModel(payload?: SummaryReviewPayload | null): ReviewModel {
+  if (!payload || payload.status !== "summary") return DEFAULT_REVIEW_MODEL;
+
+  const text = flattenSummaryText(payload);
+  const lower = text.toLowerCase();
+  const heartRate = matchFirst(text, /\bHR\s+(\d{2,3})\s*bpm/i, DEFAULT_REVIEW_MODEL.measurements.heartRate);
+  const oxygen = matchFirst(text, /\bSpO2\s+(\d{2,3})\s*%/i, DEFAULT_REVIEW_MODEL.measurements.oxygen);
+  const bloodPressure = matchFirst(text, /\bBP\s+(\d{2,3}\/\d{2,3})\s*mmHg/i, DEFAULT_REVIEW_MODEL.measurements.bloodPressure);
+  const temperature = matchFirst(text, /temperature\s+(\d{2}(?:\.\d)?)\s*C/i, DEFAULT_REVIEW_MODEL.measurements.temperature);
+  const heartRateNumber = Number(heartRate);
+  const heartRateHigh = Number.isFinite(heartRateNumber) && heartRateNumber > 100;
+
+  const symptoms: SymptomModel[] = [
+    lower.includes("palpitation") || lower.includes("heart-racing") || lower.includes("heart racing")
+      ? {
+          title: "Palpitations",
+          text: "Feeling your heart racing or pounding",
+          tone: "orange",
+        }
+      : {
+          title: "No palpitations",
+          text: "You reported no palpitations",
+          tone: "green",
+        },
+    lower.includes("chest tightness") || lower.includes("chest-tightness") || lower.includes("chest pressure")
+      ? {
+          title: "Chest tightness",
+          text: "Pressure or tightness in the chest",
+          tone: "orange",
+        }
+      : {
+          title: "No chest tightness",
+          text: "You reported no chest tightness",
+          tone: "green",
+        },
+    lower.includes("shortness of breath") && !lower.includes("none of the listed shortness of breath")
+      ? {
+          title: "Shortness of breath",
+          text: "You reported shortness of breath",
+          tone: "orange",
+        }
+      : {
+          title: "No shortness of breath",
+          text: "You reported no shortness of breath",
+          tone: "green",
+        },
+    lower.includes("dizziness") && !lower.includes("none of the listed") && !lower.includes("no dizziness")
+      ? {
+          title: "Dizziness",
+          text: "You reported dizziness",
+          tone: "orange",
+        }
+      : {
+          title: "No dizziness",
+          text: "You reported no dizziness",
+          tone: "green",
+        },
+    lower.includes("fainting") && !lower.includes("none of the listed") && !lower.includes("no fainting")
+      ? {
+          title: "Fainting",
+          text: "You reported fainting",
+          tone: "orange",
+        }
+      : {
+          title: "No fainting",
+          text: "You reported no fainting",
+          tone: "green",
+        },
+  ];
+
+  return {
+    ...DEFAULT_REVIEW_MODEL,
+    primaryMessage: heartRateHigh
+      ? "Your heart rate was higher than expected."
+      : "Please review your information with staff.",
+    measurements: {
+      heartRate,
+      oxygen,
+      bloodPressure,
+      temperature,
+      heartRateStatus: heartRateHigh ? "High" : "Review",
+      heartRateTone: heartRateHigh ? "orange" : "green",
+    },
+    symptoms,
+  };
+}
+
+function MeasurementCards({ measurements }: { measurements: MeasurementModel }) {
   return (
     <div className="absolute left-10 top-[404px] grid w-[1320px] grid-cols-4 gap-5">
-      <article className="h-[216px] rounded-3xl border border-[#F06D19] bg-[#FFF8EC] p-8 shadow-[0_16px_42px_rgba(16,42,94,0.045)]">
+      <article className={`h-[216px] rounded-3xl border p-8 shadow-[0_16px_42px_rgba(16,42,94,0.045)] ${
+        measurements.heartRateTone === "orange" ? "border-[#F06D19] bg-[#FFF8EC]" : "border-[#96CFC2] bg-[#F5FCFA]"
+      }`}>
         <div className="flex items-start justify-between">
-          <h3 className="text-[21px] font-bold leading-7 text-[#B83E10]">Heart Rate</h3>
-          <span className="rounded-lg bg-[#FCE0C8] px-3 py-1 text-[15px] font-bold leading-6 text-[#B83E10]">
-            High
+          <h3 className={`text-[21px] font-bold leading-7 ${measurements.heartRateTone === "orange" ? "text-[#B83E10]" : "text-[#147A61]"}`}>Heart Rate</h3>
+          <span className={`rounded-lg px-3 py-1 text-[15px] font-bold leading-6 ${
+            measurements.heartRateTone === "orange" ? "bg-[#FCE0C8] text-[#B83E10]" : "bg-[#DDF4EC] text-[#147A61]"
+          }`}>
+            {measurements.heartRateStatus}
           </span>
         </div>
         <div className="mt-6 flex items-center gap-6">
-          <Heart className="h-10 w-10 text-[#D65B16]" strokeWidth={2.5} />
+          <Heart className={`h-10 w-10 ${measurements.heartRateTone === "orange" ? "text-[#D65B16]" : "text-[#178A69]"}`} strokeWidth={2.5} />
           <div className="flex items-end gap-2">
-            <span className="text-[74px] font-[820] leading-[0.88] text-[#C74F12]">130</span>
-            <span className="pb-2 text-[23px] font-extrabold leading-8 text-[#C74F12]">bpm</span>
+            <span className={`text-[74px] font-[820] leading-[0.88] ${measurements.heartRateTone === "orange" ? "text-[#C74F12]" : "text-[#178A69]"}`}>{measurements.heartRate}</span>
+            <span className={`pb-2 text-[23px] font-extrabold leading-8 ${measurements.heartRateTone === "orange" ? "text-[#C74F12]" : "text-[#178A69]"}`}>bpm</span>
           </div>
         </div>
         <p className="mt-7 text-[15px] font-medium leading-6 text-[#5E6A7E]">Normal range: 60-100 bpm</p>
@@ -194,7 +381,7 @@ function MeasurementCards() {
             </span>
           </div>
           <div className="flex items-end gap-2">
-            <span className="text-[74px] font-[820] leading-[0.88] text-[#2962D9]">98</span>
+            <span className="text-[74px] font-[820] leading-[0.88] text-[#2962D9]">{measurements.oxygen}</span>
             <span className="pb-2 text-[26px] font-extrabold leading-8 text-[#2962D9]">%</span>
           </div>
         </div>
@@ -205,7 +392,7 @@ function MeasurementCards() {
         <h3 className="text-[21px] font-bold leading-7 text-[#147A61]">Blood Pressure</h3>
         <div className="mt-7 flex items-center gap-6">
           <Stethoscope className="h-12 w-12 text-[#178A69]" strokeWidth={2.4} />
-          <span className="text-[46px] font-[820] leading-none text-[#178A69]">102/68</span>
+          <span className="text-[46px] font-[820] leading-none text-[#178A69]">{measurements.bloodPressure}</span>
         </div>
         <p className="mt-1 pl-[108px] text-[18px] font-bold leading-7 text-[#178A69]">mmHg</p>
         <p className="mt-6 text-[15px] font-medium leading-6 text-[#5E6A7E]">Normal range: &lt; 120/80 mmHg</p>
@@ -216,7 +403,7 @@ function MeasurementCards() {
         <div className="mt-7 flex items-center gap-6">
           <Thermometer className="h-12 w-12 text-[#6650B7]" strokeWidth={2.6} />
           <div className="flex items-end gap-2">
-            <span className="text-[74px] font-[820] leading-[0.88] text-[#6650B7]">36.5</span>
+            <span className="text-[74px] font-[820] leading-[0.88] text-[#6650B7]">{measurements.temperature}</span>
             <span className="pb-2 text-[26px] font-extrabold leading-8 text-[#6650B7]">°C</span>
           </div>
         </div>
@@ -226,35 +413,7 @@ function MeasurementCards() {
   );
 }
 
-function SymptomsSection() {
-  const symptoms = [
-    {
-      title: "Palpitations",
-      text: "Feeling your heart racing or pounding",
-      tone: "orange",
-    },
-    {
-      title: "Chest tightness",
-      text: "Pressure or tightness in the chest",
-      tone: "orange",
-    },
-    {
-      title: "No shortness of breath",
-      text: "You reported no shortness of breath",
-      tone: "green",
-    },
-    {
-      title: "No dizziness",
-      text: "You reported no dizziness",
-      tone: "green",
-    },
-    {
-      title: "No fainting",
-      text: "You reported no fainting",
-      tone: "green",
-    },
-  ];
-
+function SymptomsSection({ symptoms }: { symptoms: SymptomModel[] }) {
   return (
     <section className="absolute left-10 top-[644px] h-[192px] w-[1320px] rounded-3xl border border-[rgba(0,0,0,0.08)] bg-white/80 p-5 shadow-[0_16px_42px_rgba(16,42,94,0.045)]">
       <div className="mb-4 flex items-center gap-5">
@@ -299,7 +458,7 @@ function SymptomsSection() {
   );
 }
 
-function ReviewCanvas() {
+function ReviewCanvas({ model }: { model: ReviewModel }) {
   return (
     <main
       className="flex min-h-screen w-full items-center justify-center bg-[#F5F7FA] text-[#101935]"
@@ -336,13 +495,13 @@ function ReviewCanvas() {
           </div>
           <div className="absolute left-[196px] top-[37px] w-[760px]">
             <h2 className="m-0 text-[27px] font-[800] leading-9 text-[#B43B11]">
-              Your heart rate was higher than expected.
+              {model.primaryMessage}
             </h2>
             <p className="mt-4 text-[21px] font-medium leading-8 text-[#121C36]">
-              A staff member may review your symptoms and measurements.
+              {model.staffLine}
             </p>
             <p className="mt-2 text-[21px] font-medium leading-8 text-[#121C36]">
-              If you feel worse, tell a staff member right away.
+              {model.urgencyLine}
             </p>
           </div>
           <NurseIllustration />
@@ -353,9 +512,9 @@ function ReviewCanvas() {
           <Activity className="h-9 w-9 text-[#137284]" strokeWidth={3} />
           <h2 className="m-0 text-[17px] font-[850] leading-7 tracking-[0.02em] text-[#101935]">YOUR MEASUREMENTS</h2>
         </div>
-        <MeasurementCards />
+        <MeasurementCards measurements={model.measurements} />
 
-        <SymptomsSection />
+        <SymptomsSection symptoms={model.symptoms} />
 
         <section className="absolute left-10 top-[858px] flex h-[162px] w-[1320px] items-center rounded-3xl border border-[#BAD5F4] bg-[#F7FBFF] px-10 shadow-[0_16px_42px_rgba(16,42,94,0.045)]">
           <div className="mr-12 shrink-0">
@@ -363,12 +522,10 @@ function ReviewCanvas() {
           </div>
           <div className="w-[585px]">
             <h2 className="m-0 text-[22px] font-[820] leading-8 text-[#101935]">
-              Please confirm your information with staff.
+              {model.confirmationTitle}
             </h2>
             <p className="mt-3 text-[17px] font-medium leading-[29px] text-[#34405C]">
-              This summary will help our care team understand your condition
-              <br />
-              and decide the best next steps for you.
+              {model.confirmationBody}
             </p>
           </div>
           <div className="mx-14 h-[116px] w-px bg-[#BCD0E8]" />
@@ -407,14 +564,16 @@ function ReviewCanvas() {
 export default function SummaryReview({
   fallbackImageSrc = FALLBACK_IMAGE_SRC,
   forceFallback = FORCE_SCREENSHOT_FALLBACK,
+  summaryPayload = null,
 }: SummaryReviewProps) {
   const fallback = <FallbackImage src={fallbackImageSrc} />;
+  const model = buildReviewModel(summaryPayload);
 
   if (forceFallback) return fallback;
 
   return (
     <FallbackBoundary fallback={fallback}>
-      <ReviewCanvas />
+      <ReviewCanvas model={model} />
     </FallbackBoundary>
   );
 }
