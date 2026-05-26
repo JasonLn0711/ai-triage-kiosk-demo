@@ -4,7 +4,7 @@ title: "Summary Review UI Cloud Hosting Assessment"
 date: 2026-05-26
 topic: ai-triage
 type: handoff
-status: option-b-live-verified
+status: option-b-live-verified-dynamic-handoff-pending-render-redeploy
 audience: internal NYCU / Jason; selective imedtac engineering follow-up
 source:
   - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
@@ -170,6 +170,17 @@ External message gate:
 The URL is ready to share as demo-only visual support.
 The API contract remains the original two POST endpoints.
 This URL is not a third API endpoint.
+```
+
+Dynamic handoff update:
+
+```text
+GitHub main now contains fixed-URL dynamic handoff support in commits
+32dca85 and 722ca72. Public Render checks from 2026-05-26 17:14 through 17:21
+Asia/Taipei still served the previous HTML, so the dynamic handoff code is not
+yet active on the public service. Trigger Render Manual Deploy -> Deploy latest
+commit, then verify the HTML contains nycu_summary_review_payload before sending
+the dynamic handoff snippet to imedtac.
 ```
 
 4. Re-run the public verification commands below.
