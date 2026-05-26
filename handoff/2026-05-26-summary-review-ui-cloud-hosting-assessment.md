@@ -4,7 +4,7 @@ title: "Summary Review UI Cloud Hosting Assessment"
 date: 2026-05-26
 topic: ai-triage
 type: handoff
-status: option-b-pushed-render-manual-redeploy-needed
+status: option-b-live-verified
 audience: internal NYCU / Jason; selective imedtac engineering follow-up
 source:
   - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
@@ -60,7 +60,7 @@ that imedtac must integrate.
 
 ## Live Verification On 2026-05-26
 
-Current result: the demo summary review page is **not yet live on Render**.
+Current result: the demo summary review page is **live on Render**.
 
 Verified URLs:
 
@@ -69,13 +69,15 @@ Verified URLs:
 | `https://nycu-imedtac-triage-demo-api.onrender.com/healthz` | HTTP `200` JSON | Render API service is live. |
 | `https://nycu-imedtac-triage-demo-api.onrender.com/app/summary-review/` | HTTP `404` JSON | Render API server does not serve `app/summary-review/`. |
 | `https://nycu-imedtac-triage-demo-api.onrender.com/app/summary-review/index.html` | HTTP `404` JSON | Static summary-review HTML is not exposed on Render. |
-| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/` | HTTP `404` JSON | The proposed same-Render UI route is not implemented yet. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/` | HTTP `200` HTML | The same-Render summary review UI route is live. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/assets/review-your-information-fallback.svg` | HTTP `200` SVG | The saved fallback artwork is live. |
 | `https://nycu-imedtac-triage-demo-api.onrender.com/api/triage-demo/summary-review/` | HTTP `404` JSON | No API route serves the summary review page. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/source/` | HTTP `404` JSON | Source folders are not exposed. |
 
 The current Vercel deployment referenced in older README material returns HTTP
 `401 Authentication Required`, including for `/app/summary-review/`. It should
-not be treated as a usable external summary-review URL for imedtac unless a
-public or explicitly shared deployment URL is prepared.
+not be treated as the current external summary-review URL for imedtac. Use the
+same-Render `/demo-ui/summary-review/` URL instead.
 
 Local build status:
 
@@ -87,16 +89,15 @@ npm run build
 -> dist/app/summary-review/assets/review-your-information-fallback.svg
 ```
 
-This means the static page is buildable, but it is not yet deployed through a
-reachable public route.
+This means the static page is buildable and now reachable through the Render
+API service's safe demo UI route.
 
 External-commitment reading:
 
 - Jason has already shown the summary-review image to imedtac.
 - The image is archived and reproducible locally.
-- A live URL for the page has not yet been communicated as available.
-- Before telling imedtac that a live summary-review page is available, NYCU
-  needs to deploy and verify one stable URL.
+- The live URL is now verified and can be communicated to imedtac as a
+  demo-only visual support URL.
 
 ## Local Option B Verification On 2026-05-26
 
@@ -153,16 +154,22 @@ Do not notify imedtac that the summary URL is ready until this route returns
 HTTP 200.
 ```
 
-Required next action:
+Follow-up public checks at `2026-05-26 16:29` Asia/Taipei showed the route
+became live:
 
-1. Open Render service `nycu-imedtac-triage-demo-api`.
-2. Use `Manual Deploy -> Deploy latest commit`.
-3. Confirm the deploy logs run:
+| URL | Result | Reading |
+| --- | --- | --- |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/` | HTTP `200`, `text/html`, `10267` bytes | Summary review HTML is live and contains `Review Your Information`. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/assets/review-your-information-fallback.svg` | HTTP `200`, `image/svg+xml`, `13940` bytes | Fallback artwork is live and contains `Review Your Information`. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/healthz` | HTTP `200` JSON | API service remains live. |
+| `https://nycu-imedtac-triage-demo-api.onrender.com/source/` | HTTP `404` JSON | Source folders remain unexposed. |
+
+External message gate:
 
 ```text
-npm install && npm run render:build
-npm run render:start
-AI triage demo mock API listening on http://localhost:<PORT>
+The URL is ready to share as demo-only visual support.
+The API contract remains the original two POST endpoints.
+This URL is not a third API endpoint.
 ```
 
 4. Re-run the public verification commands below.
@@ -297,9 +304,8 @@ Remaining deployment tasks:
 1. Commit and push the change to `main`, the branch Render deploys from.
    - Completed with `9a46992` and `d13b5c3`.
 2. Trigger or wait for Render redeploy.
-   - Post-push public checks still returned HTTP `404` for the summary route,
-     so a Render dashboard manual deploy is now required unless auto-deploy
-     later catches up.
+   - Completed; public route returned HTTP `200` at `2026-05-26 16:29`
+     Asia/Taipei.
 3. Verify:
 
 ```text
@@ -311,6 +317,7 @@ curl https://nycu-imedtac-triage-demo-api.onrender.com/healthz
 4. After verification, notify imedtac that this is a demo-only visual support
    URL for the summary-review screen and that the API contract remains the same
    two endpoint paths.
+   - Ready to send.
 
 Use Option A if we want separation between the stable API service and the visual
 demo screen:
