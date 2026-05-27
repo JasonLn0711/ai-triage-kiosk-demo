@@ -109,6 +109,20 @@ Jason Lin 你好, PM 的其中一個需求是用 QR Code 讓使用者用手機 s
 有沒有可能在 url 裡帶 session key 就可以顯示 summary 頁?
 
 如果可以, 請問 session key 的有效期是多久?
+
+[Jason Lin; Teams reply after Ben's QR / session_key question]
+
+hi Ben,
+
+目前思考，保留 Endpoint 1 / Endpoint 2 不變，另外補一個 read-only 的 summary lookup 給 QR code 使用。iMVS 在拿到 status=summary 後，用 session_key 產生：
+
+https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/?session_key=<session_key>
+
+summary page 再用這個 session_key 向 NYCU backend 讀取已完成的 staff_review_summary 來顯示。
+
+session_key 有效期跟目前 API 回傳的 session_expires_at 對齊（現在 demo runtime 是 session 建立後 30 分鐘）。 summary 只有在 session_state=summary_ready 且 session_key 未過期時才會顯示。
+
+Ben 覺得這樣如何？
 ```
 
 ## Working Extraction
@@ -149,6 +163,18 @@ Jason Lin 你好, PM 的其中一個需求是用 QR Code 讓使用者用手機 s
 - Ben asked whether the summary page can be displayed by putting only
   `session_key` in the URL.
 - Ben asked how long the `session_key` remains valid if that path is possible.
+- Jason replied that NYCU's current direction is to preserve Endpoint 1 /
+  Endpoint 2 and add a read-only summary lookup for QR-code use.
+- Jason told Ben that after iMVS receives `status=summary`, iMVS can generate
+  `/demo-ui/summary-review/?session_key=<session_key>`.
+- Jason told Ben that the summary page would use `session_key` to read the
+  completed `staff_review_summary` from NYCU backend.
+- Jason told Ben that `session_key` validity follows the API-returned
+  `session_expires_at`, currently `30` minutes after session creation in demo
+  runtime.
+- Jason told Ben that the summary displays only when
+  `session_state=summary_ready` and the `session_key` is not expired.
+- Jason ended the message by asking Ben whether this approach works for him.
 
 ### External Commitments Created By Jason's Replies
 
@@ -173,6 +199,13 @@ The Teams replies create the following implementation commitments:
    the already shared two-POST API contract silently. A URL-session-key summary
    path would be an added read-only summary-display bridge, not a replacement
    for Endpoint 1 / Endpoint 2.
+8. Jason has now externally proposed the QR `session_key` bridge to Ben in
+   Teams. NYCU should preserve the proposed shape unless a later Teams reply or
+   recorded change request updates it: Endpoint 1 / Endpoint 2 remain unchanged;
+   QR uses a read-only summary lookup; iMVS builds the summary-review URL from
+   `session_key` after `status=summary`; TTL follows `session_expires_at`
+   (`30` minutes in the current demo runtime); display requires
+   `session_state=summary_ready` and an unexpired `session_key`.
 
 ### Change-Control Reading
 
@@ -274,6 +307,10 @@ Implementation controls:
 
 ## Suggested Reply To Ben
 
+Status: superseded by Jason's actual Teams reply recorded above. Keep this
+section as the internal longer-form reference; the external commitment is the
+shorter message Jason actually sent.
+
 ```text
 Ben 你好，理解，QR code 這個情境用 window.name 確實不適合，因為手機掃 QR code 會是另一個 browser context，也不適合把完整 payload 放進 URL。
 
@@ -326,9 +363,8 @@ session_key 是由 NYCU backend 產生的 URL-safe random token，不是 Render 
 2. Keep the QR-code path as direct navigation to a normal web page with
    `?session_key=<session_key>`, while still supporting the existing fixed-URL
    `window.name` handoff from Endpoint 2.
-3. Tell Ben / imedtac that the QR bridge is a read-only display helper and that
-   the session key is valid until `session_expires_at`, currently `30` minutes
-   after session creation.
+3. Preserve Jason's actual Teams reply to Ben as the working external
+   commitment while waiting for Ben's confirmation or revision.
 4. After the QR bridge is pushed and Render deploys it, re-check the public URL
    and one QR-style session before asking imedtac to implement against it.
 5. Keep partial-vital behavior covered by contract tests.

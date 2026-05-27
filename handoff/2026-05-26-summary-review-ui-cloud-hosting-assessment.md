@@ -351,6 +351,26 @@ Communication control:
 
 Suggested reply:
 
+Status: Jason sent a shorter Teams reply to Ben after this internal draft. The
+external proposed commitment now is:
+
+```text
+hi Ben,
+
+目前思考，保留 Endpoint 1 / Endpoint 2 不變，另外補一個 read-only 的 summary lookup 給 QR code 使用。iMVS 在拿到 status=summary 後，用 session_key 產生：
+
+https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/?session_key=<session_key>
+
+summary page 再用這個 session_key 向 NYCU backend 讀取已完成的 staff_review_summary 來顯示。
+
+session_key 有效期跟目前 API 回傳的 session_expires_at 對齊（現在 demo runtime 是 session 建立後 30 分鐘）。 summary 只有在 session_state=summary_ready 且 session_key 未過期時才會顯示。
+
+Ben 覺得這樣如何？
+```
+
+Implementation implication: preserve this proposed Teams shape while waiting
+for Ben's confirmation or revision.
+
 ```text
 Ben 你好，理解，QR code 這個情境用 window.name 確實不適合，因為手機掃 QR code 會是另一個 browser context，也不適合把完整 payload 放進 URL。
 
