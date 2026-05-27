@@ -1,0 +1,80 @@
+{
+  "case_id": "demo-tachycardia-live-001",
+  "case_version": "demo-tachycardia-live-001-v0.2",
+  "fixture_version": "v0.2.0-partial-vitals",
+  "flow_id": "FLOW-TACHYCARDIA-LIVE-DEMO",
+  "flow_version": "tachycardia-live-demo-flow-v0.2-draft",
+  "question_set_version": "tachycardia-question-set-v0.2-draft",
+  "status": "synthetic_demo_only",
+  "not_real_patient_data": true,
+  "measurement_scenario": "partial_vitals",
+  "profile": {
+    "demo_patient_id": "DEMO-TACHY-PARTIAL-001",
+    "age": 76,
+    "sex": "female",
+    "language": "English",
+    "identity_mode": "demo"
+  },
+  "live_demo_controls": {
+    "primary_mode": "live_measured",
+    "fallback_modes": [
+      "synthetic_override",
+      "local_scripted_demo"
+    ],
+    "operator_note": "Partial-vitals fixture for contract hardening. The question loop should continue, and missing vitals should not create summary claims."
+  },
+  "vitals": {
+    "heart_rate_bpm": {
+      "value": 130,
+      "unit": "bpm",
+      "measurement_status": "measured",
+      "quality_flag": "needs_review",
+      "missing_reason": null
+    },
+    "spo2_percent": {
+      "value": null,
+      "unit": "%",
+      "measurement_status": "skipped",
+      "quality_flag": "unavailable",
+      "missing_reason": "not_measured"
+    },
+    "blood_pressure_systolic_mm_hg": {
+      "value": 102,
+      "unit": "mmHg",
+      "measurement_status": "measured",
+      "quality_flag": "available",
+      "missing_reason": null
+    },
+    "blood_pressure_diastolic_mm_hg": {
+      "value": 68,
+      "unit": "mmHg",
+      "measurement_status": "measured",
+      "quality_flag": "available",
+      "missing_reason": null
+    },
+    "respiratory_rate_per_min": {
+      "value": null,
+      "unit": "breaths/min",
+      "measurement_status": "skipped",
+      "quality_flag": "unavailable",
+      "missing_reason": "not_measured"
+    },
+    "temperature_c": {
+      "value": null,
+      "unit": "C",
+      "measurement_status": "skipped",
+      "quality_flag": "unavailable",
+      "missing_reason": "not_measured"
+    }
+  },
+  "expected_behavior": {
+    "question_flow": "complete",
+    "summary_status": "summary",
+    "missing_vitals_not_used_for_claims": [
+      "spo2_percent",
+      "respiratory_rate_per_min",
+      "temperature_c"
+    ],
+    "preserve_staff_review_boundary": true
+  }
+}

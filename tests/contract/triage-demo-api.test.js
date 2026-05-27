@@ -1,7 +1,15 @@
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const test = require("node:test");
 
 const contract = require("../../api/lib/triage-demo-contract");
+
+const ROOT = path.resolve(__dirname, "../..");
+
+function readJson(relativePath) {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));
+}
 
 function startBody(overrides = {}) {
   return {
@@ -11,7 +19,7 @@ function startBody(overrides = {}) {
     workflow_mode: "post_measurement_only",
     measurement_state: "complete",
     vitals_ready: true,
-    vitals: {
+    vitals: overrides.vitals || {
       heart_rate_bpm: {
         value: 130,
         unit: "bpm",
@@ -52,6 +60,21 @@ function answerBody(question, selectedOptionIds, idempotencyKey) {
 
 function firstOptionIds(question) {
   return [question.options[0].id];
+}
+
+function answerAllQuestions(sessionKey, firstQuestion) {
+  let currentQuestion = firstQuestion;
+  let result;
+
+  for (let index = 0; index < contract.questionSequence.length; index += 1) {
+    const selected = currentQuestion.none_option_id
+      ? [currentQuestion.none_option_id]
+      : firstOptionIds(currentQuestion);
+    result = contract.submitAnswer(sessionKey, answerBody(currentQuestion, selected, `idem-summary-${index + 1}`));
+    currentQuestion = result.body.question;
+  }
+
+  return result;
 }
 
 function withDemoBearerToken(token, callback) {
@@ -108,6 +131,18 @@ test("start session returns first question and progress.expected_total independe
   assert.equal(result.body.question.rendering_constraints.max_visible_options_without_scroll, 9);
 });
 
+test("tachycardia questions fit imedtac option-count and label-length contract", () => {
+  for (const question of contract.questionSequence) {
+    assert.ok(question.options.length >= 2, `${question.id} must have at least two options`);
+    assert.ok(question.options.length <= 9, `${question.id} must fit the 3x3 option grid`);
+    const limit = question.type === "multi_choice" ? 26 : 60;
+    for (const option of question.options) {
+      assert.ok([...option.label].length <= limit, `${question.id}/${option.id} label exceeds ${limit}: ${option.label}`);
+    }
+    assert.equal(question.rendering_constraints.max_visible_options_without_scroll, 9);
+  }
+});
+
 test("same answer idempotency key retry returns the same response without advancing flow", () => {
   contract.resetMockState();
   const start = contract.createSession(startBody());
@@ -155,16 +190,7 @@ test("answering the final question returns status=summary with staff_review_summ
   contract.resetMockState();
   const start = contract.createSession(startBody());
   const sessionKey = start.body.session_key;
-  let currentQuestion = start.body.question;
-  let result;
-
-  for (let index = 0; index < contract.questionSequence.length; index += 1) {
-    const selected = currentQuestion.none_option_id
-      ? [currentQuestion.none_option_id]
-      : firstOptionIds(currentQuestion);
-    result = contract.submitAnswer(sessionKey, answerBody(currentQuestion, selected, `idem-summary-${index + 1}`));
-    currentQuestion = result.body.question;
-  }
+  const result = answerAllQuestions(sessionKey, start.body.question);
 
   assert.equal(result.statusCode, 200);
   assert.equal(result.body.status, "summary");
@@ -173,6 +199,25 @@ test("answering the final question returns status=summary with staff_review_summ
   assert.equal(result.body.progress.expected_total, 7);
   assert.ok(result.body.staff_review_summary);
   assert.equal(result.body.summary_visibility, "staff_only");
+});
+
+test("partial vital data still reaches summary without claiming missing vital values", () => {
+  contract.resetMockState();
+  const partialFixture = readJson("demo/fixtures/tachycardia-partial-vitals-demo.json");
+  const start = contract.createSession(startBody({
+    request_id: "req-contract-partial-vitals-start-001",
+    idempotency_key: "idem-contract-partial-vitals-start-001",
+    vitals: partialFixture.vitals
+  }));
+  const result = answerAllQuestions(start.body.session_key, start.body.question);
+  const summary = result.body.staff_review_summary;
+  const objectiveText = summary.objective.join(" ");
+
+  assert.equal(result.statusCode, 200);
+  assert.equal(result.body.status, "summary");
+  assert.match(objectiveText, /HR 130 bpm/);
+  assert.doesNotMatch(objectiveText, /SpO2 98/);
+  assert.doesNotMatch(objectiveText, /temperature 36\.5/);
 });
 
 test("invalid session returns a stable error response", () => {

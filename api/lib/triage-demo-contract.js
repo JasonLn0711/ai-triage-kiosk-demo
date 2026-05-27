@@ -22,8 +22,85 @@ const nextQuestionExample = readJson("handoff/api-examples/2026-05-21-next-quest
 const postVitalQuestionExample = readJson("handoff/api-examples/2026-05-21-post-vital-question-response-demo-tachycardia.json");
 const summaryExample = readJson("handoff/api-examples/2026-05-21-summary-response-demo-tachycardia.json");
 
+const VITAL_DEFINITIONS = [
+  { key: "heart_rate_bpm", label: "HR", unit: "bpm" },
+  { key: "spo2_percent", label: "SpO2", unit: "%" },
+  { key: "blood_pressure_systolic_mm_hg", label: "BP systolic", unit: "mmHg" },
+  { key: "blood_pressure_diastolic_mm_hg", label: "BP diastolic", unit: "mmHg" },
+  { key: "respiratory_rate_per_min", label: "Respiratory rate", unit: "breaths/min" },
+  { key: "temperature_c", label: "Temperature", unit: "C" }
+];
+
+const UNUSABLE_MEASUREMENT_STATUSES = new Set(["missing", "skipped", "failed", "unavailable"]);
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function normalizeVitalEntry(key, rawValue) {
+  const definition = VITAL_DEFINITIONS.find((item) => item.key === key);
+  const defaultUnit = definition ? definition.unit : null;
+  if (rawValue && typeof rawValue === "object" && !Array.isArray(rawValue)) {
+    return {
+      value: rawValue.value ?? null,
+      unit: rawValue.unit || defaultUnit,
+      measurement_status: rawValue.measurement_status || (rawValue.value == null ? "missing" : "measured"),
+      quality_flag: rawValue.quality_flag || null,
+      missing_reason: rawValue.missing_reason || null
+    };
+  }
+  return {
+    value: rawValue ?? null,
+    unit: defaultUnit,
+    measurement_status: rawValue == null ? "missing" : "measured",
+    quality_flag: null,
+    missing_reason: rawValue == null ? "not_provided" : null
+  };
+}
+
+function isMeasuredVital(vital) {
+  return vital && vital.value !== null && vital.value !== undefined && !UNUSABLE_MEASUREMENT_STATUSES.has(vital.measurement_status);
+}
+
+function normalizedVitals(vitals = {}) {
+  const normalized = {};
+  for (const definition of VITAL_DEFINITIONS) {
+    normalized[definition.key] = normalizeVitalEntry(definition.key, vitals[definition.key]);
+  }
+  return normalized;
+}
+
+function measuredVitalParts(vitals = {}) {
+  const normalized = normalizedVitals(vitals);
+  const parts = [];
+  const heartRate = normalized.heart_rate_bpm;
+  if (isMeasuredVital(heartRate)) parts.push(`HR ${heartRate.value} ${heartRate.unit}`);
+
+  const spo2 = normalized.spo2_percent;
+  if (isMeasuredVital(spo2)) parts.push(`SpO2 ${spo2.value}${spo2.unit}`);
+
+  const systolic = normalized.blood_pressure_systolic_mm_hg;
+  const diastolic = normalized.blood_pressure_diastolic_mm_hg;
+  if (isMeasuredVital(systolic) && isMeasuredVital(diastolic)) {
+    parts.push(`BP ${systolic.value}/${diastolic.value} mmHg`);
+  }
+
+  const respiratoryRate = normalized.respiratory_rate_per_min;
+  if (isMeasuredVital(respiratoryRate)) parts.push(`respiratory rate ${respiratoryRate.value} ${respiratoryRate.unit}`);
+
+  const temperature = normalized.temperature_c;
+  if (isMeasuredVital(temperature)) parts.push(`temperature ${temperature.value} ${temperature.unit}`);
+
+  return parts;
+}
+
+function measurementQualityNotes(vitals = {}) {
+  const normalized = normalizedVitals(vitals);
+  return VITAL_DEFINITIONS.flatMap((definition) => {
+    const vital = normalized[definition.key];
+    if (!isMeasuredVital(vital) || !vital.quality_flag) return [];
+    return `${definition.label} quality flag is ${vital.quality_flag}.`;
+  });
 }
 
 function makeQuestion(config) {
@@ -66,9 +143,9 @@ const questionSequence = [
     text: "Which descriptions fit what you feel now?",
     options: [
       { id: "heart_racing", label: "Heart racing or pounding" },
-      { id: "chest_heavy", label: "Chest tightness or heaviness" },
+      { id: "chest_heavy", label: "Chest tight or heavy" },
       { id: "chest_pressure_pain", label: "Chest pressure or pain" },
-      { id: "burning_sharp_or_not_sure", label: "Burning, sharp discomfort, or not sure" }
+      { id: "burning_sharp_or_not_sure", label: "Burning, sharp, or unsure" }
     ],
     max_selections: 4,
     trigger_reason_codes: ["reported_palpitations", "reported_chest_tightness"],
@@ -83,8 +160,8 @@ const questionSequence = [
     text: "Are any of these happening with it?",
     options: [
       { id: "short_breath", label: "Shortness of breath" },
-      { id: "sweating_nausea_fatigue", label: "Sweating, nausea, or unusual fatigue" },
-      { id: "dizzy_faint", label: "Dizziness, lightheadedness, or fainting" },
+      { id: "sweating_nausea_fatigue", label: "Sweating, nausea, fatigue" },
+      { id: "dizzy_faint", label: "Dizzy or fainting" },
       { id: "none_of_these", label: "None of these" }
     ],
     none_option_id: "none_of_these",
@@ -102,9 +179,9 @@ const questionSequence = [
     text: "Have you been told you have a heart rhythm problem, or do you take heart / blood-pressure medicine?",
     options: [
       { id: "known_rhythm_problem", label: "Known rhythm problem" },
-      { id: "heart_bp_medicine", label: "Heart or blood-pressure medicine" },
-      { id: "no_known", label: "No known history / medicine" },
-      { id: "staff_confirm", label: "Not sure, staff should confirm" }
+      { id: "heart_bp_medicine", label: "Heart or BP medicine" },
+      { id: "no_known", label: "No known history/meds" },
+      { id: "staff_confirm", label: "Not sure; ask staff" }
     ],
     max_selections: 4,
     trigger_reason_codes: ["history_medication_context"],
@@ -120,7 +197,7 @@ const questionSequence = [
     options: [
       { id: "med_allergy", label: "Medication allergy" },
       { id: "regular_medicines", label: "Regular medicines" },
-      { id: "none_known", label: "No known medication allergy" },
+      { id: "none_known", label: "No med allergy known" },
       { id: "not_sure", label: "Not sure" }
     ],
     max_selections: 4,
@@ -250,6 +327,16 @@ function buildQuestionResponse(body, session, questionIndex, lastQuestionId, pha
 
 function buildSummaryResponse(body, session, lastQuestionId) {
   const response = clone(summaryExample);
+  const vitalParts = measuredVitalParts(session.vitals);
+  const qualityNotes = measurementQualityNotes(session.vitals);
+  const objective = [];
+  if (vitalParts.length) {
+    objective.push(`Demo vital payload includes ${vitalParts.join(", ")}.`);
+  } else {
+    objective.push("Demo vital payload has no usable measured vital values.");
+  }
+  objective.push(...qualityNotes);
+  response.staff_review_summary.objective = objective;
   return {
     ...response,
     ...baseResponse(body, session, "summary"),
