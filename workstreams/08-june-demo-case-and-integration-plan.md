@@ -200,6 +200,91 @@ Post-`2026-05-21` case-selection update:
   case change is implemented through `flow_version`, `case_id`,
   `question_set_version`, registry rows, and staff-summary reason codes.
 
+## 2026-05-27 UI Option Human-Factor Update
+
+Source and decision:
+
+- `source/2026-05-27-imedtac-teams-ui-option-human-factor/source.md`
+- `decisions/2026-05-27-imedtac-ui-option-content-contract.md`
+
+Johnny Fang shared imedtac's current option-rendering guidance in Teams and
+Jason replied that NYCU would adjust generated content according to the
+human-factor guidance. This makes option count and label length part of the
+current implementation contract for the June demo.
+
+Active UI-content contract:
+
+| Field | Current contract |
+| --- | --- |
+| Layout | `3 x 3` option grid |
+| Option count | minimum `2`, maximum `9` |
+| Multi-choice option label | two lines; about `26` total characters |
+| Single-choice option label | two lines; about `60` total characters |
+
+Implementation implication:
+
+- Keep patient-facing option labels short and plain.
+- Preserve stable `option.id` values when labels are shortened.
+- Move longer explanation into staff-summary text, provenance notes, or hidden
+  routing metadata.
+- Add a validation gate for option count and label-length budgets before the
+  next imedtac rehearsal payload.
+
+Next execution sequence:
+
+1. Audit the tachycardia lane questions and API examples against the new
+   option-content contract.
+2. Shorten labels that exceed the budget while preserving `option.id` values.
+3. Add or update tests so invalid option counts and over-budget labels are
+   flagged before rehearsal.
+4. Re-run the API contract / unit checks.
+5. Send imedtac one updated rehearsal payload or screenshot confirming the
+   option labels fit the `3 x 3` human-factor constraint.
+
+## 2026-05-27 Partial Vitals Flow Update
+
+Source, decision, and plan:
+
+- `source/2026-05-27-imedtac-teams-ui-option-human-factor/source.md`
+- `decisions/2026-05-27-imedtac-partial-vitals-question-flow-contract.md`
+- `docs/2026-05-27-partial-vitals-flow-next-plan.md`
+
+Johnny asked how the question flow should behave when imedtac's original kiosk
+flow has skip or single-item measurement behavior. The June demo can measure all
+items, but the integration needs a clear rule for partial measurement data.
+
+多寶's working rule:
+
+```text
+If a vital-sign item is absent, the question design does not consider that
+vital sign.
+```
+
+Current implementation reading:
+
+- Full-measurement tachycardia remains the primary demo path.
+- Partial or single-item measurement data should still allow the complete
+  question flow to run.
+- Missing / skipped / unavailable vital signs should not trigger
+  vital-dependent questions, reason codes, or summary claims.
+- Per-vital `measurement_status`, `quality_flag`, and `missing_reason` should
+  be treated as meaningful contract fields.
+- Lauren reported that API flow testing currently has no major issue; the next
+  review gate is the integrated UI, including progress, option layout, summary
+  handoff, and partial-vital behavior.
+
+Next execution sequence:
+
+1. Add one partial-vitals tachycardia fixture.
+2. Add contract tests verifying the partial-vitals path still reaches
+   `status=summary`.
+3. Verify missing vital signs are not represented as measured facts in
+   `staff_review_summary`.
+4. Keep the customer-demo script on the full-measurement path unless imedtac
+   intentionally rehearses a partial-data scenario.
+5. Review the integrated iMVS UI after Lauren / imedtac has the API flow wired
+   into the visible question screens.
+
 ## 2026-05-19 多寶 Two-Phase Question Flow Update
 
 Source and design:

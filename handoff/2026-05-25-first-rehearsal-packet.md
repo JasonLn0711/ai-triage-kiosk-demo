@@ -137,6 +137,53 @@ rebuilds/redeployed the latest GitHub `main` commit. Public verification on
 imedtac through the agreed private channel and the token value remains outside
 repo files.
 
+## UI Option Content Contract
+
+Current imedtac human-factor guidance from Teams on `2026-05-27`:
+
+```text
+layout: 3 x 3 option grid
+option count: 2-9
+multi_choice option label: about 26 total characters
+single_choice option label: about 60 total characters
+line count: up to 2 visual lines
+```
+
+NYCU should keep generated patient-facing option labels within this budget for
+the first rehearsal. Longer clinical explanation belongs in
+`staff_review_summary`, source-governance notes, or internal routing metadata,
+not in the option label itself.
+
+Decision record:
+
+```text
+decisions/2026-05-27-imedtac-ui-option-content-contract.md
+```
+
+## Partial Vitals Flow Contract
+
+Current imedtac / 多寶 direction from Teams on `2026-05-27`:
+
+```text
+demo path: measure all available items
+partial-data path: still allow the full question flow
+missing vital sign: do not use it for question routing or summary claims
+```
+
+API requests should keep per-vital measurement state explicit through fields
+such as `measurement_status`, `quality_flag`, and `missing_reason`. A missing,
+skipped, failed, or unavailable vital sign should not create a vital-dependent
+question trigger or staff-summary claim.
+
+Lauren Wang reported that the full API flow has been tested and currently has no
+major issue. The next rehearsal gate is integrated UI review.
+
+Decision record:
+
+```text
+decisions/2026-05-27-imedtac-partial-vitals-question-flow-contract.md
+```
+
 ## Start Session Request
 
 Reference example:
