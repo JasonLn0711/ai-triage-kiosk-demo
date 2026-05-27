@@ -8,6 +8,8 @@ status: option-b-live-verified-dynamic-handoff-live
 audience: internal NYCU / Jason; selective imedtac engineering follow-up
 source:
   - ../source/2026-05-26-imedtac-teams-summary-preview-followup/source.md
+  - ../source/2026-05-27-duobao-line-implementation-sync/source.md
+  - ../source/2026-05-27-imedtac-teams-summary-rwd-qr-followup/source.md
   - ./2026-05-25-imedtac-integration-next-steps.md
   - ../scripts/mock-api-server.js
   - ../app/triage-kiosk/index.html
@@ -191,6 +193,83 @@ Current dynamic-handoff public verification:
 | `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/assets/review-your-information-fallback.svg` | HTTP `200`, SVG | Fallback artwork remains live. |
 | `https://nycu-imedtac-triage-demo-api.onrender.com/healthz` | HTTP `200` JSON | API service remains live. |
 | `https://nycu-imedtac-triage-demo-api.onrender.com/source/` | HTTP `404` JSON | Source folders remain unexposed. |
+
+## Mobile RWD / QR Follow-Up On 2026-05-27
+
+Johnny asked in Teams whether the final result preview page currently has basic
+RWD because imedtac will scan a QR code to view the result. Jason asked whether
+the demo day needs mobile preview and whether NYCU needs to coordinate any
+specific process. Johnny clarified:
+
+```text
+如果不動到我們原先的流程，會是用QRCode掃描，所以才想確認mobile顯示是否沒問題
+
+另外我們也在討論是否可以demo時，直接點QRCode開新網頁介紹
+
+因為是連接到陽交大開發的服務，只需要線上stand by，如果測試時如果有問題可以聯繫就好
+我們敲定時間後會再通知大家
+```
+
+Implementation reading:
+
+- The summary-review page must support QR-code direct navigation as a normal web
+  page, not only iframe embedding.
+- Basic mobile/tablet RWD is part of the demo support path.
+- NYCU's default demo-day role is online standby troubleshooting after imedtac
+  confirms the time.
+
+Jason then replied in Teams that three phone/tablet layouts had been tested
+without bleeding / overflow, attached three screenshots, and summarized the
+related option-label and partial-vitals work:
+
+```text
+目前測試三種手機與平板的版面，都沒有出血情形，再請 Johnny 確認
+
+另外：
+1. 已依照 Johnny 提供的 human factor / UI 規格，縮短 tachycardia demo flow 中部分較長的選項文字，讓選項更符合 3x3 版面與字數限制。
+2. 這次只調整畫面顯示的 option label，其他結構維持不變。
+3. 也已補上 partial vital sign 情境的測試，若只有部分量測資料，流程仍可繼續完成問答；缺少或跳過的 vital sign 不會被用來產生題目判斷或 summary 中的量測事實。（問答修正的部分，會再與許醫師討論是否修改）
+```
+
+Committed implementation:
+
+| Commit | Purpose |
+| --- | --- |
+| `ba41739` | Add the mobile summary-review layout and preserve the desktop review canvas. |
+
+Local verification before push:
+
+| Viewport | Result | Reading |
+| --- | --- | --- |
+| `390 x 844` | pass; no horizontal overflow | phone QR viewing path can read the page by vertical scroll. |
+| `412 x 915` | pass; no horizontal overflow | larger phone QR viewing path can read the page by vertical scroll. |
+| `768 x 1024` | pass; no horizontal overflow | tablet layout uses the responsive measurement grid. |
+| `1366 x 900` | pass; no horizontal overflow | desktop keeps the existing fixed demo visual direction. |
+
+Change-control boundary:
+
+- Keep `/demo-ui/summary-review/` suitable for QR-code direct navigation.
+- Preserve mobile/tablet support after future visual edits.
+- Treat any future removal of RWD, URL changes, or QR-path behavior changes as
+  external-commitment changes that require notice to imedtac.
+- Keep option-label shortening as display-only unless a recorded change request
+  updates option IDs, answer payload shape, or question-flow semantics.
+- Keep missing vital signs out of routing and summary facts unless imedtac and
+  許醫師 review a revised behavior.
+
+Internal LINE synchronization with 多寶 on `2026-05-27` aligns with this
+boundary:
+
+- Jason told 多寶 that the current imedtac-facing integration surface is the
+  Render API / demo service, while the code repo itself has not been shared with
+  imedtac.
+- 多寶 asked whether future modifications can be sent as PRs; Jason agreed to
+  coordinate that path.
+- 多寶 raised the future idea of AI automatically generating suitable options.
+  That remains an internal design topic, not an external API or demo-runtime
+  commitment.
+- Jason told 多寶 that question-answer corrections will still be discussed with
+  許醫師 before changing the externally used wording.
 
 ## Feasible Hosting Options
 
