@@ -351,6 +351,35 @@
         return null;
       }
 
+      function sessionKeyFromUrl() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const sessionKey = params.get("session_key");
+          return sessionKey && /^[A-Za-z0-9_-]{20,160}$/.test(sessionKey) ? sessionKey : null;
+        } catch {
+          return null;
+        }
+      }
+
+      async function fetchSummaryPayloadBySessionKey(sessionKey) {
+        if (!sessionKey) return null;
+        const response = await fetch(`/api/triage-demo/sessions/${encodeURIComponent(sessionKey)}/summary`, {
+          cache: "no-store",
+          headers: { "Accept": "application/json" }
+        });
+        if (!response.ok) {
+          throw new Error(`Unable to load summary for session_key: ${response.status}`);
+        }
+        const payload = await response.json();
+        return payload && payload.status === "summary" && payload.staff_review_summary ? payload : null;
+      }
+
+      async function readSummaryPayload() {
+        const handoffPayload = readSummaryPayloadHandoff();
+        if (handoffPayload) return handoffPayload;
+        return fetchSummaryPayloadBySessionKey(sessionKeyFromUrl());
+      }
+
       async function mountSummaryReview() {
         try {
           if (!window.Babel) {
@@ -384,7 +413,7 @@
           createRoot(rootElement).render(
             React.createElement(module.default, {
               fallbackImageSrc,
-              summaryPayload: readSummaryPayloadHandoff()
+              summaryPayload: await readSummaryPayload()
             })
           );
 

@@ -10,7 +10,6 @@ const SESSION_TTL_MS = 30 * 60 * 1000;
 const sessions = new Map();
 const idempotencyRecords = new Map();
 let responseCounter = 0;
-let sessionCounter = 0;
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));
@@ -286,12 +285,19 @@ function nextResponseId(kind) {
 }
 
 function nextSessionKey() {
-  sessionCounter += 1;
-  return `demo-session-tachy-${String(sessionCounter).padStart(3, "0")}`;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const sessionKey = crypto.randomBytes(32).toString("base64url");
+    if (!sessions.has(sessionKey)) return sessionKey;
+  }
+  throw new Error("Unable to allocate a unique demo session key.");
 }
 
 function expiryFrom(now = new Date()) {
   return new Date(now.getTime() + SESSION_TTL_MS).toISOString();
+}
+
+function isExpired(session, now = new Date()) {
+  return Boolean(session && session.session_expires_at && Date.parse(session.session_expires_at) <= now.getTime());
 }
 
 function baseResponse(body, session, kind) {
@@ -549,13 +555,45 @@ function submitAnswer(sessionKey, body = {}) {
   });
 }
 
+function getSessionSummary(sessionKey, body = {}) {
+  const session = sessions.get(sessionKey);
+  if (!session) {
+    return errorResult(404, body, "invalid_session", "The session_key was not found or is no longer available.", {
+      retryable: false,
+      session_key: sessionKey || null
+    });
+  }
+
+  if (isExpired(session)) {
+    sessions.delete(session.session_key);
+    return errorResult(410, body, "session_expired", "The session_key has expired; start a new demo session to generate a new summary URL.", {
+      retryable: false,
+      session_key: session.session_key,
+      session_expires_at: session.session_expires_at,
+      session_state: "expired"
+    });
+  }
+
+  if (session.state !== "summary_ready") {
+    return errorResult(409, body, "session_not_summary_ready", "The session has not reached summary status yet.", {
+      retryable: true,
+      session_key: session.session_key,
+      session_expires_at: session.session_expires_at,
+      session_state: session.state
+    });
+  }
+
+  const lastAnswer = session.answers[session.answers.length - 1] || null;
+  return { statusCode: 200, body: buildSummaryResponse(body, session, lastAnswer ? lastAnswer.question_id : null) };
+}
+
 function setCorsHeaders(req, res) {
   const origin = req.headers && req.headers.origin;
   if (ALLOWED_ORIGINS.has(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
   }
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Max-Age", "600");
 }
@@ -570,7 +608,6 @@ function resetMockState() {
   sessions.clear();
   idempotencyRecords.clear();
   responseCounter = 0;
-  sessionCounter = 0;
 }
 
 module.exports = {
@@ -582,6 +619,7 @@ module.exports = {
   fixture,
   questionSequence,
   createSession,
+  getSessionSummary,
   requireDemoBearerAuth,
   submitAnswer,
   errorResult,

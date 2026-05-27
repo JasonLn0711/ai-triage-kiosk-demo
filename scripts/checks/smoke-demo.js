@@ -21,6 +21,7 @@ const REQUIRED_FILES = [
   "api/lib/triage-demo-contract.js",
   "api/triage-demo/sessions.js",
   "api/triage-demo/sessions/[session_key]/answers.js",
+  "api/triage-demo/sessions/[session_key]/summary.js",
   "tests/contract/triage-demo-api.test.js",
   "demo/fixtures/chest-pain-high-bp-low-spo2.json",
   "demo/fixtures/fever-urinary.json",
@@ -270,6 +271,10 @@ async function runRenderStaticRouteSmoke() {
     });
     assert(protectedPost.statusCode === 401, "Protected POST endpoints should still require the demo bearer token.");
     assert(protectedPost.body.includes("demo_bearer_token_required"), "Protected POST endpoint should preserve the token-required error code.");
+
+    const missingSummary = await requestLocal(port, "/api/triage-demo/sessions/missing-session/summary");
+    assert(missingSummary.statusCode === 404, "QR summary lookup should return a stable invalid-session response.");
+    assert(missingSummary.body.includes("invalid_session"), "QR summary lookup should preserve the invalid-session error code.");
   } catch (error) {
     error.message = `${error.message}\nMock server output:\n${output}`;
     throw error;

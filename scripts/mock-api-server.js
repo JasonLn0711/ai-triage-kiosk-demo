@@ -7,6 +7,7 @@ const {
   createSession,
   demoBearerAuthChallenge,
   errorResult,
+  getSessionSummary,
   requireDemoBearerAuth,
   sendResult,
   setCorsHeaders,
@@ -160,7 +161,13 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    sendResult(res, errorResult(404, {}, "not_found", "Use POST /api/triage-demo/sessions or POST /api/triage-demo/sessions/{session_key}/answers.", { retryable: false }));
+    const summaryMatch = String(req.url || "").match(/^\/api\/triage-demo\/sessions\/([^/?#]+)\/summary$/);
+    if (req.method === "GET" && summaryMatch) {
+      sendResult(res, getSessionSummary(decodeURIComponent(summaryMatch[1]), {}));
+      return;
+    }
+
+    sendResult(res, errorResult(404, {}, "not_found", "Use POST /api/triage-demo/sessions, POST /api/triage-demo/sessions/{session_key}/answers, or GET /api/triage-demo/sessions/{session_key}/summary.", { retryable: false }));
   } catch (error) {
     sendResult(res, errorResult(400, {}, "invalid_json", "Request body must be valid JSON.", { retryable: false }));
   }

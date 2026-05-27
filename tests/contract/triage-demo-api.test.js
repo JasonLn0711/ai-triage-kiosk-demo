@@ -120,11 +120,18 @@ test("demo bearer token gate accepts only the configured Authorization header", 
 
 test("start session returns first question and progress.expected_total independent of max_questions", () => {
   contract.resetMockState();
+  const beforeStart = Date.now();
   const result = contract.createSession(startBody({ max_questions: 99 }));
+  const afterStart = Date.now();
 
   assert.equal(result.statusCode, 200);
   assert.equal(result.body.status, "question");
   assert.ok(result.body.session_key);
+  assert.match(result.body.session_key, /^[A-Za-z0-9_-]{43}$/);
+  assert.doesNotMatch(result.body.session_key, /^demo-session-tachy-\d+$/);
+  const expiresAt = Date.parse(result.body.session_expires_at);
+  assert.ok(expiresAt >= beforeStart + 29 * 60 * 1000);
+  assert.ok(expiresAt <= afterStart + 31 * 60 * 1000);
   assert.equal(result.body.progress.current, 1);
   assert.equal(result.body.progress.expected_total, 7);
   assert.equal(result.body.question.id, "tachy-chief-concern");
@@ -199,6 +206,28 @@ test("answering the final question returns status=summary with staff_review_summ
   assert.equal(result.body.progress.expected_total, 7);
   assert.ok(result.body.staff_review_summary);
   assert.equal(result.body.summary_visibility, "staff_only");
+});
+
+test("summary lookup returns staff summary only after session reaches summary", () => {
+  contract.resetMockState();
+  const start = contract.createSession(startBody());
+  const sessionKey = start.body.session_key;
+  const early = contract.getSessionSummary(sessionKey);
+
+  assert.equal(early.statusCode, 409);
+  assert.equal(early.body.status, "error");
+  assert.equal(early.body.error.code, "session_not_summary_ready");
+  assert.equal(early.body.session_state, "active");
+
+  const finalAnswer = answerAllQuestions(sessionKey, start.body.question);
+  const lookup = contract.getSessionSummary(sessionKey);
+
+  assert.equal(finalAnswer.statusCode, 200);
+  assert.equal(lookup.statusCode, 200);
+  assert.equal(lookup.body.status, "summary");
+  assert.equal(lookup.body.session_state, "summary_ready");
+  assert.equal(lookup.body.session_key, sessionKey);
+  assert.deepEqual(lookup.body.staff_review_summary, finalAnswer.body.staff_review_summary);
 });
 
 test("partial vital data still reaches summary without claiming missing vital values", () => {
