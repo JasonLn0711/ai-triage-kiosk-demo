@@ -458,12 +458,153 @@ function SymptomsSection({ symptoms }: { symptoms: SymptomModel[] }) {
   );
 }
 
+function MobileMeasurementCards({ measurements }: { measurements: MeasurementModel }) {
+  const heartRateClass = measurements.heartRateTone === "orange" ? "is-warning" : "is-ok";
+  return (
+    <section className="mobile-panel" aria-labelledby="mobile-measurements-title">
+      <div className="mobile-section-title">
+        <Activity aria-hidden="true" />
+        <h2 id="mobile-measurements-title">Your measurements</h2>
+      </div>
+      <div className="mobile-measurement-grid">
+        <article className={`mobile-measure-card ${heartRateClass}`}>
+          <div className="mobile-card-label">
+            <span>Heart Rate</span>
+            <strong>{measurements.heartRateStatus}</strong>
+          </div>
+          <div className="mobile-value-row">
+            <Heart aria-hidden="true" />
+            <span className="mobile-value">{measurements.heartRate}</span>
+            <span className="mobile-unit">bpm</span>
+          </div>
+          <p>Normal range: 60-100 bpm</p>
+        </article>
+
+        <article className="mobile-measure-card is-blue">
+          <div className="mobile-card-label">
+            <span>Oxygen</span>
+            <strong>SpO2</strong>
+          </div>
+          <div className="mobile-value-row">
+            <Activity aria-hidden="true" />
+            <span className="mobile-value">{measurements.oxygen}</span>
+            <span className="mobile-unit">%</span>
+          </div>
+          <p>Normal range: 95-100%</p>
+        </article>
+
+        <article className="mobile-measure-card is-ok">
+          <div className="mobile-card-label">
+            <span>Blood Pressure</span>
+          </div>
+          <div className="mobile-value-row">
+            <Stethoscope aria-hidden="true" />
+            <span className="mobile-value mobile-value-sm">{measurements.bloodPressure}</span>
+            <span className="mobile-unit">mmHg</span>
+          </div>
+          <p>Normal range: &lt; 120/80 mmHg</p>
+        </article>
+
+        <article className="mobile-measure-card is-purple">
+          <div className="mobile-card-label">
+            <span>Temperature</span>
+          </div>
+          <div className="mobile-value-row">
+            <Thermometer aria-hidden="true" />
+            <span className="mobile-value">{measurements.temperature}</span>
+            <span className="mobile-unit">°C</span>
+          </div>
+          <p>Normal range: 36.0-37.5 °C</p>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+function MobileSymptomsSection({ symptoms }: { symptoms: SymptomModel[] }) {
+  return (
+    <section className="mobile-panel" aria-labelledby="mobile-symptoms-title">
+      <div className="mobile-section-title">
+        <ClipboardList aria-hidden="true" />
+        <h2 id="mobile-symptoms-title">Your reported symptoms</h2>
+      </div>
+      <div className="mobile-symptom-list">
+        {symptoms.map((symptom) => (
+          <article key={symptom.title} className={`mobile-symptom-card ${symptom.tone === "orange" ? "is-warning" : "is-ok"}`}>
+            <span className="mobile-check">
+              <Check aria-hidden="true" />
+            </span>
+            <div>
+              <h3>{symptom.title}</h3>
+              <p>{symptom.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function MobileReviewCanvas({ model }: { model: ReviewModel }) {
+  return (
+    <section className="summary-review-mobile" aria-label="Review Your Information">
+      <header className="mobile-header">
+        <div className="mobile-brand-row">
+          <HeartLogo />
+          <div>
+            <h1>Review Your Information</h1>
+            <p>Please review your symptoms and measurements.</p>
+          </div>
+        </div>
+        <div className="mobile-secure-note">
+          <ShieldCheck aria-hidden="true" />
+          <span>Your information is secure</span>
+        </div>
+      </header>
+
+      <section className="mobile-alert-card">
+        <WarningHeart />
+        <div>
+          <h2>{model.primaryMessage}</h2>
+          <p>{model.staffLine}</p>
+          <p>{model.urgencyLine}</p>
+        </div>
+      </section>
+
+      <MobileMeasurementCards measurements={model.measurements} />
+      <MobileSymptomsSection symptoms={model.symptoms} />
+
+      <section className="mobile-confirm-card">
+        <StaffIllustration />
+        <div className="mobile-confirm-copy">
+          <h2>{model.confirmationTitle}</h2>
+          <p>{model.confirmationBody}</p>
+        </div>
+        <button type="button" aria-label="I will speak with staff">
+          <UserRound aria-hidden="true" />
+          <span>I will speak with staff</span>
+        </button>
+        <p className="mobile-assist-note">Tell staff if anything is incorrect or if you feel worse.</p>
+      </section>
+
+      <footer className="mobile-safety-note">
+        <Lock aria-hidden="true" />
+        <p>
+          This is not a diagnosis. If you feel severe chest pain, trouble breathing, or feel like you may faint, tell a staff
+          member immediately.
+        </p>
+      </footer>
+    </section>
+  );
+}
+
 function ReviewCanvas({ model }: { model: ReviewModel }) {
   return (
     <main
-      className="flex min-h-screen w-full items-center justify-center bg-[#F5F7FA] text-[#101935]"
+      className="summary-review-shell bg-[#F5F7FA] text-[#101935]"
       style={{ fontFamily: "Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
+      <div className="summary-review-desktop">
       <section className="relative h-[1050px] w-[1400px] overflow-hidden bg-[#F5F7FA]" aria-label="Review Your Information">
         <header>
           <div className="absolute left-10 top-9">
@@ -557,6 +698,8 @@ function ReviewCanvas({ model }: { model: ReviewModel }) {
           </p>
         </footer>
       </section>
+      </div>
+      <MobileReviewCanvas model={model} />
     </main>
   );
 }

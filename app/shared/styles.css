@@ -415,6 +415,441 @@ h3 {
   min-width: 0;
 }
 
+.summary-review-shell {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.summary-review-desktop {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-review-mobile {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .summary-review-page {
+    display: block;
+    min-height: 100vh;
+    height: auto;
+    overflow: auto;
+    background: #edf5f7;
+  }
+
+  #summary-root {
+    min-height: 100vh;
+    height: auto;
+  }
+
+  .summary-review-desktop {
+    display: none;
+  }
+
+  .summary-review-mobile {
+    display: grid;
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: 0 auto;
+    gap: 12px;
+    padding: 16px 14px 18px;
+    color: #101935;
+    background: #f5f7fa;
+  }
+
+  .mobile-header,
+  .mobile-alert-card,
+  .mobile-panel,
+  .mobile-confirm-card,
+  .mobile-safety-note {
+    width: 100%;
+    border: 1px solid rgba(16, 42, 94, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 28px rgba(16, 42, 94, 0.05);
+  }
+
+  .mobile-header {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .mobile-brand-row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mobile-brand-row svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .mobile-header h1 {
+    margin: 0;
+    color: #102a5e;
+    font-size: 24px;
+    line-height: 1.12;
+    font-weight: 850;
+  }
+
+  .mobile-header p,
+  .mobile-secure-note {
+    margin: 4px 0 0;
+    color: #3e4a64;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
+
+  .mobile-secure-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #1e4fab;
+  }
+
+  .mobile-secure-note svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+  }
+
+  .mobile-alert-card {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    border-color: #f1b382;
+    background: #fff9f1;
+    padding: 14px;
+  }
+
+  .mobile-alert-card > .relative {
+    width: 58px;
+    height: 58px;
+  }
+
+  .mobile-alert-card > .relative > div:first-child {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+  }
+
+  .mobile-alert-card > .relative svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mobile-alert-card > .relative > div:last-child {
+    right: 8px;
+    bottom: 8px;
+    width: 22px;
+    height: 22px;
+    border-width: 2px;
+  }
+
+  .mobile-alert-card h2 {
+    margin: 0;
+    color: #b43b11;
+    font-size: 16px;
+    line-height: 1.28;
+    font-weight: 800;
+  }
+
+  .mobile-alert-card p {
+    margin: 5px 0 0;
+    color: #121c36;
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .mobile-panel {
+    padding: 12px;
+  }
+
+  .mobile-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: #101935;
+  }
+
+  .mobile-section-title svg {
+    width: 18px;
+    height: 18px;
+    color: #137284;
+  }
+
+  .mobile-section-title h2 {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.2;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .mobile-measurement-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .mobile-measure-card {
+    min-height: 126px;
+    border: 1px solid #bad5f4;
+    border-radius: 8px;
+    padding: 12px;
+    background: #f7fbff;
+  }
+
+  .mobile-measure-card.is-warning {
+    border-color: #f06d19;
+    background: #fff8ec;
+    color: #c74f12;
+  }
+
+  .mobile-measure-card.is-ok {
+    border-color: #96cfc2;
+    background: #f5fcfa;
+    color: #178a69;
+  }
+
+  .mobile-measure-card.is-blue {
+    border-color: #a8c6ed;
+    background: #f7fbff;
+    color: #2962d9;
+  }
+
+  .mobile-measure-card.is-purple {
+    border-color: #bfb1e8;
+    background: #faf8ff;
+    color: #6650b7;
+  }
+
+  .mobile-card-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 20px;
+    font-size: 12px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+
+  .mobile-card-label strong {
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.72);
+    padding: 2px 6px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .mobile-value-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .mobile-value-row svg {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+  }
+
+  .mobile-value {
+    font-size: 38px;
+    line-height: 0.9;
+    font-weight: 850;
+  }
+
+  .mobile-value-sm {
+    font-size: 30px;
+  }
+
+  .mobile-unit {
+    padding-bottom: 2px;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 850;
+  }
+
+  .mobile-measure-card p {
+    margin: 10px 0 0;
+    color: #5e6a7e;
+    font-size: 10px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .mobile-symptom-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .mobile-symptom-card {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    min-height: 58px;
+    border-radius: 8px;
+    padding: 10px;
+    background: #f2faf8;
+  }
+
+  .mobile-symptom-card.is-warning {
+    background: #fff5e8;
+  }
+
+  .mobile-check {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #fff;
+    background: #178a69;
+  }
+
+  .mobile-symptom-card.is-warning .mobile-check {
+    background: #d95c15;
+  }
+
+  .mobile-check svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .mobile-symptom-card h3 {
+    margin: 0;
+    color: #0e6255;
+    font-size: 13px;
+    line-height: 1.25;
+    font-weight: 800;
+  }
+
+  .mobile-symptom-card.is-warning h3 {
+    color: #b73d0f;
+  }
+
+  .mobile-symptom-card p {
+    margin: 3px 0 0;
+    color: #30384b;
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
+
+  .mobile-confirm-card {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    background: #f7fbff;
+  }
+
+  .mobile-confirm-card > svg {
+    width: 78px;
+    height: 78px;
+  }
+
+  .mobile-confirm-copy h2 {
+    margin: 0;
+    color: #101935;
+    font-size: 16px;
+    line-height: 1.3;
+    font-weight: 850;
+  }
+
+  .mobile-confirm-copy p,
+  .mobile-assist-note {
+    margin: 5px 0 0;
+    color: #34405c;
+    font-size: 12px;
+    line-height: 1.45;
+    font-weight: 600;
+  }
+
+  .mobile-confirm-card button {
+    display: inline-flex;
+    width: 100%;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 0;
+    border-radius: 8px;
+    background: #1763d1;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    font-weight: 850;
+  }
+
+  .mobile-confirm-card button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobile-assist-note {
+    margin: 0;
+    color: #1055bf;
+    text-align: center;
+  }
+
+  .mobile-safety-note {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    padding: 10px 12px;
+    background: #eaf0f8;
+  }
+
+  .mobile-safety-note svg {
+    width: 18px;
+    height: 18px;
+    color: #20375f;
+  }
+
+  .mobile-safety-note p {
+    margin: 0;
+    color: #4b5870;
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .mobile-measurement-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 374px) {
+  .summary-review-mobile {
+    padding-inline: 10px;
+  }
+
+  .mobile-header h1 {
+    font-size: 22px;
+  }
+}
+
 .patient-review-header {
   display: flex;
   align-items: center;
