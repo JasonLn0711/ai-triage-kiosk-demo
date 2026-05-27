@@ -41,6 +41,7 @@ or private links in tracked files.
 - Organization marker visible in Teams: `imedtac.com`
 - Participants visible / referenced:
   - Johnny Fang 方偉翰, imedtac Corp.
+  - Ben Siu 蕭銳輝, imedtac Corp.
   - Jason Lin
   - 多寶 許
   - Lauren Wang 王瑋蓉, imedtac Corp.
@@ -99,6 +100,15 @@ Jason Lin 想問最後的結果預覽頁目前有基本的RWD嗎? 我們會掃QR
 [Johnny Fang 方偉翰, imedtac Corp.; edited reply quoting Jason's mobile/tablet message]
 
 太棒了 謝謝 辛苦了~~
+
+[Ben Siu 蕭銳輝, imedtac Corp.; visible timestamp: 5:55 PM, quoting Jason's 2026-05-26 5:52 PM summary-review URL message]
+
+Jason Lin 你好, PM 的其中一個需求是用 QR Code 讓使用者用手機 scan 來打開 summary 頁
+目前利用 window.name 來帶資料這個做法好像沒辦法用 QR Code 來實現, 而且 QR Code 也沒辦法把整個 payload 放進去, 因為 response 實在是太大了
+
+有沒有可能在 url 裡帶 session key 就可以顯示 summary 頁?
+
+如果可以, 請問 session key 的有效期是多久?
 ```
 
 ## Working Extraction
@@ -131,6 +141,14 @@ Jason Lin 想問最後的結果預覽頁目前有基本的RWD嗎? 我們會掃QR
 - Jason notified imedtac that NYCU may respond more slowly during the school
   final-exam period and asked them to tag the team directly if needed.
 - Johnny acknowledged the update positively and thanked the team.
+- Ben raised a QR implementation constraint: `window.name` works for same-tab
+  browser handoff, but it does not map cleanly to a QR-code scan from another
+  device.
+- Ben also identified that putting the full summary response payload into a QR
+  URL is not feasible because the response is too large.
+- Ben asked whether the summary page can be displayed by putting only
+  `session_key` in the URL.
+- Ben asked how long the `session_key` remains valid if that path is possible.
 
 ### External Commitments Created By Jason's Replies
 
@@ -151,6 +169,10 @@ The Teams replies create the following implementation commitments:
    should be discussed with 許醫師 before changing the externally used wording.
 6. NYCU's demo-day role is online standby support unless imedtac later requests
    a different support workflow.
+7. NYCU should answer Ben's `session_key` / QR-code question without changing
+   the already shared two-POST API contract silently. A URL-session-key summary
+   path would be an added read-only summary-display bridge, not a replacement
+   for Endpoint 1 / Endpoint 2.
 
 ### Change-Control Reading
 
@@ -172,6 +194,99 @@ Material changes that require discussion include:
   already been shared or used for the demo flow;
 - expanding NYCU's demo-day role beyond online standby without confirming the
   revised flow with imedtac.
+- changing the implemented read-only `session_key` summary bridge scope,
+  expiry, data boundary, or QR behavior after Ben / imedtac has been notified.
+
+## First-Principles Reading Of Ben's QR Question
+
+The scarce resource is integration simplicity under a stable trust boundary.
+Ben is not asking NYCU to redesign the question loop; he is asking for a QR
+handoff that avoids putting a large JSON payload in the URL and works when the
+phone opening the QR code is not the same browser tab that received Endpoint 2.
+
+The current `window.name` handoff is still valid for direct same-tab replacement
+or demo-button navigation. It is lightweight because it does not add another
+backend read path and does not expose summary data in the URL.
+
+For QR scanning from a separate device, `window.name` is not enough. The
+QR-friendly path needs a server-side lookup key:
+
+```text
+Endpoint 2 returns status=summary + session_key.
+iMVS generates QR URL:
+https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/?session_key=<session_key>
+Phone opens the URL.
+Summary page asks NYCU backend for the summary attached to that session_key.
+NYCU backend returns the same demo staff_review_summary if the session is summary_ready and not expired.
+```
+
+This should be treated as an optional read-only summary-display bridge. It
+should not change the two POST endpoints, answer payloads, option IDs,
+idempotency, progress semantics, or `status=summary` response shape.
+
+## Lightweight Recommendation
+
+The smallest convenient path for both teams is:
+
+1. Keep the existing `window.name` handoff as the immediate same-tab/direct-click
+   path.
+2. Add a read-only summary lookup route for QR use:
+
+```text
+GET /api/triage-demo/sessions/{session_key}/summary
+```
+
+3. Let the existing summary page accept:
+
+```text
+/demo-ui/summary-review/?session_key=<session_key>
+```
+
+4. The page fetches the read-only summary route from the same Render origin and
+   renders it with the existing `SummaryReview.tsx` component.
+5. The `session_key` validity should match the existing `session_expires_at`
+   value returned by Endpoint 1 / Endpoint 2. Current demo runtime TTL is `30`
+   minutes from session creation.
+
+Implementation status after Jason's follow-up direction:
+
+- The repo now implements this read-only summary bridge locally.
+- The bridge preserves Endpoint 1 and Endpoint 2 as the question-loop contract.
+- This should be communicated to Ben / imedtac as an added QR-display helper
+  before they implement against it as a shared integration dependency.
+
+Implementation controls:
+
+- Return summary only when the session has reached `session_state=summary_ready`.
+- Return the existing `invalid_session` / expired-session style error when the
+  key is missing, unknown, expired, or not summary-ready.
+- Do not put full payload, patient identifiers, bearer tokens, or private values
+  in the QR URL.
+- Keep this demo-only and synthetic-data scoped. If real patient data is ever
+  used, URL-based summary access needs a stronger access-control decision.
+- Use non-guessable URL-safe random `session_key` values before relying on
+  public QR URLs, even in demo mode.
+- Current demo storage is the Node process in-memory session map. This supports
+  rehearsal / demo QR use while the Render instance remains alive; a Render
+  restart invalidates active demo sessions. Redis / KV / DB should be a separate
+  deployment decision only if imedtac needs persistence across restarts or a
+  longer retrieval window.
+
+## Suggested Reply To Ben
+
+```text
+Ben 你好，理解，QR code 這個情境用 window.name 確實不適合，因為手機掃 QR code 會是另一個 browser context，也不適合把完整 payload 放進 URL。
+
+最輕量的做法是：保留目前 Endpoint 1 / Endpoint 2 不變，另外補一個 read-only 的 summary lookup 給 QR code 使用。iMVS 在拿到 status=summary 後，用 session_key 產生：
+
+https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/?session_key=<session_key>
+
+summary page 再用這個 session_key 向 NYCU backend 讀取已完成的 staff_review_summary 來顯示。這樣 QR code 只需要放短 URL，不需要塞完整 payload。
+
+session_key 是由 NYCU backend 產生的 URL-safe random token，不是 Render 生成，也不是 sequential id。有效期跟目前 API 回傳的 session_expires_at 對齊；現在 demo runtime 是 session 建立後 30 分鐘。
+
+這個方式會是額外的 read-only 顯示橋接，不會改目前兩個 POST endpoint、answer payload、option id 或 summary response shape。summary 只有在 session_state=summary_ready 且 session_key 未過期時才會顯示。現在 demo 版本的 session 存在 NYCU backend runtime 記憶體中，足夠支援 rehearsal / demo QR 使用；若之後要支援跨重啟或更長時間保存，再升級到 Redis / KV / DB。
+```
 
 ## Implementation Evidence Already Produced
 
@@ -190,16 +305,33 @@ Material changes that require discussion include:
   - `npm run smoke`
   - `npm run build`
   - `git diff --check`
+- QR/session-key bridge implemented in the repo:
+  - `GET /api/triage-demo/sessions/{session_key}/summary`
+  - `/demo-ui/summary-review/?session_key=<session_key>`
+  - backend-generated URL-safe random session keys
+  - `30` minute validity aligned to `session_expires_at`
+  - `409` before summary readiness, `404` for unknown keys, and `410` for
+    expired sessions
+- Local verification on `2026-05-27` passed:
+  - `npm test`
+  - `npm run smoke`
+  - `npm run build`
+  - `git diff --check`
+  - QR-style summary rendering at `390 x 844` without horizontal overflow
 
 ## Next-Step Planning
 
 1. Keep the summary-review route stable:
    `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/`.
-2. After Render deploys commit `ba41739`, re-check the public URL on mobile
-   widths before telling imedtac that the live page has the updated mobile RWD.
-3. Keep the QR-code path as direct navigation to a normal web page, while still
-   supporting the existing fixed-URL `window.name` handoff from Endpoint 2.
-4. Keep partial-vital behavior covered by contract tests.
-5. Route any clinical question-answer wording changes through 許醫師 review
+2. Keep the QR-code path as direct navigation to a normal web page with
+   `?session_key=<session_key>`, while still supporting the existing fixed-URL
+   `window.name` handoff from Endpoint 2.
+3. Tell Ben / imedtac that the QR bridge is a read-only display helper and that
+   the session key is valid until `session_expires_at`, currently `30` minutes
+   after session creation.
+4. After the QR bridge is pushed and Render deploys it, re-check the public URL
+   and one QR-style session before asking imedtac to implement against it.
+5. Keep partial-vital behavior covered by contract tests.
+6. Route any clinical question-answer wording changes through 許醫師 review
    before sending or using revised wording externally.
-6. Prepare for demo-day online standby once imedtac confirms the time.
+7. Prepare for demo-day online standby once imedtac confirms the time.

@@ -271,6 +271,110 @@ boundary:
 - Jason told 多寶 that question-answer corrections will still be discussed with
   許醫師 before changing the externally used wording.
 
+## Ben QR Session-Key Request On 2026-05-27
+
+Ben replied in Teams that one PM requirement is to let users scan a QR code on a
+phone to open the summary page. He noted that the current `window.name` handoff
+does not fit QR-code scanning from another device/browser context, and that the
+full summary response is too large to put into a QR-code URL. He asked whether
+the URL can carry only a `session_key` to display the summary page, and how long
+the `session_key` would remain valid.
+
+First-principles reading:
+
+- The user need is a small QR URL, not a new question flow.
+- The shared trust boundary is stable integration behavior. The existing two
+  POST endpoints should remain unchanged.
+- `window.name` remains the lightest direct-click / same-tab handoff.
+- QR scanning from a phone needs a server-side lookup key because the phone does
+  not inherit the kiosk browser's `window.name`.
+
+Recommended lightweight design:
+
+```text
+iMVS completes Endpoint 1 / Endpoint 2 as already agreed.
+Endpoint 2 reaches status=summary and includes session_key + session_expires_at.
+iMVS builds a QR URL:
+  /demo-ui/summary-review/?session_key=<session_key>
+The summary page reads the session_key.
+The summary page calls a read-only NYCU route:
+  GET /api/triage-demo/sessions/{session_key}/summary
+NYCU returns the existing status=summary payload only if the session is summary_ready and not expired.
+```
+
+Why this is the smallest compatible bridge:
+
+- It avoids putting the full payload in the QR code.
+- It keeps the current `status=summary` response shape.
+- It does not change Endpoint 1 or Endpoint 2.
+- It reuses the existing summary-review page and `SummaryReview.tsx` renderer.
+- It uses the existing `session_expires_at` value as the answer to Ben's expiry
+  question. Current demo runtime TTL is `30` minutes from session creation.
+
+Implemented bridge:
+
+```text
+GET /api/triage-demo/sessions/{session_key}/summary
+/demo-ui/summary-review/?session_key=<session_key>
+```
+
+Runtime behavior:
+
+- Endpoint 1 / Endpoint 2 remain the question-loop contract.
+- The QR route is a read-only display helper for already completed demo
+  sessions.
+- The backend now generates non-guessable URL-safe random `session_key` values
+  instead of sequential demo keys.
+- The summary page first supports the existing same-tab `window.name` handoff;
+  if no handoff exists, it reads `?session_key=` and fetches the read-only
+  summary route from the same Render origin.
+- The route returns summary content only when the session is `summary_ready`.
+- The route returns a clear error state when the session is active, missing,
+  expired, or unknown.
+- The `session_key` validity remains aligned to `session_expires_at`; current
+  demo runtime validity is `30` minutes from session creation.
+- Current demo storage is the Node process in-memory session map. This is
+  sufficient for rehearsal and QR demo use while the Render instance remains
+  alive; a Render restart invalidates in-memory sessions. If the workflow needs
+  persistence across restarts or multiple instances, move the summary store to
+  Redis / KV / DB as a separate deployment decision.
+- Bearer tokens and full payloads stay out of the QR URL.
+- For synthetic demo data, this `session_key` URL lookup is the lightest
+  compatible bridge. For any real patient-data path, URL-based summary access
+  needs a stronger access-control decision.
+
+Communication control:
+
+- Tell Ben / imedtac that this is an added read-only QR-display helper before
+  they implement against it as a shared integration dependency.
+- Keep describing the two POST endpoints as the unchanged question-loop API.
+
+Suggested reply:
+
+```text
+Ben 你好，理解，QR code 這個情境用 window.name 確實不適合，因為手機掃 QR code 會是另一個 browser context，也不適合把完整 payload 放進 URL。
+
+最輕量的做法是：保留目前 Endpoint 1 / Endpoint 2 不變，另外補一個 read-only 的 summary lookup 給 QR code 使用。iMVS 在拿到 status=summary 後，用 session_key 產生：
+
+https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/?session_key=<session_key>
+
+summary page 再用這個 session_key 向 NYCU backend 讀取已完成的 staff_review_summary 來顯示。這樣 QR code 只需要放短 URL，不需要塞完整 payload。
+
+session_key 是由 NYCU backend 產生的 URL-safe random token，不是 Render 生成，也不是 sequential id。有效期跟目前 API 回傳的 session_expires_at 對齊；現在 demo runtime 是 session 建立後 30 分鐘。
+
+這個方式會是額外的 read-only 顯示橋接，不會改目前兩個 POST endpoint、answer payload、option id 或 summary response shape。summary 只有在 session_state=summary_ready 且 session_key 未過期時才會顯示。現在 demo 版本的 session 存在 NYCU backend runtime 記憶體中，足夠支援 rehearsal / demo QR 使用；若之後要支援跨重啟或更長時間保存，再升級到 Redis / KV / DB。
+```
+
+Local verification on `2026-05-27`:
+
+| Check | Result | Reading |
+| --- | --- | --- |
+| `npm test` | pass | Unit and contract tests include random session key and read-only summary lookup behavior. |
+| `npm run smoke` | pass | Mock server exposes the summary UI and rejects unknown summary session keys. |
+| `npm run build` | pass | Static UI remains buildable. |
+| `git diff --check` | pass | No whitespace errors in the patch. |
+| QR-style page at `390 x 844` | pass | `?session_key=` summary page renders without horizontal overflow. |
+
 ## Feasible Hosting Options
 
 ### Option A: Keep Render API, host UI as static site

@@ -2,7 +2,7 @@
 id: 2026-05-25-imedtac-integration-next-steps
 title: "imedtac Integration Next Steps After Teams UI / API Follow-Up"
 date: 2026-05-25
-last_updated: 2026-05-26
+last_updated: 2026-05-27
 topic: ai-triage
 type: handoff
 status: active-next-step-plan
@@ -44,7 +44,7 @@ Frozen for the first integration rehearsal:
 
 | Area | Frozen decision |
 | --- | --- |
-| API shape | Two endpoints only: `POST /api/triage-demo/sessions` and `POST /api/triage-demo/sessions/{session_key}/answers`. |
+| API shape | The question loop stays on two POST endpoints: `POST /api/triage-demo/sessions` and `POST /api/triage-demo/sessions/{session_key}/answers`. QR summary viewing may use the added read-only display helper `GET /api/triage-demo/sessions/{session_key}/summary`; it does not replace or change the two POST endpoints. |
 | Workflow | `post_measurement_only`: iMVS completes measurement first, then starts the NYCU question loop. |
 | Deployment target | NYCU-hosted Render rehearsal API: `https://nycu-imedtac-triage-demo-api.onrender.com/api/triage-demo`. |
 | CORS | Allow browser origins `http://localhost` and `http://localhost:5174` for first rehearsal. These origins refer to the iMVS/frontend machine's browser page, not Render's localhost. |
@@ -54,7 +54,13 @@ Frozen for the first integration rehearsal:
 | Conflict recovery | `idempotency_conflict` recovery is restart demo session or clearly labeled fallback, not answer revision. |
 | iMVS pending state | iMVS locks answer-related controls immediately after answer submit and unlocks after NYCU returns next question or summary. |
 | Summary | Endpoint 2 returns `status=summary` and `staff_review_summary`; summary remains `staff_only`; as of Johnny's `2026-05-26` Teams reply, the demo may use previously provided NYCU prototype materials to introduce the summary/result concept, and NYCU should not build a new preview page unless later requested. |
-| Summary visual URL | NYCU serves the demo-only summary-review page from the same Render service at `/demo-ui/summary-review/`, supporting direct QR-code-page replacement or iframe embedding without changing the two POST API endpoints. For direct navigation, iMVS can hand off the Endpoint 2 `status=summary` response through a one-time browser `window.name` payload before navigating to the fixed URL. |
+| Summary visual URL | NYCU serves the demo-only summary-review page from the same Render service at `/demo-ui/summary-review/`, supporting direct QR-code-page replacement or iframe embedding without changing the two POST API endpoints. For same-tab direct navigation, iMVS can hand off the Endpoint 2 `status=summary` response through a one-time browser `window.name` payload before navigating to the fixed URL. For phone QR scanning from another browser context, iMVS can generate `/demo-ui/summary-review/?session_key=<session_key>` and let the page fetch the read-only summary helper. |
+
+QR summary helper storage note: current demo sessions live in the NYCU backend
+Node process memory. This is the lightest rehearsal path and supports QR links
+inside the `session_expires_at` window while the Render instance remains alive.
+If imedtac needs restart-tolerant or longer-lived links, promote the summary
+store to Redis / KV / DB as a separate deployment decision.
 
 This freeze reduces engineering burden because imedtac only needs to wire the
 same two endpoint paths against one stable base URL. NYCU's internal Render
@@ -82,7 +88,7 @@ They should be treated as execution constraints, not internal draft ideas.
 | Demo environment | Render base URL, two endpoint paths, CORS origins `http://localhost` and `http://localhost:5174`, and bearer-token header format were sent in Teams. | Keep these reachable and stable for rehearsal; any URL, auth, or CORS change requires notice. |
 | Token handoff | Jason privately sent Ben a tested bearer token. | Do not rotate, revoke, or change token-required behavior without telling Ben / imedtac. |
 | Summary result | Endpoint 2 returns `status=summary` and `staff_review_summary`. | Preserve summary payload names and staff-review boundary. |
-| Summary visual | Jason sent the demo summary-review page image on `2026-05-26 13:52` and wrote `畫面大致呈現如上`; Johnny confirmed it is sufficient for explanation; Ben asked for an iframe URL; Johnny / Ben then accepted direct QR-code-page replacement as a likely simpler path. | Provide one stable standalone summary page URL that can be used either as an iframe source or direct replacement page. The compatible dynamic path is fixed URL plus one-time browser handoff of the Endpoint 2 `status=summary` payload; material changes to final-screen concept or display route require notice. |
+| Summary visual | Jason sent the demo summary-review page image on `2026-05-26 13:52` and wrote `畫面大致呈現如上`; Johnny confirmed it is sufficient for explanation; Ben asked for an iframe URL; Johnny / Ben then accepted direct QR-code-page replacement as a likely simpler path; Ben later asked for a URL `session_key` flow because QR scanning cannot inherit `window.name`. | Provide one stable standalone summary page URL that can be used either as an iframe source or direct replacement page. The compatible dynamic paths are fixed URL plus one-time browser handoff for same-tab navigation, and fixed URL plus `?session_key=<session_key>` for phone QR scanning. The QR helper is read-only and does not change the two POST question-loop endpoints; material changes to final-screen concept, display route, or expiry behavior require notice. |
 
 Change process for any deviation:
 
@@ -264,7 +270,7 @@ NYCU implementation checklist:
 | 1 | Send concise Teams reply answering Ben's two API questions and confirming the progress rule. | Jason / NYCU | Immediate |
 | 2 | Update the external API reply with clarified idempotency, progress, UI capacity, and CORS notes. | Jason | `2026-05-25` |
 | 3 | Deliver the first tachycardia preset question/option template aligned to 多寶 / 許醫師's HR `130` case as both a backend-returned question set and a shareable imedtac engineering handoff packet. | Jason + 多寶 | `2026-05-25` |
-| 4 | Summary display direction: imedtac does not need to build a new page; NYCU provides the final prototype / summary-review screen material plus payload examples and wording. Same-Render route: `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/`. For direct replacement, iMVS can set `window.name = JSON.stringify({ type: "nycu_summary_review_payload", payload: response })` when Endpoint 2 returns `status=summary`, then navigate to the fixed URL. | imedtac UI + NYCU | Option B base URL live-verified at `2026-05-26 16:29` Asia/Taipei; dynamic fixed-URL handoff live-verified at `2026-05-26 17:44` Asia/Taipei and ready to send with the fixed URL plus `window.name` handoff snippet |
+| 4 | Summary display direction: imedtac does not need to build a new page; NYCU provides the final prototype / summary-review screen material plus payload examples and wording. Same-Render route: `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/`. For same-tab direct replacement, iMVS can set `window.name = JSON.stringify({ type: "nycu_summary_review_payload", payload: response })` when Endpoint 2 returns `status=summary`, then navigate to the fixed URL. For phone QR scanning, iMVS can generate `https://nycu-imedtac-triage-demo-api.onrender.com/demo-ui/summary-review/?session_key=<session_key>` after Endpoint 2 reaches `status=summary`; the page then reads the same completed summary through the read-only helper. | imedtac UI + NYCU | Option B base URL live-verified at `2026-05-26 16:29` Asia/Taipei; dynamic fixed-URL handoff live-verified at `2026-05-26 17:44`; QR/session-key bridge implemented and locally verified on `2026-05-27`, pending push/deploy/public verification before imedtac depends on it |
 | 5 | Confirm iMVS locks answer-related controls after answer submit and unlocks only after NYCU next-question / summary response. | imedtac UI | Before first rehearsal |
 | 6 | Prepare the Render browser-callable rehearsal API and verify `/healthz`, CORS preflight, start-session, and submit-answer. | NYCU engineering | Achieved on `2026-05-25` |
 | 7 | Run contract rehearsal: start session -> first question -> answer -> next question -> summary. | NYCU + imedtac | Before `2026-06-10` customer demo |
