@@ -121,16 +121,35 @@ post-measurement-only to minimize iMVS UI changes before the customer demo.
 
 ## Demo Mainline
 
-Start the local static demo server:
+Start the local demo API server:
+
+```bash
+npm run mock:api
+```
+
+Open the summary review route:
+
+```text
+http://localhost:4193/demo-ui/summary-review/
+```
+
+If you want to open the static kiosk pages directly, start the local static
+demo server in a second terminal:
 
 ```bash
 npm start
 ```
 
-Open the English kiosk demo:
+Then open the English kiosk demo:
 
 ```text
 http://localhost:4183/app/triage-kiosk/
+```
+
+Or the static summary review page:
+
+```text
+http://localhost:4183/app/summary-review/
 ```
 
 Run the verification checks:
