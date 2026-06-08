@@ -285,6 +285,120 @@ Next execution sequence:
 5. Review the integrated iMVS UI after Lauren / imedtac has the API flow wired
    into the visible question screens.
 
+## 2026-06-02 To 2026-06-05 imedtac Teams Update
+
+Source and response plan:
+
+- `source/2026-06-02-to-2026-06-05-imedtac-teams-question-design-and-screening-scope/source.md`
+- `docs/2026-06-05-question-design-and-screening-scope-response-plan.md`
+
+imedtac reported that its flow has been connected and moved onto the formal
+machine for testing. Johnny accepted the current environment strategy: imedtac's
+test and formal machines both connect to NYCU's single test/demo environment
+for now. The demo story remains the high-heart-rate / tachycardia lane.
+
+The new demo expectation is visible dynamic behavior inside that bounded lane:
+
+```text
+high-heart-rate measured context
+-> different answer/data paths
+-> visibly different next-question and/or review-text output
+-> result page values match the current session values
+-> staff-review summary only
+```
+
+Johnny's test feedback is that the current experience feels too static: choices
+appear to lead to the same next question and the same result page, and result
+page data can look inconsistent with the measured values shown in the session.
+This weakens the triage-support story because the demo does not clearly show
+how measured data and answers shape the intake loop.
+
+Timing update:
+
+- `2026-06-10` was discussed as a possible date but was not confirmed in the
+  screenshot record.
+- The current latest first-version target is before `2026-06-15`.
+- Other intermittent customer visits are expected after `2026-06-15`.
+- imedtac accepts gradual iteration if NYCU gives advance notice before each
+  deployment / version update.
+
+Near-term execution sequence:
+
+1. Confirm with imedtac that the working target is first version before
+   `2026-06-15` unless an earlier rehearsal is formally set.
+2. Patch the tachycardia lane so at least one answer branch changes the next
+   question path and/or final review text within the safe staff-review boundary.
+3. Verify the summary/result page renders the current session's measured values
+   and selected answers instead of stale fixture values.
+4. Produce a two-path rehearsal comparison for imedtac: same high-heart-rate
+   scenario, two answer paths, visibly different safe summary text.
+5. Notify imedtac before deploying any updated Render demo version.
+6. Ask 多寶 / 許醫師 to review which answer-path differences are clinically
+   meaningful and safe to expose.
+
+The same Teams exchange introduced a separate proposed 北市聯醫 lane: health
+cabins across `12` outpatient districts, additional vision / hearing screening,
+questionnaire-style previsit intake, question-bank / upload-system design, and
+future data/HIS integration. Treat this as a new proposal-discovery lane that
+can reuse architecture ideas but should not expand the June AI-triage demo.
+
+Proposal-discovery controls:
+
+- Obtain the formal project owner, customer contact path, field setting, and
+  proposal timing before treating the 北市聯醫 work as active execution.
+- Define vision/hearing as screening-support workflow until clinical owner
+  review confirms measurement targets, equipment assumptions, and wording.
+- Treat speaker-based hearing checks as approximate screening unless a clinical
+  owner approves the specific setup; detailed hearing testing may require
+  stricter equipment / environment controls.
+- Keep HIS integration as proposal scope until imedtac defines fields, owner,
+  environment, privacy boundary, and production governance path.
+
+## 2026-06-08 Formal-Machine CORS Incident
+
+Source:
+
+- `source/2026-06-08-imedtac-teams-cors-preflight-block/source.md`
+
+Johnny reported in Teams that imedtac's formal-machine test showed an error
+after measurement and could not enter the Triage flow. The attached browser
+DevTools screenshot confirms the immediate failure layer:
+
+```text
+POST https://nycu-imedtac-triage-demo-api.onrender.com/api/triage-demo/sessions
+from origin http://127.0.0.1:5174
+blocked by CORS policy:
+No Access-Control-Allow-Origin header is present on the requested resource.
+```
+
+The current NYCU API allowlist contains:
+
+```text
+http://localhost
+http://localhost:5174
+```
+
+Browser origin matching treats `localhost` and `127.0.0.1` as different
+origins. Therefore the visible failure is a missing CORS allowlist entry for
+imedtac's actual formal-machine frontend origin, not evidence that the endpoint
+schema, question logic, bearer-token path, or summary generation failed.
+
+Immediate execution sequence:
+
+1. Add `http://127.0.0.1:5174` to the CORS allowlist. Code fix completed on
+   `2026-06-08` in `api/lib/triage-demo-contract.js`; contract coverage added
+   in `tests/contract/triage-demo-api.test.js`.
+2. Redeploy the Render service.
+3. Verify preflight with `OPTIONS /api/triage-demo/sessions` from
+   `Origin: http://127.0.0.1:5174`.
+4. Ask imedtac whether any additional formal-machine origins exist, such as LAN
+   IP, HTTPS domain, another port, or WebView custom origin.
+5. Ask imedtac to retry the same measurement-to-triage transition after the
+   CORS deployment is verified.
+6. If the flow still fails after CORS passes, inspect Render logs, request
+   payload, bearer-token header, timeout behavior, and API validation errors as
+   the next debugging layer.
+
 ## 2026-05-19 多寶 Two-Phase Question Flow Update
 
 Source and design:
