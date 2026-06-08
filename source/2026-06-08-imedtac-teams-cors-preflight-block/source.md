@@ -228,6 +228,38 @@ Implementation update on `2026-06-08`: NYCU added
 current browser origins. The remaining steps are Render redeploy, remote
 preflight verification, and imedtac retest on the same formal-machine path.
 
+## Render Redeploy Verification
+
+After imedtac redeployed the Render service, Jason retested the public API from
+the NYCU computer on `2026-06-08` using the same browser origin shown in the
+imedtac DevTools screenshot:
+
+```text
+Origin: http://127.0.0.1:5174
+Endpoint: https://nycu-imedtac-triage-demo-api.onrender.com/api/triage-demo/sessions
+```
+
+Observed result:
+
+- `/healthz` returned `HTTP/2 200`.
+- `OPTIONS /api/triage-demo/sessions` returned `HTTP/2 204`.
+- The preflight response included
+  `Access-Control-Allow-Origin: http://127.0.0.1:5174`.
+- The preflight response also included
+  `Access-Control-Allow-Methods: GET, POST, OPTIONS`.
+- The preflight response included
+  `Access-Control-Allow-Headers: Content-Type, Authorization`.
+- A no-token `POST /api/triage-demo/sessions` reached the API and returned the
+  expected `401` / `demo_bearer_token_required` response with the correct CORS
+  header present.
+
+Technical conclusion: the screenshot-visible CORS preflight block is closed on
+the redeployed Render API. If imedtac still sees the generic error modal on the
+same formal-machine path, the next likely checks are bearer-token delivery,
+stale frontend bundle/cache, a different actual browser origin, request payload
+shape, or Render application logs after the authenticated request reaches the
+API.
+
 After deployment, verify:
 
 ```bash
@@ -255,9 +287,11 @@ with the existing bearer-token header.
 | Item | Owner | Target | Status | Note |
 | --- | --- | --- | --- | --- |
 | Add `http://127.0.0.1:5174` to CORS allowlist. | NYCU / Jason | immediate | code fixed | Compatibility update added in `api/lib/triage-demo-contract.js`. |
-| Redeploy Render after the CORS change. | NYCU / Jason | immediate | pending | Required for the public API to send the new CORS header. |
-| Verify preflight from `http://127.0.0.1:5174`. | NYCU / Jason | after deploy | pending | Use `OPTIONS /api/triage-demo/sessions`. |
+| Redeploy Render after the CORS change. | NYCU / Jason | immediate | done | imedtac redeployed Render; NYCU retested the public API after deployment. |
+| Verify preflight from `http://127.0.0.1:5174`. | NYCU / Jason | after deploy | done | `OPTIONS /api/triage-demo/sessions` returned `204` with the expected origin, method, and header allowlist. |
+| Verify unauthenticated POST reaches API layer. | NYCU / Jason | after deploy | done | No-token POST returned expected `401` / `demo_bearer_token_required` with CORS header present. |
 | Ask imedtac whether any other formal-machine origins exist. | Jason / imedtac | before next rehearsal | open | Include LAN IP, HTTPS domain, WebView origin, or other port if used. |
+| If error persists, inspect authenticated request path. | Jason / imedtac | next retest | open | Check bearer header, stale frontend bundle/cache, payload shape, actual `Origin`, and Render logs. |
 | Ask imedtac to retry the same measurement-to-triage transition after CORS deploy. | Jason / imedtac | after verify | open | Confirms that the flow can reach API-level behavior. |
 | If failure remains after CORS fix, inspect Render logs and request payload. | NYCU / Jason | after retry only if needed | open | Next debugging layer: auth, payload validation, timeout, or app error. |
 
