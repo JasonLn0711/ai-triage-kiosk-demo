@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Render Rehearsal API Smoke Test</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --ink: #1c2430;
+        --muted: #607086;
+        --line: #d8dee8;
+        --ok: #146c43;
+        --warn: #9a5a00;
+        --bad: #b42318;
+        --accent: #2457c5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(1080px, calc(100vw - 32px));
+        margin: 32px auto;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      section {
+        margin-top: 18px;
+        padding: 18px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+        font-weight: 650;
+      }
+
+      input {
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink);
+        font: inherit;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      button {
+        min-height: 40px;
+        padding: 9px 13px;
+        border: 1px solid #1f4fb4;
+        border-radius: 6px;
+        background: var(--accent);
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        border-color: var(--line);
+        background: #fff;
+        color: var(--ink);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 10px;
+      }
+
+      .status-card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+      }
+
+      .status-card strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .status-card span {
+        color: var(--muted);
+      }
+
+      .ok strong {
+        color: var(--ok);
+      }
+
+      .warn strong {
+        color: var(--warn);
+      }
+
+      .bad strong {
+        color: var(--bad);
+      }
+
+      .question-options {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .option {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+
+      pre {
+        overflow: auto;
+        min-height: 180px;
+        max-height: 440px;
+        margin: 0;
+        padding: 14px;
+        border-radius: 8px;
+        background: #111827;
+        color: #d1d5db;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Render Rehearsal API Smoke Test</h1>
+      <p>
+        This page tests browser-to-Render calls from <code>http://localhost:5174</code>.
+        The bearer token is kept only in this page session and is never stored.
+      </p>
+
+      <section>
+        <label>
+          Demo bearer token
+          <input id="tokenInput" type="password" autocomplete="off" spellcheck="false" placeholder="Paste token for this browser test">
+        </label>
+        <div class="controls">
+          <button id="runAllButton">Run Browser Smoke</button>
+          <button id="healthButton" class="secondary">Health Only</button>
+          <button id="noTokenButton" class="secondary">No-Token 401</button>
+          <button id="startButton" class="secondary">Start Session</button>
+          <button id="answerButton" class="secondary" disabled>Submit Answer</button>
+        </div>
+      </section>
+
+      <section>
+        <div class="status-grid" id="statusGrid"></div>
+      </section>
+
+      <section id="questionPanel" hidden>
+        <strong id="questionTitle"></strong>
+        <p id="questionMeta"></p>
+        <div class="question-options" id="questionOptions"></div>
+      </section>
+
+      <section>
+        <pre id="logOutput">Ready.</pre>
+      </section>
+    </main>
+
+    <script>
+      const API_BASE = "https://nycu-imedtac-triage-demo-api.onrender.com";
+      const START_EXAMPLE = "/handoff/api-examples/2026-05-21-start-session-request-demo-tachycardia.json";
+      const ANSWER_EXAMPLE = "/handoff/api-examples/2026-05-21-submit-answer-request-demo-tachycardia.json";
+
+      const state = {
+        sessionKey: "",
+        currentQuestion: null,
+        selectedOptionId: ""
+      };
+
+      const elements = {
+        tokenInput: document.querySelector("#tokenInput"),
+        runAllButton: document.querySelector("#runAllButton"),
+        healthButton: document.querySelector("#healthButton"),
+        noTokenButton: document.querySelector("#noTokenButton"),
+        startButton: document.querySelector("#startButton"),
+        answerButton: document.querySelector("#answerButton"),
+        statusGrid: document.querySelector("#statusGrid"),
+        questionPanel: document.querySelector("#questionPanel"),
+        questionTitle: document.querySelector("#questionTitle"),
+        questionMeta: document.querySelector("#questionMeta"),
+        questionOptions: document.querySelector("#questionOptions"),
+        logOutput: document.querySelector("#logOutput")
+      };
+
+      const statusCards = new Map();
+
+      function stamp() {
+        return new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+      }
+
+      function log(label, value) {
+        const rendered = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+        elements.logOutput.textContent = `[${new Date().toLocaleTimeString()}] ${label}\n${rendered}\n\n${elements.logOutput.textContent}`;
+      }
+
+      function setStatus(key, label, value, kind = "") {
+        statusCards.set(key, { label, value, kind });
+        elements.statusGrid.innerHTML = [...statusCards.values()].map((item) => `
+          <div class="status-card ${item.kind}">
+            <strong>${escapeHtml(item.label)}</strong>
+            <span>${escapeHtml(item.value)}</span>
+          </div>
+        `).join("");
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+
+      async function readJsonResponse(response) {
+        const text = await response.text();
+        try {
+          return text ? JSON.parse(text) : null;
+        } catch (error) {
+          return text;
+        }
+      }
+
+      async function loadExample(path) {
+        const response = await fetch(path, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Could not load local example ${path}: HTTP ${response.status}`);
+        return response.json();
+      }
+
+      function authHeaders() {
+        const token = elements.tokenInput.value.trim();
+        if (!token) throw new Error("Paste the demo bearer token first.");
+        return {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        };
+      }
+
+      async function checkHealth() {
+        const response = await fetch(`${API_BASE}/healthz`, { cache: "no-store" });
+        const body = await readJsonResponse(response);
+        setStatus("health", "GET /healthz", `HTTP ${response.status}`, response.ok ? "ok" : "bad");
+        log("GET /healthz", { status: response.status, body });
+        return response;
+      }
+
+      async function checkNoToken() {
+        const payload = await loadExample(START_EXAMPLE);
+        payload.request_id = `req-browser-no-token-${stamp()}`;
+        payload.idempotency_key = `idem-browser-no-token-${stamp()}`;
+
+        const response = await fetch(`${API_BASE}/api/triage-demo/sessions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const body = await readJsonResponse(response);
+        const ok = response.status === 401 && body?.error?.code === "demo_bearer_token_required";
+        setStatus("noToken", "No-token POST", `HTTP ${response.status} ${body?.error?.code || ""}`, ok ? "ok" : "bad");
+        log("No-token POST /sessions", { status: response.status, body });
+        return response;
+      }
+
+      async function startSession() {
+        const payload = await loadExample(START_EXAMPLE);
+        payload.request_id = `req-browser-start-${stamp()}`;
+        payload.idempotency_key = `idem-browser-start-${stamp()}`;
+
+        const response = await fetch(`${API_BASE}/api/triage-demo/sessions`, {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify(payload)
+        });
+        const body = await readJsonResponse(response);
+        const ok = response.ok && body?.status === "question" && body?.session_key && body?.question;
+        setStatus("start", "Bearer POST /sessions", `HTTP ${response.status} ${body?.status || body?.error?.code || ""}`, ok ? "ok" : "bad");
+        log("Bearer POST /sessions", { status: response.status, body });
+
+        if (ok) {
+          state.sessionKey = body.session_key;
+          state.currentQuestion = body.question;
+          const firstOption = body.question.options?.[0];
+          state.selectedOptionId = firstOption?.id || "";
+          renderQuestion();
+        }
+        return response;
+      }
+
+      async function submitAnswer() {
+        if (!state.sessionKey || !state.currentQuestion) {
+          throw new Error("Start a session before submitting an answer.");
+        }
+        if (!state.selectedOptionId) {
+          throw new Error("Select an option before submitting an answer.");
+        }
+
+        const payload = await loadExample(ANSWER_EXAMPLE);
+        payload.request_id = `req-browser-answer-${stamp()}`;
+        payload.idempotency_key = `idem-browser-answer-${stamp()}`;
+        payload.session_key = state.sessionKey;
+        payload.question_id = state.currentQuestion.id;
+        payload.answer = {
+          selected_option_ids: [state.selectedOptionId],
+          scale_value: null
+        };
+        payload.client_event = {
+          answered_at: new Date().toISOString(),
+          input_mode: "touch"
+        };
+
+        const response = await fetch(`${API_BASE}/api/triage-demo/sessions/${encodeURIComponent(state.sessionKey)}/answers`, {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify(payload)
+        });
+        const body = await readJsonResponse(response);
+        const ok = response.ok && (body?.status === "question" || body?.status === "summary");
+        setStatus("answer", "Bearer POST /answers", `HTTP ${response.status} ${body?.status || body?.error?.code || ""}`, ok ? "ok" : "bad");
+        log("Bearer POST /answers", { status: response.status, body });
+
+        if (ok && body.question) {
+          state.currentQuestion = body.question;
+          const firstOption = body.question.options?.[0];
+          state.selectedOptionId = firstOption?.id || "";
+          renderQuestion();
+        }
+        return response;
+      }
+
+      function renderQuestion() {
+        const question = state.currentQuestion;
+        elements.answerButton.disabled = !question;
+        elements.questionPanel.hidden = !question;
+        if (!question) return;
+
+        elements.questionTitle.textContent = question.text || question.id;
+        elements.questionMeta.textContent = `${question.id} / ${question.type}`;
+        elements.questionOptions.innerHTML = (question.options || []).map((option) => `
+          <label class="option">
+            <input type="radio" name="option" value="${escapeHtml(option.id)}" ${option.id === state.selectedOptionId ? "checked" : ""}>
+            <span><strong>${escapeHtml(option.label || option.id)}</strong><br><small>${escapeHtml(option.id)}</small></span>
+          </label>
+        `).join("");
+        elements.questionOptions.querySelectorAll("input[name='option']").forEach((input) => {
+          input.addEventListener("change", () => {
+            state.selectedOptionId = input.value;
+          });
+        });
+      }
+
+      async function runStep(label, action) {
+        try {
+          return await action();
+        } catch (error) {
+          setStatus(label, label, error.message, "bad");
+          log(`${label} failed`, error.stack || error.message);
+          throw error;
+        }
+      }
+
+      elements.healthButton.addEventListener("click", () => runStep("health", checkHealth));
+      elements.noTokenButton.addEventListener("click", () => runStep("noToken", checkNoToken));
+      elements.startButton.addEventListener("click", () => runStep("start", startSession));
+      elements.answerButton.addEventListener("click", () => runStep("answer", submitAnswer));
+      elements.runAllButton.addEventListener("click", async () => {
+        elements.runAllButton.disabled = true;
+        try {
+          await runStep("health", checkHealth);
+          await runStep("noToken", checkNoToken);
+          await runStep("start", startSession);
+          await runStep("answer", submitAnswer);
+        } finally {
+          elements.runAllButton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
