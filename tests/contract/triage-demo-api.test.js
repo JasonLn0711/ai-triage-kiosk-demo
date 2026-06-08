@@ -118,6 +118,31 @@ test("demo bearer token gate accepts only the configured Authorization header", 
   });
 });
 
+test("cors allowlist includes imedtac localhost and 127 browser origins", () => {
+  const allowedOrigins = [
+    "http://localhost",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174"
+  ];
+
+  for (const origin of allowedOrigins) {
+    const headers = new Map();
+    contract.setCorsHeaders(
+      { headers: { origin } },
+      {
+        setHeader(name, value) {
+          headers.set(name, value);
+        }
+      }
+    );
+
+    assert.equal(headers.get("Access-Control-Allow-Origin"), origin);
+    assert.equal(headers.get("Vary"), "Origin");
+    assert.equal(headers.get("Access-Control-Allow-Methods"), "GET, POST, OPTIONS");
+    assert.equal(headers.get("Access-Control-Allow-Headers"), "Content-Type, Authorization");
+  }
+});
+
 test("start session returns first question and progress.expected_total independent of max_questions", () => {
   contract.resetMockState();
   const beforeStart = Date.now();

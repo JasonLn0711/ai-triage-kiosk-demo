@@ -4,7 +4,11 @@ const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "../..");
 const DEMO_BOUNDARY = "Synthetic-data staff-review intake support with human-review workflow and separate production validation path.";
-const ALLOWED_ORIGINS = new Set(["http://localhost", "http://localhost:5174"]);
+const ALLOWED_ORIGINS = new Set([
+  "http://localhost",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174"
+]);
 const SESSION_TTL_MS = 30 * 60 * 1000;
 
 const sessions = new Map();
