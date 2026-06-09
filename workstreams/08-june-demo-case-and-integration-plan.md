@@ -399,6 +399,35 @@ Immediate execution sequence:
    payload, bearer-token header, timeout behavior, and API validation errors as
    the next debugging layer.
 
+Redeploy verification on `2026-06-08`:
+
+- Render public API was live: `/healthz` returned `HTTP/2 200` with
+  `x-render-origin-server: Render`.
+- `OPTIONS /api/triage-demo/sessions` from
+  `Origin: http://127.0.0.1:5174` returned `HTTP/2 204` with
+  `Access-Control-Allow-Origin: http://127.0.0.1:5174`,
+  `Access-Control-Allow-Methods: GET, POST, OPTIONS`, and
+  `Access-Control-Allow-Headers: Content-Type, Authorization`.
+- No-token `POST /api/triage-demo/sessions` from the same origin reached the
+  API layer and returned expected `401` / `demo_bearer_token_required` with the
+  CORS header present.
+- `OPTIONS /api/triage-demo/sessions/{session_key}/answers` from the same
+  origin also returned `HTTP/2 204` with the expected CORS header.
+- `/demo-ui/summary-review/` returned `HTTP/2 200` and still contained the
+  `session_key` loading path.
+- A headless Chromium test served from local `http://127.0.0.1:5174/` executed
+  a real browser `fetch()` to the Render start-session endpoint. Browser fetch
+  succeeded and received API-level `401` / `demo_bearer_token_required`,
+  confirming the browser was not blocked by CORS.
+- The NYCU computer did not have a demo bearer token in the shell environment,
+  so the authenticated full session path was not run in this pass.
+
+Conclusion: the screenshot-visible CORS preflight block is closed on the
+redeployed Render API. If imedtac still sees the generic error modal on the same
+formal-machine path, the next checks should focus on bearer-token delivery,
+stale frontend bundle/cache, a different actual browser origin, request payload
+shape, or Render logs after the authenticated request reaches the API.
+
 ## 2026-05-19 多寶 Two-Phase Question Flow Update
 
 Source and design:
