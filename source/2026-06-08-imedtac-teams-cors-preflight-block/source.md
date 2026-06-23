@@ -252,13 +252,35 @@ Observed result:
 - A no-token `POST /api/triage-demo/sessions` reached the API and returned the
   expected `401` / `demo_bearer_token_required` response with the correct CORS
   header present.
+- `OPTIONS /api/triage-demo/sessions/demo-session-tachy-001/answers` from the
+  same origin also returned `HTTP/2 204` with
+  `Access-Control-Allow-Origin: http://127.0.0.1:5174`.
+- A no-token `POST /api/triage-demo/sessions/demo-session-tachy-001/answers`
+  reached the API layer and returned the expected
+  `401` / `demo_bearer_token_required` response with the same CORS header.
+- `GET /demo-ui/summary-review/` returned `HTTP/2 200` and the served page
+  still contained the `session_key` loading path.
+- A headless Chromium browser test was run from a temporary page served at
+  `http://127.0.0.1:5174/`. The page executed a real browser `fetch()` to
+  `POST /api/triage-demo/sessions`. Browser fetch succeeded and received:
+
+```json
+{
+  "fetch_ok": true,
+  "status": 401,
+  "error_code": "demo_bearer_token_required"
+}
+```
 
 Technical conclusion: the screenshot-visible CORS preflight block is closed on
 the redeployed Render API. If imedtac still sees the generic error modal on the
 same formal-machine path, the next likely checks are bearer-token delivery,
 stale frontend bundle/cache, a different actual browser origin, request payload
 shape, or Render application logs after the authenticated request reaches the
-API.
+API. The NYCU computer did not have `DEMO_BEARER_TOKEN`,
+`AI_TRIAGE_DEMO_BEARER_TOKEN`, or `IMEDTAC_DEMO_BEARER_TOKEN` in the shell
+environment during this check, so the authenticated full session path was not
+run from this machine in this pass.
 
 After deployment, verify:
 
@@ -290,6 +312,10 @@ with the existing bearer-token header.
 | Redeploy Render after the CORS change. | NYCU / Jason | immediate | done | imedtac redeployed Render; NYCU retested the public API after deployment. |
 | Verify preflight from `http://127.0.0.1:5174`. | NYCU / Jason | after deploy | done | `OPTIONS /api/triage-demo/sessions` returned `204` with the expected origin, method, and header allowlist. |
 | Verify unauthenticated POST reaches API layer. | NYCU / Jason | after deploy | done | No-token POST returned expected `401` / `demo_bearer_token_required` with CORS header present. |
+| Verify browser-level CORS behavior from `127.0.0.1:5174`. | NYCU / Jason | after deploy | done | Headless Chromium from a local `127.0.0.1:5174` page successfully received API-level `401`, confirming the browser was not blocked by CORS. |
+| Verify answers endpoint CORS behavior. | NYCU / Jason | after deploy | done | `OPTIONS /api/triage-demo/sessions/{session_key}/answers` returned `204` with the expected CORS header. |
+| Verify summary review page availability. | NYCU / Jason | after deploy | done | `/demo-ui/summary-review/` returned `200` and still contained the `session_key` loader. |
+| Verify authenticated full session from NYCU computer. | NYCU / Jason | when private token is available locally | not run | Local shell did not contain the demo bearer token; do not recover or store token values in repo notes. |
 | Ask imedtac whether any other formal-machine origins exist. | Jason / imedtac | before next rehearsal | open | Include LAN IP, HTTPS domain, WebView origin, or other port if used. |
 | If error persists, inspect authenticated request path. | Jason / imedtac | next retest | open | Check bearer header, stale frontend bundle/cache, payload shape, actual `Origin`, and Render logs. |
 | Ask imedtac to retry the same measurement-to-triage transition after CORS deploy. | Jason / imedtac | after verify | open | Confirms that the flow can reach API-level behavior. |
